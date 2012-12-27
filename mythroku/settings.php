@@ -57,15 +57,7 @@ class VideoCategory extends ActiveRecord\Model
 //function to convert mysql timestamp to unix time
 function convert_datetime($str) 
 {
-	date_default_timezone_set('UTC');
-	
-	list($date, $time) = explode(' ', $str);
-	list($year, $month, $day) = explode('-', $date);
-	list($hour, $minute, $second) = explode(':', $time);
-
-	$timestamp = mktime($hour, $minute, $second, $month, $day, $year);
-
-	return $timestamp;
+	return strtotime( $str. ' UTC' );
 }
 
 ?>
