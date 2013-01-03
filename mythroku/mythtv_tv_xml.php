@@ -48,7 +48,7 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 	    print "	
 	    <item sdImg=\"" . $WebServer . "/tv/get_pixmap/" . $value->hostname . "/" . $value->chanid . "/" . convert_datetime($value->starttime) . "/100/75/-1/" . $value->basename . ".100x75x-1.png\" hdImg=\"" . $WebServer . "/tv/get_pixmap/" . $value->hostname . "/" . $value->chanid . "/" . convert_datetime($value->starttime) . "/100/75/-1/" . $value->basename . ".100x75x-1.png\">
 		    <title>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $value->title )) . "</title>
-		    <contentId>" . print_r(1000+$key,true) . "</contentId>
+		    <contentId>" . $value->basename . "</contentId>
 		    <contentType>TV</contentType>
 		    <contentQuality>". $RokuDisplayType . "</contentQuality>
 		    <media>
