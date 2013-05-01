@@ -1,5 +1,7 @@
 #!/bin/bash
 
+renice +15 --pid $$
+
 #convert mpeg file to mp4 using handbrakecli
 MYTHDIR=$1
 MPGFILE=$2
@@ -13,16 +15,21 @@ LOGFILE="/var/log/mythtv/rokuencode.log"
 newbname=`echo $MPGFILE | sed 's/\(.*\)\..*/\1/'`
 newname="$MYTHDIR/$newbname.mp4"
 
-echo "Roku Encode $MPGFILE to $newname, details in $LOGFILE" >> $LOGFILE
+echo "" >> $LOGFILE
+echo "Roku Encode $MPGFILE to $newname, details in $LOGFILE"
 
 date=`date`
 echo "$newbname:$date Encoding" >> $LOGFILE
 #/usr/bin/HandBrakeCLI -i $1/$2 -o $newname -e x264 -b 1500 -E faac -B 256 -R 48 -w 720
 #/usr/bin/HandBrakeCLI -i $MYTHDIR/$MPGFILE -o $newname -e x264 -r 29.97 -b 1500 -E faac -B 256 -R 48 --decomb >> $LOGFILE 2>&1
-/usr/bin/HandBrakeCLI --preset='iPhone & iPod Touch' -i $MYTHDIR/$MPGFILE -o $newname >> $LOGFILE 2>&1
+#/usr/bin/HandBrakeCLI --preset='iPhone & iPod Touch' -i $MYTHDIR/$MPGFILE -o $newname >> $LOGFILE 2>&1
+/usr/bin/HandBrakeCLI --preset='iPhone & iPod Touch' -i $MYTHDIR/$MPGFILE -o $newname 
+### v0.9.6 audio sync problems with the following
+#/usr/bin/HandBrakeCLI --preset='Normal' -i $MYTHDIR/$MPGFILE -o $newname 
+#/usr/bin/HandBrakeCLI --preset='Android High' -i $MYTHDIR/$MPGFILE -o $newname 
 
-date=`date`
-echo "$newbname:$date Previews" >> $LOGFILE
+#date=`date`
+#echo "$newbname:$date Previews" >> $LOGFILE
 #Mythtv seems to have problems with keyframes in mp4s, so make previews with ffmpeg
 #   ffmpeg -loglevel quiet -ss 34 -vframes 1 -i $newname -y -f image2  $MYTHDIR/$newbname.mp4.png >> $LOGFILE 2>&1
 #   ffmpeg -loglevel quiet -ss 34 -vframes 1 -i $newname -y -f image2 -s 100x75 $MYTHDIR/$newbname.mp4.64.100x75.png >> $LOGFILE 2>&1
@@ -40,7 +47,7 @@ mysql --user=$DATABASEUSER --password=$DATABASEPASSWORD mythconverg < /tmp/updat
 #   cd $MYTHDIR
 # If it's HD we assume it's 16:9
 #   date=`date`
-echo "$newbname:$date makebif HD" >> $LOGFILE
+#echo "$newbname:$date makebif HD" >> $LOGFILE
 #   /usr/local/bin/makebif.py -m 3 $newname >> $LOGFILE 2>&1
 # If it's SD we assume it's 4:3
 #   date=`date`

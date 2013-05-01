@@ -9,7 +9,7 @@ print "
 	  <!-- banner_ad: optional element which displays an add at the top level category screen -->
 	  <banner_ad sd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/mythtv_logo_SD.png\" hd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/mythtv_logo_SD.png\"/>
 
-	<category title=\"TV\"       description=\"MythTV TV\"            sd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/Mythtv_tv.png\"       hd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/Mythtv_tv.png\">
+	<category title=\"MythTV TV\"       description=\"Television Recordings.\"            sd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/Mythtv_tv.png\"       hd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/Mythtv_tv.png\">
 		<categoryLeaf title=\"Date\"     description=\"\" feed=\"" . $WebServer . "/" . $MythRokuDir . "/mythtv_tv_xml.php?sort=date\"/> 
 		<categoryLeaf title=\"Genre\"    description=\"\" feed=\"" . $WebServer . "/" . $MythRokuDir . "/mythtv_tv_xml.php?sort=genre\"/> 
 		<categoryLeaf title=\"Title\"    description=\"\" feed=\"" . $WebServer . "/" . $MythRokuDir . "/mythtv_tv_xml.php?sort=title\"/> 
@@ -17,7 +17,7 @@ print "
 		<categoryLeaf title=\"Group\"    description=\"\" feed=\"" . $WebServer . "/" . $MythRokuDir . "/mythtv_tv_xml.php?sort=playgroup\"/> 		
 	</category>
 
-	<category title=\"Movies\"   description=\"MythTV Movies\"        sd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/Mythtv_movie.png\"    hd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/Mythtv_movie.png\">
+	<category title=\"MythTV Videos\"   description=\"Saved Videos.\"        sd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/Mythtv_movie.png\"    hd_img=\"" . $WebServer . "/" . $MythRokuDir . "/images/Mythtv_movie.png\">
 		<categoryLeaf title=\"Date\"     description=\"\" feed=\"" . $WebServer . "/" . $MythRokuDir . "/mythtv_movies_xml.php?sort=date\"/> 
 		<categoryLeaf title=\"Genre\"    description=\"\" feed=\"" . $WebServer . "/" . $MythRokuDir . "/mythtv_movies_xml.php?sort=genre\"/> 
 		<categoryLeaf title=\"Title\"    description=\"\" feed=\"" . $WebServer . "/" . $MythRokuDir . "/mythtv_movies_xml.php?sort=title\"/> 

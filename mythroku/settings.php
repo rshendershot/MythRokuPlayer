@@ -1,19 +1,15 @@
 <?php
 require_once 'php-activerecord/ActiveRecord.php';
 
-$WebServer = "http://192.168.1.200/mythweb";   // include path to mythweb eg, http://yourip/mythweb
+$WebServer = "http://192.168.1.8/mythweb";   // include path to mythweb eg, http://yourip/mythweb
 $MythRokuDir = "mythroku";				       // name of your mythroku directory in the mythweb folder
 $RokuDisplayType = "SD";				       // set to the same as your Roku player under display type, HD or SD  
 $BitRate = "1500";					           // bit rate of endcoded streams
-$MysqlServer = "192.168.1.200";                // mysql server ip/name
+$MysqlServer = "192.168.1.8";                // mysql server ip/name
 $MythTVdb = "mythconverg";                     // mythtv database name
 $MythTVdbuser = "mythtv";                      // mythtv database user
 $MythTVdbpass = "mythtv";                      // mythtv database password
-$MythTVvideos = "/data/Videos/";			   // mythweb/data symbolic link to the storage group for mythvideos 
 
-/* can use TimeOffset in mythconver.settings */
-//date_default_timezone_set ( 'GMT' );
-//date_default_timezone_set ( 'America/Chicago' );
 
 ActiveRecord\DateTime::$DEFAULT_FORMAT = 'db';
 

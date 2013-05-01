@@ -8,7 +8,7 @@ require_once './settings.php';
 //print "\n***REMOTE_ADDR:" . $_SERVER['REMOTE_ADDR'] . "\n";
 
 
-$conditions = array('conditions' => array('filename like ? AND host > ?', '%.mp4', '')); //using combination of Storage Group and locally hosted video the host value in videometadata is currently only set for the backend machine.  TODO: check for actual host name
+$conditions = array('conditions' => array('filename like ? AND host > ?', '%.m%4%', '')); //using combination of Storage Group and locally hosted video the host value in videometadata is currently only set for the backend machine.  TODO: check for actual host name
 $order = array('order' => 'insertdate ASC');
 if (isset($_GET['sort'])) //there is not GET in the session when running php from CLI
 {
@@ -41,25 +41,28 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 	<!-- endIndix  indicates the number of results for this *paged* section of the feed -->
 	<endIndex>" . count($item)  . "</endIndex>";
 
-	$storage = StorageGroup::first( array('conditions' => array('groupname = ?', 'Videos')) );
+	$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
+	$videos = StorageGroup::first( array('conditions' => array('groupname = ?', 'Videos')) );
 	
     foreach ($item as $key => $value)
     {   
     	$category = VideoCategory::first( array('conditions' => array('intid = ?', $value->category)) );    	
-    	$streamUrl = implode("/", array_map("rawurlencode", explode("/", $MythTVvideos . $value->filename)));
+    	$streamfile = $videos->dirname . $value->filename;
+    	$coverfile = $coverart->dirname . $value->coverfile; 
 
 	    //print out the record in xml format for roku to read 
-		print "	
-		<item sdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($value->coverfile) . "\" hdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($value->coverfile) . "\">
+		print 	
+		"<item sdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($coverfile) . "\"" .
+				" hdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($coverfile) . "\" >
 			<title>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $value->title )) . "</title>
-			<contentId>" . print_r(1000+$key,true) . "</contentId>
+			<contentId>" . $value->filename . "</contentId>
 			<contentType>Movies</contentType>
 			<contentQuality>". $RokuDisplayType . "</contentQuality>
 			<media>
 				<streamFormat>mp4</streamFormat>
 				<streamQuality>". $RokuDisplayType . "</streamQuality>
 				<streamBitrate>". $BitRate . "</streamBitrate>
-				<streamUrl>" . $WebServer . $streamUrl ."</streamUrl>
+				<streamUrl>" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($streamfile) . " </streamUrl>
 			</media>
 			<synopsis>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $value->plot )) . "</synopsis>
 			<genres>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $category->category )) . "</genres>
