@@ -5,6 +5,7 @@ require_once './settings.php';
 
 $conditions = array('conditions' => array('basename like ? ', '%.mp4'));
 $order = array('order' => 'starttime ASC');
+$select = array('select' => '*, case title regexp \'^The \' when 1 then SUBSTRING(title,5) else title end as titleSortkey');
 if (isset($_GET['sort'])) //there is not GET in the session when running php from CLI
 {
     switch($_GET['sort'])
@@ -13,7 +14,7 @@ if (isset($_GET['sort'])) //there is not GET in the session when running php fro
             $order = array('order' => 'starttime DESC');
             break;
         case "title":
-            $order = array('order' => 'title ASC');
+            $order = array('order' => 'titleSortkey ASC');
             break;
         case "playgroup":
             $order = array('order' => 'playgroup ASC');
@@ -29,7 +30,7 @@ if (isset($_GET['sort'])) //there is not GET in the session when running php fro
     }
 }
 
-$item = Recorded::all( array_merge($conditions, $order) );
+$item = Recorded::all( array_merge($select, $conditions, $order) );
 
 //print the xml header
 print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> 
