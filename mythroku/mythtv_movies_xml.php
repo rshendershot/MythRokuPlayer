@@ -3,13 +3,9 @@
 //get the local info from the settings file
 require_once './settings.php';
 
-//print "\n***HOSTNAME:" . getHostname() . "\n";
-//print "\n***HTTP_CLIENT_IP:" . $_SERVER['HTTP_CLIENT_IP'] . "\n";
-//print "\n***REMOTE_ADDR:" . $_SERVER['REMOTE_ADDR'] . "\n";
-
-
 $conditions = array('conditions' => array('filename like ? AND host > ?', '%.m%4%', '')); //using combination of Storage Group and locally hosted video the host value in videometadata is currently only set for the backend machine.  TODO: check for actual host name
 $order = array('order' => 'insertdate ASC');
+
 if (isset($_GET['sort'])) //there is not GET in the session when running php from CLI
 {
     switch($_GET['sort'])
@@ -31,6 +27,9 @@ if (isset($_GET['sort'])) //there is not GET in the session when running php fro
     }	
 }
 
+
+
+
 $item = VideoMetadata::all( array_merge($conditions, $order) );
 	
 //print the xml header
@@ -50,7 +49,7 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
     	$streamfile = $videos->dirname . $value->filename;
     	$coverfile = $coverart->dirname . $value->coverfile; 
 
-	    //print out the record in xml format for roku to read 
+	    //print out the record in xml format for roku to read
 		print 	
 		"<item sdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($coverfile) . "\"" .
 				" hdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($coverfile) . "\" >

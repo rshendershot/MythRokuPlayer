@@ -4,13 +4,12 @@
 
 if (isset ($_GET['image'])) {
 	$file = rawurldecode($_GET['image']);
-	if (file_exists("$file")) {
+	if (file_exists($file)) {
 		$finfo = finfo_open(FILEINFO_MIME_TYPE);
 		if (!$finfo) {
-			throw new Exception("cannot get file_info for: " . $file);
+			throw new Exception("cannot get file_info.");
 		} else {
-			header('Content-Type: ' . finfo_file($finfo, "$file"), true);
-			
+			header('Content-Type: ' . finfo_file($finfo, $file), true);
 	        if (isset($_SERVER['HTTP_RANGE'])) // do it for any device that supports byte-ranges not only iPhone
 	        {
 	                rangeDownload($file);

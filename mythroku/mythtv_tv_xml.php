@@ -32,7 +32,7 @@ if (isset($_GET['sort'])) //there is not GET in the session when running php fro
 
 $item = Recorded::all( array_merge($select, $conditions, $order) );
 
-//print the xml header
+//print out the record in xml format for roku to read
 print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?> 
 	<feed>
 	<!-- resultLength indicates the total number of results for this feed -->
@@ -42,13 +42,21 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 
     foreach ($item as $key => $value)
     {
-		//compute the length of the show
+    	//generate preview images since the user may not be invoking this from myth frontend
+    	file_get_contents(
+			$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $value->chanid . "&StartTime=" . $value->starttime)
+		);
+		
 		$ShowLength = convert_datetime($value->endtime) - convert_datetime($value->starttime);
-    
+    	$storage = StorageGroup::first( array('conditions' => array('groupname = ?', $value->storagegroup)) );
+    	
+    	$streamUrl = $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($storage->dirname . $value->basename);
+    	$imgUrl = $streamUrl .".png";
+    	if(false) { print $imgUrl; exit;}
+
 	    //print out the record in xml format for roku to read 
 	    print "	
-	    <item sdImg=\"" . $WebServer . "/tv/get_pixmap/" . $value->hostname . "/" . $value->chanid . "/" . convert_datetime($value->starttime) . "/100/75/-1/" . $value->basename . ".100x75x-1.png\" " .
-	    		"hdImg=\"" . $WebServer . "/tv/get_pixmap/" . $value->hostname . "/" . $value->chanid . "/" . convert_datetime($value->starttime) . "/100/75/-1/" . $value->basename . ".100x75x-1.png\">
+	    <item sdImg=\"" . $imgUrl . "\" hdImg=\"" . $imgUrl . "\" >
 		    <title>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $value->title )) . "</title>
 		    <contentId>" . $value->basename . "</contentId>
 		    <contentType>TV</contentType>
@@ -57,7 +65,7 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 			    <streamFormat>mp4</streamFormat>
 			    <streamQuality>". $RokuDisplayType . "</streamQuality>
 			    <streamBitrate>" . $BitRate . "</streamBitrate>
-			    <streamUrl>" . $WebServer . "/pl/stream/" . $value->chanid . "/" . convert_datetime($value->starttime) . ".mp4</streamUrl>
+			    <streamUrl>" . $streamUrl . " </streamUrl>
 		    </media>
 		    <synopsis>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $value->description )) . "</synopsis>
 	        <genres>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $value->category )) . "</genres>
@@ -70,7 +78,5 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
     }
 
 print "</feed>";
-//		    <date>" . convert_datetime($value->starttime->format('F j, Y, g:i a')) . "</date>
-//		    <runtime>" . $value->starttime->diff($value->endtime)->format('%s') . "</runtime>
 
 ?>
