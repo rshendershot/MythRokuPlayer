@@ -19,7 +19,7 @@ $RokuDisplayType = "SD";	// set to the same as your Roku player under display ty
 $BitRate = "1500";			// bit rate of endcoded streams
 
 
-//--- Active Record ORM , requires version 20110425 or later due to DB DateTime default format ---//
+//--- Active Record ORM http://www.phpactiverecord.org, requires version 20110425 or later due to DB DateTime default format ---//
 
 ActiveRecord\DateTime::$DEFAULT_FORMAT = 'db';
 

@@ -2,27 +2,49 @@
 // adapted from http://forums.phpfreaks.com/topic/106711-php-code-which-supports-byte-range-downloads-for-iphone/#entry547301
 // thank you to phpfreak jonsjava
 
+require_once './settings.php'; 
+
 if (isset ($_GET['image'])) {
 	$file = rawurldecode($_GET['image']);
-	if (file_exists($file)) {
-		$finfo = finfo_open(FILEINFO_MIME_TYPE);
-		if (!$finfo) {
-			throw new Exception("cannot get file_info.");
-		} else {
-			header('Content-Type: ' . finfo_file($finfo, $file), true);
-	        if (isset($_SERVER['HTTP_RANGE'])) // do it for any device that supports byte-ranges not only iPhone
-	        {
-	                rangeDownload($file);
-	        }
-	        else
-	        {
-	                header("Content-Length: " . filesize($file));
-	                readfile($file);
-	        }										
-		}
+	if (file_exists($file)) {					
+        if (isset($_SERVER['HTTP_RANGE'])) {
+            rangeDownload($file);
+        } else {
+        	output($file);
+        }												
 	} else {
 		throw new Exception('unknown file: ' . $file);
 	}
+} elseif (isset($_GET['preview'])) {
+	$preview = rawurldecode($_GET['preview']);
+	$chanid = ltrim(substr($preview,0,6),"_");
+	$starttime = substr($preview,6);
+
+	if($chanid && $starttime) {
+		$items = Recorded::find_by_sql(
+			'select s.dirname,r.basename from recorded r
+			join storagegroup s on s.groupname = r.storagegroup
+			where r.chanid=\' '.$chanid.' \' and r.starttime=\' '.$starttime.'\' '
+		);
+		$record = $items[0]; 
+		$file = $record->dirname . $record->basename . ".png";
+    	if(!file_exists($file))  //generate preview images since the user may not be invoking this from myth frontend
+	    	get_headers(
+				$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $chanid . "&StartTime=" . $starttime)
+			);
+		output($file);
+	}	
+}
+
+function output($file)
+{
+	$finfo = finfo_open(FILEINFO_MIME_TYPE);
+	if (!$finfo) 
+		throw new Exception("cannot get file_info.");
+	header("Content-Length: " . filesize($file));
+	header('Content-Type: ' . finfo_file($finfo, $file), true);
+	
+	readfile($file);	
 }
 
 function rangeDownload($file)

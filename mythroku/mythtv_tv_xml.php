@@ -46,13 +46,14 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
     	$storage = StorageGroup::first( array('conditions' => array('groupname = ?', $value->storagegroup)) );
     	
     	$streamfile  = $storage->dirname . $value->basename;
-    	$streamUrl = $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($streamfile);
-    	$imgUrl = $streamUrl .".png";
-    	
-    	if(!file_exists($streamfile.".png"))  //generate preview images since the user may not be invoking this from myth frontend
-	    	get_headers(
-				$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $value->chanid . "&StartTime=" . $value->starttime)
-			);
+
+    	$parms = array('image'=>$streamfile);
+    	$streamUrl = $WebServer . "/" . $MythRokuDir . "/image.php?" 
+    		.http_build_query($parms);
+
+    	$parms = array('preview'=>str_pad($value->chanid, 6, "_", STR_PAD_LEFT).rawurlencode($value->starttime));
+    	$imgUrl = $WebServer . "/" . $MythRokuDir . "/image.php?" 
+    		.http_build_query($parms);
 
 	    //print out the record in xml format for roku to read 
 	    print "	
@@ -79,4 +80,8 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 
 print "</feed>";
 
+function html_encode($str)
+{
+    return implode("/", array_map("rawurlencode", explode("/", $str)));
+}
 ?>
