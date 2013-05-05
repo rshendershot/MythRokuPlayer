@@ -41,18 +41,18 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 	<endIndex>" . count($item)  . "</endIndex>";
 
     foreach ($item as $key => $value)
-    {
-    	//generate preview images since the user may not be invoking this from myth frontend
-    	file_get_contents(
-			$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $value->chanid . "&StartTime=" . $value->starttime)
-		);
-		
+    {		
 		$ShowLength = convert_datetime($value->endtime) - convert_datetime($value->starttime);
     	$storage = StorageGroup::first( array('conditions' => array('groupname = ?', $value->storagegroup)) );
     	
-    	$streamUrl = $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($storage->dirname . $value->basename);
+    	$streamfile  = $storage->dirname . $value->basename;
+    	$streamUrl = $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($streamfile);
     	$imgUrl = $streamUrl .".png";
-    	if(false) { print $imgUrl; exit;}
+    	
+    	if(!file_exists($streamfile.".png"))  //generate preview images since the user may not be invoking this from myth frontend
+	    	get_headers(
+				$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $value->chanid . "&StartTime=" . $value->starttime)
+			);
 
 	    //print out the record in xml format for roku to read 
 	    print "	
