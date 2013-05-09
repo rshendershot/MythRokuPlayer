@@ -80,8 +80,4 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 
 print "</feed>";
 
-function html_encode($str)
-{
-    return implode("/", array_map("rawurlencode", explode("/", $str)));
-}
 ?>
