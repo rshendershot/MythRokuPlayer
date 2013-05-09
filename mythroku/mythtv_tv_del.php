@@ -16,7 +16,7 @@ if (isset($_GET['basename']))
         print "\nhere we delete $recording->basename from the database."; 
         $recording->delete();
         
-        $fname = $recording->storagegroups->dirname . $record->basename; 
+        $fname = $recording->storagegroups->dirname . strtok($recording->basename, "."); 
         foreach(glob($fname . "*") as $file){
             print "\nhere we delete $file from the filesyste."; 
             unlink($file);
