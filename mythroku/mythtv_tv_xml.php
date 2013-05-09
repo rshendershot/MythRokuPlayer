@@ -42,10 +42,8 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 
     foreach ($item as $key => $value)
     {		
-		$ShowLength = convert_datetime($value->endtime) - convert_datetime($value->starttime);
-    	$storage = StorageGroup::first( array('conditions' => array('groupname = ?', $value->storagegroup)) );
-    	
-    	$streamfile  = $storage->dirname . $value->basename;
+		$ShowLength = convert_datetime($value->endtime) - convert_datetime($value->starttime);    	
+    	$streamfile  = $value->storagegroups->dirname . $value->basename;
 
     	$parms = array('image'=>$streamfile);
     	$streamUrl = $WebServer . "/" . $MythRokuDir . "/image.php?" 

@@ -4,7 +4,7 @@
 
 require_once './settings.php'; 
 
-if (isset ($_GET['image'])) {
+if (isset ($_GET['image'])) { //send a file spec
 	$file = rawurldecode($_GET['image']);
 	if (file_exists($file)) {					
         if (isset($_SERVER['HTTP_RANGE'])) {
@@ -15,19 +15,15 @@ if (isset ($_GET['image'])) {
 	} else {
 		throw new Exception('unknown file: ' . $file);
 	}
-} elseif (isset($_GET['preview'])) {
+} elseif (isset($_GET['preview'])) { //send a key of chanid and starttime. will be a preview image since any rq for playable is Range.  We assure that is a File request.
 	$preview = rawurldecode($_GET['preview']);
 	$chanid = ltrim(substr($preview,0,6),"_");
 	$starttime = substr($preview,6);
 
-	if($chanid && $starttime) {
-		$items = Recorded::find_by_sql(
-			'select s.dirname,r.basename from recorded r
-			join storagegroup s on s.groupname = r.storagegroup
-			where r.chanid=\' '.$chanid.' \' and r.starttime=\' '.$starttime.'\' '
-		);
-		$record = $items[0]; 
-		$file = $record->dirname ."/". $record->basename . ".png"; // TODO make relationship in ORM instead of this query
+	if($chanid && $starttime) {		
+		$conditions = array('conditions' => array('chanid=? and starttime=? ', $chanid, $starttime)); 
+		$record = Recorded::first( $conditions );
+		$file = $record->storagegroups->dirname . $record->basename . ".png"; 
     	if(!file_exists($file))  //generate preview images since the user may not be invoking this from myth frontend
 	    	get_headers(
 				$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $chanid . "&StartTime=" . $starttime)
@@ -38,13 +34,17 @@ if (isset ($_GET['image'])) {
 
 function output($file)
 {
-	$finfo = finfo_open(FILEINFO_MIME_TYPE);
-	if (!$finfo) 
-		throw new Exception("cannot get file_info.");
-	header("Content-Length: " . filesize($file));
-	header('Content-Type: ' . finfo_file($finfo, $file), true);
-	
-	readfile($file);	
+	if(file_exists($file)) {
+		$finfo = finfo_open(FILEINFO_MIME_TYPE);
+		if (!$finfo) 
+			throw new Exception("cannot get file_info.");
+		header("Content-Length: " . filesize($file));
+		header('Content-Type: ' . finfo_file($finfo, $file), true);
+		
+		readfile($file);	
+	} else {
+		throw new Exception("unable to output file: " . $file);
+	}
 }
 
 function rangeDownload($file)

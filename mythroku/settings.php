@@ -37,7 +37,13 @@ ActiveRecord\Config::initialize(function($cfg)
 
 class Recorded extends ActiveRecord\Model 
 { 
-    static $table_name = 'recorded'; 
+    static $table_name = 'recorded';
+    
+    static $has_one = array( array('storagegroups'
+    	, 'class_name' => 'StorageGroup'    
+	    , 'primary_key'=>'storagegroup'
+	    , 'foreign_key'=>'groupname')
+    );
 
     function get_starttime() {
         return $this->read_attribute('starttime')->format('db');
@@ -56,6 +62,14 @@ class StorageGroup extends ActiveRecord\Model
 {
     static $table_name = 'storagegroup';
     
+    static $read_only = 'true';
+    
+    static $has_many = array( array('recordings'
+    	, 'class_name' => 'Recorded'
+    	, 'primary_key'=>'groupname'
+    	, 'foreign_key'=>'storagegroup') 
+    );
+    
     function get_dirname(){
     	return $this->read_attribute('dirname') ."/";
     }
@@ -63,7 +77,7 @@ class StorageGroup extends ActiveRecord\Model
 
 class VideoMetadata extends ActiveRecord\Model
 {
-    static $table_name = 'videometadata';
+    static $table_name = 'videometadata';        
 }    
 
 class VideoCategory extends ActiveRecord\Model
