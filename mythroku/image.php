@@ -27,7 +27,7 @@ if (isset ($_GET['image'])) {
 			where r.chanid=\' '.$chanid.' \' and r.starttime=\' '.$starttime.'\' '
 		);
 		$record = $items[0]; 
-		$file = $record->dirname ."/". $record->basename . ".png";
+		$file = $record->dirname ."/". $record->basename . ".png"; // TODO make relationship in ORM instead of this query
     	if(!file_exists($file))  //generate preview images since the user may not be invoking this from myth frontend
 	    	get_headers(
 				$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $chanid . "&StartTime=" . $starttime)

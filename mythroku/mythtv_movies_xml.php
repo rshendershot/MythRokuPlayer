@@ -41,6 +41,7 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 	<endIndex>" . count($item)  . "</endIndex>";
 
 	$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
+	$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
 	$videos = StorageGroup::first( array('conditions' => array('groupname = ?', 'Videos')) );
 	
     foreach ($item as $key => $value)
@@ -48,11 +49,13 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
     	$category = VideoCategory::first( array('conditions' => array('intid = ?', $value->category)) );    	
     	$streamfile = $videos->dirname . $value->filename;
     	$coverfile = $coverart->dirname . $value->coverfile; 
+    	$screenfile = $screenart->dirname . $value->screenshot;
+    	// TODO define sdposterurl and hdposterurl as coverfile.  needs channel deployment.  see categoryFeed.brs
 
 	    //print out the record in xml format for roku to read
 		print 	
-		"<item sdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($coverfile) . "\"" .
-				" hdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($coverfile) . "\" >
+		"<item sdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($screenfile) . "\"" .
+				" hdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($screenfile) . "\" >
 			<title>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $value->title )) . "</title>
 			<contentId>" . $value->filename . "</contentId>
 			<contentType>Movies</contentType>
