@@ -47,7 +47,7 @@ class Recorded extends ActiveRecord\Model
 
     function get_starttime() {
         return $this->read_attribute('starttime')->format('db');
-    }     
+    }
            
 //    function get_title() {
 //    	return preg_replace('/^The /', '', $this->read_attribute('title'));
@@ -77,7 +77,7 @@ class StorageGroup extends ActiveRecord\Model
 
 class VideoMetadata extends ActiveRecord\Model
 {
-    static $table_name = 'videometadata';        
+    static $table_name = 'videometadata';
 }    
 
 class VideoCategory extends ActiveRecord\Model

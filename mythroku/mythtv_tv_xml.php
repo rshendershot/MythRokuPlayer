@@ -42,7 +42,7 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 
     foreach ($item as $key => $value)
     {		
-		$ShowLength = convert_datetime($value->endtime) - convert_datetime($value->starttime);    	
+		$ShowLength = convert_datetime($value->endtime) - convert_datetime($value->starttime);
     	$streamfile  = $value->storagegroups->dirname . $value->basename;
 
     	$parms = array('image'=>$streamfile);
