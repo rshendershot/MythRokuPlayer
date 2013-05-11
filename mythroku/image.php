@@ -28,6 +28,7 @@ if (isset ($_GET['image'])) { //send a file spec
 	    	get_headers(
 				$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $chanid . "&StartTime=" . $starttime)
 			);
+		header('Cache-Control: no-cache');
 		output($file);
 	}	
 }
@@ -36,8 +37,8 @@ function output($file)
 {
 	$finfo = finfo_open(FILEINFO_MIME_TYPE);
 	if (!$finfo) 
-		throw new Exception("cannot get file_info.");
-	header("Content-Length: " . filesize($file));
+		throw new Exception("cannot get file_info.");	
+	header('Content-Length: ' . filesize($file));
 	header('Content-Type: ' . finfo_file($finfo, $file), true);
 	
 	readfile($file);	
@@ -63,7 +64,7 @@ function rangeDownload($file)
      * (mediatype = mimetype)
      * as well as a boundry header to indicate the various chunks of data.
      */
-    header("Accept-Ranges: 0-$length");
+    header('Accept-Ranges: 0-$length');
     // header('Accept-Ranges: bytes');
     // multipart/byteranges
     // http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.2
@@ -80,7 +81,7 @@ function rangeDownload($file)
                     // range be used? Or should the header be ignored and
                     // we output the whole content?
                     header('HTTP/1.1 416 Requested Range Not Satisfiable');
-                    header("Content-Range: bytes $start-$end/$size");
+                    header('Content-Range: bytes $start-$end/$size');
                     // (?) Echo some info to the client?
                     exit;
             }
@@ -107,7 +108,7 @@ function rangeDownload($file)
             if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size)
             {
                     header('HTTP/1.1 416 Requested Range Not Satisfiable');
-                    header("Content-Range: bytes $start-$end/$size");
+                    header('Content-Range: bytes $start-$end/$size');
                     // (?) Echo some info to the client?
                     exit;
             }
@@ -118,8 +119,8 @@ function rangeDownload($file)
             header('HTTP/1.1 206 Partial Content');
     }
     // Notify the client the byte range we'll be outputting
-    header("Content-Range: bytes $start-$end/$size");
-    header("Content-Length: $length");
+    header('Content-Range: bytes $start-$end/$size');
+    header('Content-Length: $length');
 
     // Start buffered download
     $buffer = 1024 * 8;
