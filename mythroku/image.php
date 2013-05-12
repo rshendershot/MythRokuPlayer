@@ -13,23 +13,38 @@ if (isset ($_GET['image'])) { //send a file spec
         	output($file);
         }												
 	} else {
-		throw new Exception('unknown file: ' . $file);
+		throw new Exception("unknown file: $file");
 	}
 } elseif (isset($_GET['preview'])) { //send a key of chanid and starttime. will be a preview image since any rq for playable is Range.  We assure that is a File request.
 	$preview = rawurldecode($_GET['preview']);
-	$chanid = ltrim(substr($preview,0,6),"_");
+	$chanid = ltrim(substr($preview,0,6),'_');
 	$starttime = substr($preview,6);
 
 	if($chanid && $starttime) {		
 		$conditions = array('conditions' => array('chanid=? and starttime=? ', $chanid, $starttime)); 
 		$record = Recorded::first( $conditions );
-		$file = $record->storagegroups->dirname . $record->basename . ".png"; 
-    	if(!file_exists($file))  //generate preview images since the user may not be invoking this from myth frontend
-	    	get_headers(
-				$MythContentSvc . "GetPreviewImage". rawurlencode("?ChanId=" . $chanid . "&StartTime=" . $starttime)
-			);
-		header('Cache-Control: no-cache');
-		output($file);
+		$file = $record->storagegroups->dirname . $record->basename . '.png'; 
+    	if(!file_exists($file)) { //generate preview images since the user may not be invoking this from myth frontend
+    		error_log(
+    			"*** " . implode( '|',
+			    	get_headers(
+						$MythContentSvc . 'GetPreviewImage' . rawurlencode("?ChanId=$chanid&StartTime=$starttime")
+					)	
+				)			
+			,0);		
+    	;}
+    	
+    	
+    	try {
+			if(filesize($file)){    		
+				header('Cache-Control: no-cache');
+				output($file);
+			} else {
+				throw new Exception("unable to get file size of: $file");
+			}
+    	} catch(Exception $e) {
+    		http_response_code(304); 
+    	}
 	}	
 }
 
@@ -37,9 +52,11 @@ function output($file)
 {
 	$finfo = finfo_open(FILEINFO_MIME_TYPE);
 	if (!$finfo) 
-		throw new Exception("cannot get file_info.");	
+		throw new Exception('cannot get file_info.');	
 	header('Content-Length: ' . filesize($file));
 	header('Content-Type: ' . finfo_file($finfo, $file), true);
+	
+	error_log( "*** ".implode("|", headers_list()), 0 );
 	
 	readfile($file);	
 }
@@ -64,7 +81,7 @@ function rangeDownload($file)
      * (mediatype = mimetype)
      * as well as a boundry header to indicate the various chunks of data.
      */
-    header('Accept-Ranges: 0-$length');
+    header("Accept-Ranges: 0-$length");
     // header('Accept-Ranges: bytes');
     // multipart/byteranges
     // http://www.w3.org/Protocols/rfc2616/rfc2616-sec19.html#sec19.2
@@ -81,7 +98,7 @@ function rangeDownload($file)
                     // range be used? Or should the header be ignored and
                     // we output the whole content?
                     header('HTTP/1.1 416 Requested Range Not Satisfiable');
-                    header('Content-Range: bytes $start-$end/$size');
+                    header("Content-Range: bytes $start-$end/$size");
                     // (?) Echo some info to the client?
                     exit;
             }
@@ -108,7 +125,7 @@ function rangeDownload($file)
             if ($c_start > $c_end || $c_start > $size - 1 || $c_end >= $size)
             {
                     header('HTTP/1.1 416 Requested Range Not Satisfiable');
-                    header('Content-Range: bytes $start-$end/$size');
+                    header("Content-Range: bytes $start-$end/$size");
                     // (?) Echo some info to the client?
                     exit;
             }
@@ -119,8 +136,10 @@ function rangeDownload($file)
             header('HTTP/1.1 206 Partial Content');
     }
     // Notify the client the byte range we'll be outputting
-    header('Content-Range: bytes $start-$end/$size');
-    header('Content-Length: $length');
+    header("Content-Range: bytes $start-$end/$size");
+    header("Content-Length: $length");
+    
+    error_log( "*** ".implode("|", headers_list()), 0 );
 
     // Start buffered download
     $buffer = 1024 * 8;

@@ -24,7 +24,7 @@ if (isset($_GET['basename']))
     }
 }else{
     print "the 'basename' was not passed to this routine!";
-    error_log("the 'basename' was not passed to this routine!");
+    error_log("the 'basename' was not passed to this routine!", 0);
 }
 
 ?>
