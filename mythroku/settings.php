@@ -18,6 +18,59 @@ $MythTVdbpass = "mythtv";       // mythtv database password
 $RokuDisplayType = "SD";	// set to the same as your Roku player under display type, HD or SD  
 $BitRate = "1500";			// bit rate of endcoded streams
 
+//--- XML Proxy classes ---//
+abstract class XmlIterator implements Countable {
+	public function __construct()
+    {
+        $arguments = func_get_args();
+
+        if(!empty($arguments))
+            foreach($arguments[0] as $key => $property)
+                if(property_exists($this, $key))
+                    $this->{$key} = $property;
+    }	
+	public function count() {
+		return count(get_object_vars($this));
+	}
+	public function __toString() {	
+		$stringBuffer = "<" . get_class($this);
+		$end =	"</" . get_class($this) . ">";
+		
+		$associations = array();
+		$objects = array();
+		$strings = array();
+		foreach($this as $key => $value) {
+    		if(is_array($value)){    
+    			$associations[$key] = $value; 			
+    		} elseif(is_object($value)) {
+    			$objects[$key] = $value;
+    		} elseif(is_string($value)) {
+    			$strings[$key] = $value;
+    		}      		    				
+		}
+		
+		foreach($strings as $key => $value) {
+			$stringBuffer .= " $key=\"$value\"";
+		}
+		if(count($associations) || count($objects)) {
+			$stringBuffer .= "> ";	
+			foreach($objects as $key => $value) {
+				$stringBuffer .= $value;
+			}		
+			foreach($associations as $key => $value) {
+    			foreach($value as $child => $childValue){
+    				$stringBuffer .= $childValue;
+    			} 				
+			}		
+		} else {
+			$end = " />";			
+		}
+		$stringBuffer .= $end;
+		
+		return $stringBuffer;		
+	}
+}
+
 
 //--- Active Record ORM http://www.phpactiverecord.org, requires version 20110425 or later due to DB DateTime default format ---//
 
