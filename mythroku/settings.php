@@ -20,7 +20,7 @@ $BitRate = "1500";			// bit rate of endcoded streams
 
 //--- XML Proxy classes ---//
 abstract class XmlIterator implements Countable {
-	const ATR = 'attribute.';
+	const ATR = 'attribute.'; //since PHP does not yet support annotations
 	private $attributes = array();
 	private $content;
 
