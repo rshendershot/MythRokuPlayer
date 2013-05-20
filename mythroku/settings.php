@@ -20,14 +20,26 @@ $BitRate = "1500";			// bit rate of endcoded streams
 
 //--- XML Proxy classes ---//
 abstract class XmlIterator implements Countable {
+	const ATR = 'attribute.';
+	private $attributes = array();
+	private $content;
+
 	public function __construct()
     {
         $arguments = func_get_args();
 
-        if(!empty($arguments))
-            foreach($arguments[0] as $key => $property)
-                if(property_exists($this, $key))
-                    $this->{$key} = $property;
+        if(!empty($arguments)) {
+            foreach($arguments[0] as $key => $property) {
+                if(property_exists($this, $key)) {
+                    $this->{$key} = $property;    
+                }else {
+                	$atr = str_replace(XmlIterator::ATR,'',$key);
+                	if(property_exists($this, $atr)){
+                		$this->attributes[$atr] = $property;
+                	}
+                }
+            }
+        }                                       	
     }	
 	public function count() {
 		return count(get_object_vars($this));
@@ -38,28 +50,34 @@ abstract class XmlIterator implements Countable {
 		
 		$associations = array();
 		$objects = array();
-		$strings = array();
-		foreach($this as $key => $value) {
-    		if(is_array($value)){    
-    			$associations[$key] = $value; 			
+		foreach($this as $key => $value) {			
+   			if($key == 'content') {
+   				$this->content = $value;
+   			} elseif(is_array($value)) {
+    			$associations[$key] = $value;
     		} elseif(is_object($value)) {
     			$objects[$key] = $value;
-    		} elseif(is_string($value)) {
-    			$strings[$key] = $value;
-    		}      		    				
+    		}     		    				
 		}
 		
-		foreach($strings as $key => $value) {
+		foreach($this->attributes as $key => $value) {
 			$stringBuffer .= " $key=\"$value\"";
 		}
-		if(count($associations) || count($objects)) {
-			$stringBuffer .= "> ";	
+		if(count($associations) || count($objects) || isset($this->content)) {
+			$stringBuffer .= ">";	
+			if(!isset($this->content)){
+				$stringBuffer .= " ";	
+			}else{
+				$stringBuffer .= $this->content;	
+			}				
 			foreach($objects as $key => $value) {
 				$stringBuffer .= $value;
 			}		
 			foreach($associations as $key => $value) {
     			foreach($value as $child => $childValue){
-    				$stringBuffer .= $childValue;
+    				if(!array_key_exists($child, $this->attributes)){
+    					$stringBuffer .= $childValue;	
+    				}    				
     			} 				
 			}		
 		} else {
@@ -70,6 +88,7 @@ abstract class XmlIterator implements Countable {
 		return $stringBuffer;		
 	}
 }
+
 
 
 //--- Active Record ORM http://www.phpactiverecord.org, requires version 20110425 or later due to DB DateTime default format ---//
