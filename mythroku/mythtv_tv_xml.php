@@ -1,7 +1,7 @@
 <?php
 
 //get the local info from the settings file
-require_once './settings.php';
+require_once 'settings.php';
 
 $conditions = array('conditions' => array('basename like ? ', '%.mp4'));
 $order = array('order' => 'starttime ASC');

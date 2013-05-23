@@ -24,22 +24,35 @@ abstract class XmlIterator implements Countable {
 	private $attributes = array();
 	private $content;
 
+	protected function addToAttributes($atr, $property){
+		if(property_exists($this, $atr)){
+			$this->attributes[$atr] = $property;
+			return true;
+		}		
+		return false;
+	}
+	protected function setContent($value){
+		if(is_scalar($value)){
+			$this->content = $value;
+			return true;
+		}
+		return false;
+	}
 	public function __construct()
     {
         $arguments = func_get_args();
+        //if(defined('_DEBUG')) print_r($arguments);
 
         if(!empty($arguments)) {
             foreach($arguments[0] as $key => $property) {
                 if(property_exists($this, $key)) {
                     $this->{$key} = $property;    
                 }else {
-                	$atr = str_replace(XmlIterator::ATR,'',$key);
-                	if(property_exists($this, $atr)){
-                		$this->attributes[$atr] = $property;
-                	}
+            		$this->addToAttributes(str_replace(XmlIterator::ATR,'',$key), $property);
                 }
             }
-        }                                       	
+        }   
+        if(defined('_DEBUG')) print_r($this);                                    	
     }	
 	public function count() {
 		return count(get_object_vars($this));
@@ -52,7 +65,7 @@ abstract class XmlIterator implements Countable {
 		$objects = array();
 		foreach($this as $key => $value) {			
    			if($key == 'content') {
-   				$this->content = $value;
+   				$this->setContent($value);
    			} elseif(is_array($value)) {
     			$associations[$key] = $value;
     		} elseif(is_object($value)) {
@@ -83,7 +96,7 @@ abstract class XmlIterator implements Countable {
 		} else {
 			$end = " />";			
 		}
-		$stringBuffer .= $end;
+		$stringBuffer .= $end;			
 		
 		return $stringBuffer;		
 	}
@@ -163,6 +176,25 @@ function convert_datetime($str)
 {
 	//function to convert mysql timestamp to unix time
 	return strtotime( $str. ' UTC' );
+}
+
+function normalizeHtml($string){
+	if(is_string($string))
+		return htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $string));
+	else
+		return ''; 
+}
+
+function shows_compare($a, $b){
+	if(  (is_a($a,'Recorded') || is_a($a,'VideoMetadata'))  &&  (is_a($b,'Recorded') || is_a($b,'VideoMetadata'))  ){
+		$atitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title));
+		$btitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title));
+		
+		return $atitle[0] < $btitle[0] ? -1 : 1;
+	}else{
+		return 0;
+	}
+	
 }
 
 ?>
