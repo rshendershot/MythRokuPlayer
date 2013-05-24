@@ -58,8 +58,8 @@ class item extends XmlIterator {
 	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?" 
 	    		.http_build_query($parms);			
 						
-			parent::addToAttributes('sdImg', $imgUrl);
-			parent::addToAttributes('hdImg', $imgUrl);
+			$this->addToAttributes('sdImg', $imgUrl);
+			$this->addToAttributes('hdImg', $imgUrl);
 			$this->contentId = new contentId(array('content'=>$show->basename));
 			$this->contentType = new contentType(array('content'=>'TV'));
 			$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required
@@ -81,8 +81,8 @@ class item extends XmlIterator {
 	    	
 	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?image=" . rawurlencode($screenfile);
 	    		 			
-			parent::addToAttributes('sdImg', $imgUrl);
-			parent::addToAttributes('hdImg', $imgUrl);
+			$this->addToAttributes('sdImg', $imgUrl);
+			$this->addToAttributes('hdImg', $imgUrl);
 			$this->contentId = new contentId(array('content'=>$show->filename));
 			$this->contentType = new contentType(array('content'=>'Movie'));
 			$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required
