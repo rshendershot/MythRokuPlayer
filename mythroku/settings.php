@@ -18,6 +18,12 @@ $MythTVdbpass = "mythtv";       // mythtv database password
 $RokuDisplayType = "SD";	// set to the same as your Roku player under display type, HD or SD  
 $BitRate = "1500";			// bit rate of endcoded streams
 
+
+$db_connections = array(
+   'MYSQL' => "mysql://$MythTVdbuser:$MythTVdbpass@$MysqlServer/$MythTVdb"
+);
+
+
 //--- XML Proxy classes ---//
 abstract class XmlIterator implements Countable {
 	const ATR = 'attribute.'; //since PHP does not yet support annotations
@@ -103,21 +109,42 @@ abstract class XmlIterator implements Countable {
 }
 
 
+//--- Utility functions ---//
+
+function convert_datetime($str) 
+{
+	//function to convert mysql timestamp to unix time
+	return strtotime( $str. ' UTC' );
+}
+
+function normalizeHtml($string){
+	if(is_string($string))
+		return htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $string));
+	else
+		return ''; 
+}
+
+function shows_compare($a, $b){
+	if(  (is_a($a,'Recorded') || is_a($a,'VideoMetadata'))  &&  (is_a($b,'Recorded') || is_a($b,'VideoMetadata'))  ){
+		$atitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title));
+		$btitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title));
+		
+		return $atitle[0] < $btitle[0] ? -1 : 1;
+	}else{
+		return 0;
+	}	
+}
 
 //--- Active Record ORM http://www.phpactiverecord.org, requires version 20110425 or later due to DB DateTime default format ---//
 
 ActiveRecord\DateTime::$DEFAULT_FORMAT = 'db';
 
-$URL = "mysql://$MythTVdbuser:$MythTVdbpass@$MysqlServer/$MythTVdb";
-
-ActiveRecord\Config::initialize(function($cfg)
-{
-    global $URL;
-    
+ActiveRecord\Config::initialize(function($cfg) use ($db_connections)
+{    
     $cfg->set_model_directory('.');
-    $cfg->set_connections(array('PVR1' => $URL));
+    $cfg->set_connections($db_connections);
     
-    $cfg->set_default_connection('PVR1');
+    $cfg->set_default_connection('MYSQL');
 });
 
 class Recorded extends ActiveRecord\Model 
@@ -169,32 +196,4 @@ class VideoCategory extends ActiveRecord\Model
 {
     static $table_name = 'videocategory';
 }    
-
-//--- Utility functions ---//
-
-function convert_datetime($str) 
-{
-	//function to convert mysql timestamp to unix time
-	return strtotime( $str. ' UTC' );
-}
-
-function normalizeHtml($string){
-	if(is_string($string))
-		return htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $string));
-	else
-		return ''; 
-}
-
-function shows_compare($a, $b){
-	if(  (is_a($a,'Recorded') || is_a($a,'VideoMetadata'))  &&  (is_a($b,'Recorded') || is_a($b,'VideoMetadata'))  ){
-		$atitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title));
-		$btitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title));
-		
-		return $atitle[0] < $btitle[0] ? -1 : 1;
-	}else{
-		return 0;
-	}
-	
-}
-
 ?>
