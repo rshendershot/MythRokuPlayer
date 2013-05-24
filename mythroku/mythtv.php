@@ -64,18 +64,19 @@ $vid = new category(
 	)
 );
 
-//TEST
-$test_all = new categoryLeaf(
+//ALL
+$mythtv_all = new categoryLeaf(
 	array(XmlIterator::ATR.'description'=>'', XmlIterator::ATR.'title'=>'All', XmlIterator::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_all_xml.php")
 );
-$test = new category(
+$all = new category(
 	array(XmlIterator::ATR.'title'=>'All'
 		, XmlIterator::ATR.'description'=>'All Movie and TV'
 		, XmlIterator::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/mythtv_all.png"
 		, XmlIterator::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_all.png"
-		, 'categoryLeaf'=>array($test_all)
+		, 'categoryLeaf'=>array($mythtv_all)
 	)
 );
+
 //CONFIG
 $config = new categoryLeaf(
 	array(XmlIterator::ATR.'description'=>'', XmlIterator::ATR.'title'=>'Settings', XmlIterator::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv.xml")
@@ -95,7 +96,7 @@ $top = new categories(
 		array(XmlIterator::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png"
 			,XmlIterator::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png")
 		)
-		, 'category'=>array($tv, $vid, $conf, $test)
+		, 'category'=>array($tv, $vid, $conf, $all)
 	)
 );
 
