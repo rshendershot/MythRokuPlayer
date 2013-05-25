@@ -9,6 +9,7 @@ $MythBackendIP = $WebHostIP;                              // Myth Backend server
 $MythBackendPort = "6544";                                // Myth Backend services port   
 
 $MythContentSvc = "http://" . $MythBackendIP . ":" . $MythBackendPort . "/Content/";
+$MythDvrSvc = "http://" . $MythBackendIP . ":" . $MythBackendPort . "/Dvr/";
 
 $MysqlServer  = $WebHostIP;     // mysql server ip/name
 $MythTVdb     = "mythconverg";  // mythtv database name
@@ -18,14 +19,30 @@ $MythTVdbpass = "mythtv";       // mythtv database password
 $RokuDisplayType = "SD";	// set to the same as your Roku player under display type, HD or SD  
 $BitRate = "1500";			// bit rate of endcoded streams
 
+$UpcomingListLimit = 5;
 
 $db_connections = array(
    'MYSQL' => "mysql://$MythTVdbuser:$MythTVdbpass@$MysqlServer/$MythTVdb"
 );
 
-
 //--- XML Proxy classes ---//
-abstract class XmlIterator implements Countable {
+abstract class XmlInjector implements Countable {
+	public function __construct(SimpleXMLElement $xml) {
+		//if(defined('_DEBUG')) print_r($xml);
+ 
+        if(!empty($xml)) {
+        	$properties = $xml->children();
+            foreach($properties as $key => $property) {
+                $this->{$key} = (string)$property;   
+            }
+        }   
+        if(defined('_DEBUG')) print_r($this);                                  			
+	}
+	public function count() {
+		return count(get_object_vars($this));
+	}	
+}
+abstract class XmlEmitter implements Countable {
 	const ATR = 'attribute.'; //since PHP does not yet support annotations
 	private $attributes = array();
 	private $content;
@@ -54,15 +71,16 @@ abstract class XmlIterator implements Countable {
                 if(property_exists($this, $key)) {
                     $this->{$key} = $property;    
                 }else {
-            		$this->addToAttributes(str_replace(XmlIterator::ATR,'',$key), $property);
+            		$this->addToAttributes(str_replace(XmlEmitter::ATR,'',$key), $property);
                 }
             }
         }   
-        if(defined('_DEBUG')) print_r($this);                                    	
+        //if(defined('_DEBUG')) print_r($this);                                    	
     }	
 	public function count() {
 		return count(get_object_vars($this));
 	}
+	public function Value() { return $this->content; }
 	public function __toString() {	
 		$stringBuffer = "<" . get_class($this);
 		$end =	"</" . get_class($this) . ">";
@@ -124,12 +142,37 @@ function normalizeHtml($string){
 		return ''; 
 }
 
-function shows_compare($a, $b){
+function shows_title_compare($a, $b){
 	if(  (is_a($a,'Recorded') || is_a($a,'VideoMetadata'))  &&  (is_a($b,'Recorded') || is_a($b,'VideoMetadata'))  ){
-		$atitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title));
-		$btitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title));
+		$aTitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title));
+		$bTitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title));
 		
-		return $atitle[0] < $btitle[0] ? -1 : 1;
+		return $aTitle < $bTitle ? -1 : 1;
+	}else{
+		return 0;
+	}	
+}
+
+function items_title_compare($a, $b){
+	if(  is_a($a,'item') && is_a($b,'item')  ){
+		$aTitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title));
+		$bTitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title));
+		
+		return $aTitle < $bTitle ? -1 : 1;
+	}else{
+		return 0;
+	}
+}
+
+function items_date_compare($a, $b){
+	if(  is_a($a,'item') && is_a($b,'item')  ){
+		$aTime = strtotime($a->date->Value());
+		$bTime = strtotime($b->date->Value());
+		
+		if($aTime === $bTime){
+			return items_title_compare($a, $b);
+		}
+		return $aTime < $bTime ? -1 : 1;
 	}else{
 		return 0;
 	}	
