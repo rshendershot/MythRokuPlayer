@@ -38,7 +38,7 @@ Function checkServerUrl() as Void
 	'set to a default value if reg is empty
 	if (serverURL = invalid)
 		print "ServerURL not found in the registry"
-		serverURL = "http://192.168.1.130/mythweb/mythroku"
+		serverURL = "http://192.168.1.8/mythweb/mythroku"
 		RegWrite("ServerURL", serverURL)
         endif
 
@@ -51,7 +51,7 @@ Function checkServerUrl() as Void
 
 	if not xml.Parse(rsp) then
            if (serverURL = invalid) then
-		serverURL = "http://192.168.1.130/mythweb/mythroku"
+		serverURL = "http://192.168.1.8/mythweb/mythroku"
 	   else 'something has been entered but does not point to the mythroku
 		print "ServerURL invalid"
 	   endif

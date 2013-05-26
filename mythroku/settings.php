@@ -1,7 +1,7 @@
 <?php
 require_once 'php-activerecord/ActiveRecord.php';
 
-$WebHostIP = "192.168.1.130";                           // web server IP address
+$WebHostIP = "192.168.1.8";                           // web server IP address
 $WebServer = "http://" . $WebHostIP . "/mythweb";       // include path to mythweb eg, http://yourip/mythweb
 $MythRokuDir = "mythroku";                              // name of your mythroku directory in the mythweb folder
 
