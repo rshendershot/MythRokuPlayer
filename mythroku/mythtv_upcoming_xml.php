@@ -4,27 +4,40 @@ include 'player_feed.php';
 
 //const _DEBUG = 'true';
 
-$recordingSvc = "$MythDvrSvc/GetRecordedList?Count=1&Descending=true";
+$recordingSvc = "$MythDvrSvc/GetRecordedList?Descending=true";
+$upcomingSvc = "$MythDvrSvc/GetUpcomingList";
 if (isset($_GET['Count']))
-	$upcomingSvc = "$MythDvrSvc/GetUpcomingList?Count=$UpcomingListLimit";
-else
-	$upcomingSvc = "$MythDvrSvc/GetUpcomingList";
+	$upcomingSvc .= "?Count=$UpcomingListLimit";	
+$jobqueueSvc = "$localSvc/jobqueue_service.php";
 
-$upcoming = new SimpleXMLElement($upcomingSvc, NULL, TRUE);
-$recording = new SimpleXMLElement($recordingSvc, NULL, TRUE);
+$upcomingList = new SimpleXMLElement($upcomingSvc, NULL, TRUE);
+$recordingList = new SimpleXMLElement($recordingSvc, NULL, TRUE);
 
 $items = array();
-foreach($recording->xpath('//Program') as $value) {
-	$statusEl = $value->xpath('//Status');	
-	$status = (string)$statusEl[0];
-	if($status == -2){
-		$program = new Program($value);
-		$program->isRecording = true;
-		$items[] = new item($program);		
-	}  
+foreach($recordingList->xpath('//Program') as $value) {  
+	$statusEl = $value->xpath('.//Status');  
+	$programFlagsEl = $value->xpath('.//ProgramFlags');
+	$chanidEl = $value->xpath('.//ChanId');
+	$startTimeEl = $value->xpath('.//StartTime');
+	
+	$flags = (int)$programFlagsEl[0];
+	$status = (int)$statusEl[0];  
+	$chanid = (string)$chanidEl[0];
+	$starttime = (string)$startTimeEl[0];
+	
+	$parms = array('chanid'=>$chanid, 'starttime'=>$starttime);
+	$jobs = new SimpleXMLElement("$jobqueueSvc?".http_build_query($parms), NULL, TRUE);
+	$hasJob = (bool)$jobs[0];  
+
+	$program = new Program($value);
+	$program->hasJob = $hasJob;
+	$program->isRecording = ($status == -2);			
+	
+	if($program->hasJob || $program->isRecording) { 
+		$items[] = new item($program);
+	}
 }
-foreach($upcoming->xpath('//Program') as $value) {
-	//var_dump($value);
+foreach($upcomingList->xpath('//Program') as $value) {
 	$program = new Program($value);
 	$items[] = new item($program);
 }

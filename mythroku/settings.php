@@ -10,6 +10,8 @@ $MythBackendPort = "6544";                                // Myth Backend servic
 
 $MythContentSvc = "http://" . $MythBackendIP . ":" . $MythBackendPort . "/Content/";
 $MythDvrSvc = "http://" . $MythBackendIP . ":" . $MythBackendPort . "/Dvr/";
+$localSvcDir = '';
+$localSvc = "$WebServer/$MythRokuDir/$localSvcDir/";
 
 $MysqlServer  = $WebHostIP;     // mysql server ip/name
 $MythTVdb     = "mythconverg";  // mythtv database name
@@ -19,7 +21,7 @@ $MythTVdbpass = "mythtv";       // mythtv database password
 $RokuDisplayType = "SD";	// set to the same as your Roku player under display type, HD or SD  
 $BitRate = "1500";			// bit rate of endcoded streams
 
-$UpcomingListLimit = 5;
+$UpcomingListLimit = 5;     // set to the number of upcoming to show in the Top Upcoming display
 
 $db_connections = array(
    'MYSQL' => "mysql://$MythTVdbuser:$MythTVdbpass@$MysqlServer/$MythTVdb"
@@ -59,6 +61,7 @@ abstract class XmlEmitter implements Countable {
 			$this->content = $value;
 			return true;
 		}
+		//print "non-scalar value: $value";
 		return false;
 	}
 	public function __construct()
@@ -75,7 +78,7 @@ abstract class XmlEmitter implements Countable {
                 }
             }
         }   
-        //if(defined('_DEBUG')) print_r($this);                                    	
+        if(defined('_DEBUG')) print_r($this);                                    	
     }	
 	public function count() {
 		return count(get_object_vars($this));
@@ -238,5 +241,11 @@ class VideoMetadata extends ActiveRecord\Model
 class VideoCategory extends ActiveRecord\Model
 {
     static $table_name = 'videocategory';
-}    
+}   
+
+class JobQueue extends ActiveRecord\Model
+{
+	static $table_name = 'jobqueue';
+}
+ 
 ?>
