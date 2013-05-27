@@ -4,23 +4,23 @@ include_once 'player_feed.php';
 
 //const _DEBUG = 'true';
 
-if(isset($_GET['Genre'])) {
-	$select = $_GET['Genre'];
+if(isset($_GET['Group'])) {
+	$select = $_GET['Group'];
 	$SQL = <<<EOF
-select g.genre, v.* from videometadatagenre a 
-join videometadata v on v.intid = a.idvideo
-join videogenre g on g.intid = a.idgenre
+select v.*,case v.category when 0 then 'Default' else c.category end as categoryKey 
+from videometadata v left join videocategory c on c.intid = v.category
 where v.filename like '%.m%4%' 
 and v.host > ''
-and g.genre = '$select'
+having categoryKey = '$select';
 EOF;
 }
 
-if(isset($select)){
-//build feed for this specific genre	
-	error_log("selecting Genre: $select", 0);
 
-	$conditions = array('conditions' => array('basename like ? AND category=?', '%.mp4', $select));
+if(isset($select)){
+//build feed for this specific group	
+	error_log("selecting Group: $select", 0);
+
+	$conditions = array('conditions' => array('basename like ? AND playgroup=?', '%.mp4', $select));
 	$record = Recorded::all( $conditions );
 	error_log("COUNT of RECORDED: ".count($record));
 	
@@ -40,27 +40,27 @@ if(isset($select)){
 				, 'endIndex'=>new endIndex(array('content'=>count($items)))
 				, 'item'=>$items
 			)
-		);		
-	}else{
+		);
+	}else{		
 		$feed = new feed(
 			array(
 				'resultLength'=>new resultLength(array('content'=>count($items)))
 				, 'endIndex'=>new endIndex(array('content'=>count($items)))
 				, 'item'=>array(new item(new Program(new SimpleXMLElement(Program::NONE))))
 			)		
-		);				
+		);		
 	}
 	
 	print $feed;
 	
 }else{
-//build category from available genres	
+//build category from available groups	
 
-	$genre = new category(
-		array(XmlEmitter::ATR.'title'=>'Genre'
-			, XmlEmitter::ATR.'description'=>'Select a Genre'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/bookmark.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/bookmark.png"
+	$group = new category(
+		array(XmlEmitter::ATR.'title'=>'Group'
+			, XmlEmitter::ATR.'description'=>'Select a Group'
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/galleryfolder.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/galleryfolder.png"
 			, 'categoryLeaf'=>array()
 		)
 	);
@@ -68,13 +68,13 @@ if(isset($select)){
 	$menu = array();
 	$results = array();
 	
-	$rec_cat = Recorded::find_by_sql( 'select distinct category from recorded' );
+	$rec_cat = Recorded::find_by_sql( 'select distinct playgroup from recorded' );
 	foreach ( $rec_cat as $value ) {
-       $results[] = $value->category;
+       $results[] = $value->playgroup;
 	}	
-	$vid_genre = VideoMetadata::find_by_sql( 'select genre from videogenre' );
+	$vid_genre = VideoCategory::find_by_sql( 'select category from videocategory' );
 	foreach ( $vid_genre as $value ) {
-    	$results[] = $value->genre;   
+    	$results[] = $value->category;   
 	}	
 	asort($results);
 	$results = array_unique($results);
@@ -82,13 +82,13 @@ if(isset($select)){
 	foreach ( $results as $value ) {
     	$menu[] = new categoryLeaf( 
     		array(XmlEmitter::ATR.'title'=>$value
-    		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_genre_xml.php?Genre=$value") 
+    		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_group_xml.php?Group=$value") 
     	);   
 	}
 
-	$genre->categoryLeaf = $menu;
+	$group->categoryLeaf = $menu;
 
-	return $genre;
+	return $group;
 }
 
 ?>

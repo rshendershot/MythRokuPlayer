@@ -1,9 +1,9 @@
 <?php
 require_once 'settings.php';
 
-
 // MythTV Services API classes
 class Program extends XmlInjector{
+	const NONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
 	public $isRecording = false;
 	public $hasJob = false;
 }
@@ -64,7 +64,7 @@ class item extends XmlEmitter {
 	public $delcommand;
 	public $starrating;
 	
-	public function __construct($show){
+	public function __construct($show){			
 		$WebServer = $GLOBALS['WebServer'];
 		$MythRokuDir = $GLOBALS['MythRokuDir'];
 		$RokuDisplayType = $GLOBALS['RokuDisplayType'];
@@ -164,7 +164,7 @@ class item extends XmlEmitter {
 			$this->tvormov = new tvormov(array('content'=>'movie'));
 			$this->starrating = new starrating(array('content'=>$show->userrating * 10));
 		}else{
-			parent::__construct();
+			parent::__construct($show);
 		}				
 	}	
 }

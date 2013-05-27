@@ -78,7 +78,7 @@ abstract class XmlEmitter implements Countable {
                 }
             }
         }   
-        if(defined('_DEBUG')) print_r($this);                                    	
+        //if(defined('_DEBUG')) print_r($this);                                    	
     }	
 	public function count() {
 		return count(get_object_vars($this));

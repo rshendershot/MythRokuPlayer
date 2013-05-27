@@ -56,6 +56,7 @@ $vid = new category(
 );
 
 //GROUP  (recorded.playgroup and videometadata.category which are both user defined)
+include 'mythtv_group_xml.php';
 
 //GENRE  (recorded.category and videometadatagenre[videometadata 1-* videogenre] which are both supplied by feeds)
 include 'mythtv_genre_xml.php';
@@ -108,7 +109,7 @@ $top = new categories(
 		array(XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png"
 			,XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png")
 		)
-		, 'category'=>array($tv, $vid, $conf, $genre, $all, $upcoming)
+		, 'category'=>array($tv, $vid, $conf, $group, $genre, $all, $upcoming)
 	)
 );
 
