@@ -1,10 +1,47 @@
 <?php
 require_once 'settings.php';
 
+
+// MythTV Services API classes
 class Program extends XmlInjector{
 	public $isRecording = false;
 	public $hasJob = false;
 }
+
+// MythRokuPlayer menu classes
+class categories extends XmlEmitter {
+	public $banner_ad; //attribute
+	public $category = array();	
+}
+class banner_ad extends XmlEmitter {
+	public $sd_img; //attribute
+	public $hd_img; //attribute
+}
+class category extends XmlEmitter {
+	public $title; //attribute
+	public $description; //attribute
+	public $sd_img; //attribute
+	public $hd_img; //attribute
+	public $categoryLeaf = array();
+}
+class categoryLeaf extends XmlEmitter {
+	public $title; //attribute
+	public $description; //attribute
+	public $feed; //attribute
+	
+	public function __construct(){
+		$arguments = func_get_args();
+		
+		// the player UI dies if category leaf has null value for description attribute, so fix it -RSH
+		if (!array_key_exists(XmlEmitter::ATR.'description', $arguments[0])) {
+			$arguments[0][XmlEmitter::ATR.'description'] = '';			
+		}
+		
+		parent::__construct($arguments[0]);
+	}
+}
+
+// MythRokuPlayer menu selection (feed) classes
 class feed extends XmlEmitter {
 	public $resultLength;  //value
 	public $endIndex;  //value

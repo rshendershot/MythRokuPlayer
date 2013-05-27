@@ -5,14 +5,13 @@ include 'player_feed.php';
 //const _DEBUG = 'true';
 
 $select = array('select' => '*, case title regexp \'^The \' when 1 then SUBSTRING(title,5) else title end as titleSortkey');
-$conditions = array('conditions' => array('basename like ? ', '%.mp4'));
 $order = array('order' => 'titleSortkey ASC');
+
+$conditions = array('conditions' => array('basename like ? ', '%.mp4'));
 $record = Recorded::all( array_merge($select, $conditions, $order) );
 
-
 $conditions = array('conditions' => array('filename like ? AND host > ?', '%.m%4%', ''));
-$order = array('order' => 'title ASC');
-$video = VideoMetadata::all( array_merge($conditions, $order) );
+$video = VideoMetadata::all( array_merge($select, $conditions, $order) );
 
 $items = array();
 $shows = array_values(array_merge($record, $video));
@@ -29,5 +28,5 @@ $feed = new feed(
 	)
 );
 
-print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" . $feed ."\n";
+print $feed;
 ?>

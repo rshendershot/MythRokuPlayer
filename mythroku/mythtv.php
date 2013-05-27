@@ -2,58 +2,49 @@
 require_once 'settings.php';
 include 'player_feed.php';
 
-class categories extends XmlEmitter {
-	public $banner_ad; //attribute
-	public $category = array();	
-}
-class banner_ad extends XmlEmitter {
-	public $sd_img; //attribute
-	public $hd_img; //attribute
-}
-class category extends XmlEmitter {
-	public $title; //attribute
-	public $description; //attribute
-	public $sd_img; //attribute
-	public $hd_img; //attribute
-	public $categoryLeaf = array();
-}
-class categoryLeaf extends XmlEmitter {
-	public $title; //attribute
-	public $description; //attribute
-	public $feed; //attribute
-}
-
 //TV
 $tv_date = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'Date', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=date")
-);
-$tv_genre = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'Genre', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=genre")
+	array(XmlEmitter::ATR.'description'=>'some description', XmlEmitter::ATR.'title'=>'Date', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=date")
 );
 $tv_title = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'Title', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=title")
+	array(XmlEmitter::ATR.'title'=>'Title', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=title")
+);
+$tv_special = new categoryLeaf(
+	array(XmlEmitter::ATR.'title'=>'Special', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=special")
+);
+$tv_political = new categoryLeaf(
+	array(XmlEmitter::ATR.'title'=>'Political', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=political")
+);
+$tv_ed = new categoryLeaf(
+	array(XmlEmitter::ATR.'title'=>'Educational', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=education")
+);
+$tv_movies = new categoryLeaf(
+	array(XmlEmitter::ATR.'title'=>'Movies', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=movies")
 );
 $tv_channel = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'Channel', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=channel")
+	array(XmlEmitter::ATR.'title'=>'Channel', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=channel")
 );
 $tv_group = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'Group', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=group")
+	array(XmlEmitter::ATR.'title'=>'Group', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=playgroup")
+);
+$tv_todo = new categoryLeaf(
+	array(XmlEmitter::ATR.'title'=>'ToDo', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=todo")
 );
 $tv = new category(
 	array(XmlEmitter::ATR.'title'=>'TV'
 		, XmlEmitter::ATR.'description'=>'Television'
 		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/Mythtv_tv.png"
 		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/Mythtv_tv.png"
-		, 'categoryLeaf'=>array($tv_date, $tv_genre, $tv_title, $tv_channel, $tv_group)
+		, 'categoryLeaf'=>array($tv_date, $tv_title, $tv_special, $tv_political, $tv_ed, $tv_movies, $tv_channel, $tv_group, $tv_todo)
 	)
 );
 
 //VID
 $vid_date = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'Date', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_movies_xml.php?sort=date")
+	array(XmlEmitter::ATR.'title'=>'Date', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_movies_xml.php?sort=date")
 );
 $vid_title = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'Title', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_movies_xml.php?sort=title")
+	array(XmlEmitter::ATR.'title'=>'Title', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_movies_xml.php?sort=title")
 );
 $vid = new category(
 	array(XmlEmitter::ATR.'title'=>'VID'
@@ -66,7 +57,7 @@ $vid = new category(
 
 //ALL
 $mythtv_all = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'All', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_all_xml.php")
+	array(XmlEmitter::ATR.'title'=>'All', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_all_xml.php")
 );
 $all = new category(
 	array(XmlEmitter::ATR.'title'=>'All'
@@ -79,10 +70,10 @@ $all = new category(
 
 //UPCOMING
 $mythtv_upcoming_all = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'All', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_upcoming_xml.php")
+	array(XmlEmitter::ATR.'title'=>'All', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_upcoming_xml.php")
 );
 $mythtv_upcoming_top = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>"Top $UpcomingListLimit", XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_upcoming_xml.php?Count=$UpcomingListLimit")
+	array(XmlEmitter::ATR.'title'=>"Top $UpcomingListLimit", XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_upcoming_xml.php?Count=$UpcomingListLimit")
 );
 $upcoming = new category(
 	array(XmlEmitter::ATR.'title'=>'Upcoming'
@@ -95,7 +86,7 @@ $upcoming = new category(
 
 //CONFIG
 $config = new categoryLeaf(
-	array(XmlEmitter::ATR.'description'=>'', XmlEmitter::ATR.'title'=>'Settings', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv.xml")
+	array(XmlEmitter::ATR.'title'=>'Settings', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv.xml")
 );
 $conf = new category(
 	array(XmlEmitter::ATR.'title'=>'Settings'
@@ -116,5 +107,5 @@ $top = new categories(
 	)
 );
 
-print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" . $top ."\n";
+print $top;
 ?>
