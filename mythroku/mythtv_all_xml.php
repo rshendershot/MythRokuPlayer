@@ -1,6 +1,6 @@
 <?php
 require_once 'settings.php';
-include 'player_feed.php';
+include_once 'player_feed.php';
 
 //const _DEBUG = 'true';
 

@@ -1,6 +1,6 @@
 <?php
 require_once 'settings.php';
-include 'player_feed.php';
+include_once 'player_feed.php';
 
 //TV
 $tv_date = new categoryLeaf(
@@ -55,6 +55,11 @@ $vid = new category(
 	)
 );
 
+//GROUP  (recorded.playgroup and videometadata.category which are both user defined)
+
+//GENRE  (recorded.category and videometadatagenre[videometadata 1-* videogenre] which are both supplied by feeds)
+include 'mythtv_genre_xml.php';
+
 //ALL
 $mythtv_all = new categoryLeaf(
 	array(XmlEmitter::ATR.'title'=>'All', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_all_xml.php")
@@ -103,7 +108,7 @@ $top = new categories(
 		array(XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png"
 			,XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png")
 		)
-		, 'category'=>array($tv, $vid, $conf, $all, $upcoming)
+		, 'category'=>array($tv, $vid, $conf, $genre, $all, $upcoming)
 	)
 );
 
