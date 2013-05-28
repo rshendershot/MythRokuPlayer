@@ -5,7 +5,7 @@ include_once 'player_feed.php';
 //const _DEBUG = 'true';
 
 if(isset($_GET['Group'])) {
-	$select = $_GET['Group'];
+	$select = rawurldecode($_GET['Group']);
 	$SQL = <<<EOF
 select v.*,case v.category when 0 then 'Default' else c.category end as categoryKey 
 from videometadata v left join videocategory c on c.intid = v.category
@@ -80,9 +80,10 @@ if(isset($select)){
 	$results = array_unique($results);
 
 	foreach ( $results as $value ) {
+		$parms = array('Group'=>rawurlencode($value));
     	$menu[] = new categoryLeaf( 
     		array(XmlEmitter::ATR.'title'=>$value
-    		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_group_xml.php?Group=$value") 
+    		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_group_xml.php?".http_build_query($parms))  
     	);   
 	}
 

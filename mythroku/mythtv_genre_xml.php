@@ -5,7 +5,7 @@ include_once 'player_feed.php';
 //const _DEBUG = 'true';
 
 if(isset($_GET['Genre'])) {
-	$select = $_GET['Genre'];
+	$select = rawurldecode($_GET['Genre']);
 	$SQL = <<<EOF
 select g.genre, v.* from videometadatagenre a 
 join videometadata v on v.intid = a.idvideo
@@ -80,9 +80,10 @@ if(isset($select)){
 	$results = array_unique($results);
 
 	foreach ( $results as $value ) {
+		$parms = array('Genre'=>rawurlencode($value)); 
     	$menu[] = new categoryLeaf( 
     		array(XmlEmitter::ATR.'title'=>$value
-    		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_genre_xml.php?Genre=$value") 
+    		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_genre_xml.php?".http_build_query($parms)) 
     	);   
 	}
 
