@@ -29,10 +29,11 @@ if(isset($select)){
 	
 	$items = array();
 	$shows = array_values(array_merge($record, $video));
-	usort($shows, 'shows_title_compare');
 	foreach($shows as $item => $show ){
 		$items[] = new item($show);
 	}
+	usort($items, 'items_title_compare');
+	
 	if(count($items)){
 		$feed = new feed(
 			array(

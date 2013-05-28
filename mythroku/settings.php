@@ -145,22 +145,15 @@ function normalizeHtml($string){
 		return ''; 
 }
 
-function shows_title_compare($a, $b){
-	if(  (is_a($a,'Recorded') || is_a($a,'VideoMetadata'))  &&  (is_a($b,'Recorded') || is_a($b,'VideoMetadata'))  ){
-		$aTitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title));
-		$bTitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title));
-		
-		return $aTitle < $bTitle ? -1 : 1;
-	}else{
-		return 0;
-	}	
-}
-
 function items_title_compare($a, $b){
 	if(  is_a($a,'item') && is_a($b,'item')  ){
-		$aTitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title));
-		$bTitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title));
+		$aTitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title->Value()));
+		$bTitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title->Value()));
 		
+		if($aTitle === $bTitle){  //int compared to $ is true always so use compare identical strict operator, even tho type is already checked. 
+			return items_date_compare($a, $b);
+		}
+				
 		return $aTitle < $bTitle ? -1 : 1;
 	}else{
 		return 0;
@@ -170,11 +163,8 @@ function items_title_compare($a, $b){
 function items_date_compare($a, $b){
 	if(  is_a($a,'item') && is_a($b,'item')  ){
 		$aTime = strtotime($a->date->Value());
-		$bTime = strtotime($b->date->Value());
-		
-		if($aTime === $bTime){
-			return items_title_compare($a, $b);
-		}
+		$bTime = strtotime($b->date->Value());		
+
 		return $aTime < $bTime ? -1 : 1;
 	}else{
 		return 0;
