@@ -61,6 +61,9 @@ include 'mythtv_group_xml.php';
 //GENRE  (recorded.category and videometadatagenre[videometadata 1-* videogenre] which are both supplied by feeds)
 include 'mythtv_genre_xml.php';
 
+//DATE  (videometadata insertdate or releasedate as starttime, recorded starttime  DESC)
+include 'mythtv_date_xml.php'; 
+
 //ALL
 $mythtv_all = new categoryLeaf(
 	array(XmlEmitter::ATR.'title'=>'All', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_all_xml.php")
@@ -84,8 +87,8 @@ $mythtv_upcoming_top = new categoryLeaf(
 $upcoming = new category(
 	array(XmlEmitter::ATR.'title'=>'Upcoming'
 		, XmlEmitter::ATR.'description'=>'Scheduled Recordings'
-		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/mythtv_scheduled.png"
-		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_scheduled.png"
+		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/event_viewer.png"
+		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/event_viewer.png"
 		, 'categoryLeaf'=>array($mythtv_upcoming_top, $mythtv_upcoming_all)
 	)
 );
@@ -109,7 +112,7 @@ $top = new categories(
 		array(XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png"
 			,XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png")
 		)
-		, 'category'=>array($tv, $vid, $conf, $group, $genre, $all, $upcoming)
+		, 'category'=>array($date, $upcoming, $conf, $group, $genre)
 	)
 );
 
