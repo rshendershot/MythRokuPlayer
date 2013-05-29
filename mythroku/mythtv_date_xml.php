@@ -6,6 +6,7 @@ include_once 'player_feed.php';
 
 if(isset($_GET['Date'])) {
 	$select = rawurldecode($_GET['Date']);
+}
 
 if(isset($select)){
 //build feed for this specific date set
