@@ -6,13 +6,6 @@ include_once 'player_feed.php';
 
 if(isset($_GET['Date'])) {
 	$select = rawurldecode($_GET['Date']);
-	$SQL = <<<EOF
-select *, case releasedate when (releasedate is null) then insertdate else releasedate end as starttime 
-from videometadata
-where filename like '%.m%4%' 
-and host > ''
-EOF;
-}
 
 if(isset($select)){
 //build feed for this specific date set
