@@ -149,7 +149,7 @@ function convert_datetime_utc($str)
 	return strtotime( $str. ' UTC' );
 }
 
-function convert_datetime_pre( $str ) //mythtv  0.26
+function convert_datetime_pre( $str ) //mythtv  0.25
 {
     list($date, $time)            = explode(' ', $str);
     list($year, $month,  $day)    = explode('-', $date);
