@@ -1,6 +1,8 @@
 <?php
 require_once 'php-activerecord/ActiveRecord.php';
 
+const UseUTC = 'true';  //for MythTV version 0.26 and onward this should be true.
+
 $WebHostIP = "192.168.1.130";                           // web server IP address
 $WebServer = "http://" . $WebHostIP . "/mythweb";       // include path to mythweb eg, http://yourip/mythweb
 $MythRokuDir = "mythroku";                              // name of your mythroku directory in the mythweb folder
@@ -132,10 +134,32 @@ abstract class XmlEmitter implements Countable {
 
 //--- Utility functions ---//
 
-function convert_datetime($str) 
+function convert_datetime($str)
+{
+	if(UseUTC)
+		return convert_datetime_utc($str);
+	else
+		return convert_datetime_pre($str);
+		
+}
+
+function convert_datetime_utc($str) 
 {
 	//function to convert mysql timestamp to unix time
 	return strtotime( $str. ' UTC' );
+}
+
+function convert_datetime_pre( $str ) //mythtv < 0.26
+{
+    list($date, $time)            = explode(' ', $str);
+    list($year, $month,  $day)    = explode('-', $date);
+    list($hour, $minute, $second) = explode(':', $time);
+
+    if ( 0 == $year  ) { $year  = 1900; }
+    if ( 0 == $month ) { $month = 1;    }
+    if ( 0 == $day   ) { $day   = 1;    }
+
+    return mktime($hour, $minute, $second, $month, $day, $year);
 }
 
 function normalizeHtml($string){
@@ -236,6 +260,11 @@ class VideoCategory extends ActiveRecord\Model
 class JobQueue extends ActiveRecord\Model
 {
 	static $table_name = 'jobqueue';
+}
+ 
+class MythSettings extends ActiveRecord\Model
+{
+	static $table_name = 'settings';
 }
  
 ?>
