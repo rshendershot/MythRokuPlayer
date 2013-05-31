@@ -13,6 +13,10 @@ if(isset(  $_GET['chanid']  ))
 if(isset(  $_GET['starttime']  ))
 	$starttime = str_replace('Z','',str_replace('T',' ',$_GET['starttime']));	
 
+error_log("jobqueue_service:  chanid:$chanid:starttime:$starttime:", 0);
+//TODO refactor to use mythconverg.inuseprograms where recusage = 'jobqueue'
+
+
     $SQL = <<<EOF
 SELECT J.status FROM jobqueue J
 JOIN (
@@ -35,7 +39,9 @@ EOF;
 
 $jobs = new Jobs(
 	array(
-		'content'=>( count(JobQueue::find_by_sql($SQL))>0 )
+		'content'=>( 
+			count(JobQueue::find_by_sql($SQL))>0 ? true:false
+		)
 	)
 );
 
