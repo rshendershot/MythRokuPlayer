@@ -23,7 +23,7 @@ $MythTVdbpass = "mythtv";       // mythtv database password
 $RokuDisplayType = "SD";	// set to the same as your Roku player under display type, HD or SD  
 $BitRate = "1500";			// bit rate of endcoded streams
 
-$UpcomingListLimit = 5;     // set to the number of upcoming to show in the Top Upcoming display
+$UpcomingListLimit = 5;     // set to the number of upcoming to show in the Top Upcoming and Weather Forecaset display
 
 $City = 'District of Columbia';
 $State = '';
@@ -137,6 +137,19 @@ abstract class XmlEmitter implements Countable {
 
 
 //--- Utility functions ---//
+
+function convert_date( $date )
+{
+    list($year, $month, $day) = explode('-', $date);
+
+    if ( 0 == $year  ) { $year  = 1900; }
+    if ( 0 == $month ) { $month = 1;    }
+    if ( 0 == $day   ) { $day   = 1;    }
+
+    $timestamp = mktime(0, 0, 0, $month, $day, $year);
+
+    return $timestamp;
+}
 
 function convert_datetime($str)
 {
