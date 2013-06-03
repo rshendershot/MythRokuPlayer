@@ -14,10 +14,8 @@ where v.filename like '%.m%4%'
 and v.host > ''
 and g.genre = '$select'
 EOF;
-}
 
-if(isset($select)){
-//build feed for this specific genre	
+	//build feed for this specific genre	
 	error_log("selecting Genre: $select", 0);
 
 	$conditions = array('conditions' => array('basename like ? AND category=?', '%.mp4', $select));
@@ -55,7 +53,7 @@ if(isset($select)){
 	print $feed;
 	
 }else{
-//build category from available genres	
+	//build category from available genres	
 
 	$genre = new category(
 		array(XmlEmitter::ATR.'title'=>'Genre'

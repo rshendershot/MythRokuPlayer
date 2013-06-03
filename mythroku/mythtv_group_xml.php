@@ -13,11 +13,8 @@ where v.filename like '%.m%4%'
 and v.host > ''
 having categoryKey = '$select';
 EOF;
-}
 
-
-if(isset($select)){
-//build feed for this specific group	
+	//build feed for this specific group	
 	error_log("selecting Group: $select", 0);
 
 	$conditions = array('conditions' => array('basename like ? AND playgroup=?', '%.mp4', $select));
@@ -55,7 +52,7 @@ if(isset($select)){
 	print $feed;
 	
 }else{
-//build category from available groups	
+	//build category from available groups	
 
 	$group = new category(
 		array(XmlEmitter::ATR.'title'=>'Group'

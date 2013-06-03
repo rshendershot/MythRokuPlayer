@@ -6,10 +6,8 @@ include_once 'player_feed.php';
 
 if(isset($_GET['Date'])) {
 	$select = rawurldecode($_GET['Date']);
-}
 
-if(isset($select)){
-//build feed for this specific date set
+	//build feed for this specific date set
 	error_log("selecting Date: $select", 0);
 	
 	//build date range
@@ -63,7 +61,7 @@ if(isset($select)){
 	print $feed;
 
 }else{
-//build category static groupings: Week, Month, Year, All	
+//	build category static groupings: Week, Month, Year, All	
 	$date = new category(
 		array(XmlEmitter::ATR.'title'=>'Date'
 			, XmlEmitter::ATR.'description'=>'Select a Date'

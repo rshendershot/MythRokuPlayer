@@ -25,6 +25,10 @@ $BitRate = "1500";			// bit rate of endcoded streams
 
 $UpcomingListLimit = 5;     // set to the number of upcoming to show in the Top Upcoming display
 
+$City = 'District of Columbia';
+$State = '';
+$Country = 'USA';
+
 $db_connections = array(
    'MYSQL' => "mysql://$MythTVdbuser:$MythTVdbpass@$MysqlServer/$MythTVdb"
 );
@@ -32,7 +36,7 @@ $db_connections = array(
 //--- XML Proxy classes ---//
 abstract class XmlInjector implements Countable {
 	public function __construct(SimpleXMLElement $xml) {
-		//if(defined('_DEBUG')) print_r($xml);
+		if(defined('_DEBUG')) print_r($xml);
  
         if(!empty($xml)) {
         	$properties = $xml->children();

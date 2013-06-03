@@ -6,10 +6,8 @@ include_once 'player_feed.php';
 
 if(isset($_GET['Upcoming'])) {
 	$select = rawurldecode($_GET['Upcoming']);	
-}
 
-if(isset($select)){
-//build feed for this specific group	
+	//build feed for this specific group	
 	error_log("selecting Upcoming: $select", 0);
 
 	$jobqueueSvc = "$localSvc/jobqueue_service.php";	
@@ -62,7 +60,7 @@ if(isset($select)){
 	print $feed;
 	
 }else{
-//build category from available groups	
+	//build category from available groups	
 
 	$upcoming = new category(
 		array(XmlEmitter::ATR.'title'=>'Upcoming'

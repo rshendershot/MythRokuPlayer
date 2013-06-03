@@ -67,6 +67,9 @@ include 'mythtv_date_xml.php';
 //UPCOMING
 include 'mythtv_upcoming_xml.php';
 
+//WEATHER
+include 'mythtv_weather_xml.php';
+
 //CONFIG
 $config = new categoryLeaf(
 	array(XmlEmitter::ATR.'title'=>'Settings', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv.xml")
@@ -99,7 +102,14 @@ $top = new categories(
 		array(XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png"
 			,XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png")
 		)
-		, 'category'=>array($date, $upcoming, $conf, $group, $genre)
+		, 'category'=>array(
+			$date
+			, $upcoming
+			, $conf  //-- This MUST be the third item.  The UI references it (2) by zero-based index. --//
+			, $weather
+			, $group
+			, $genre
+		)
 	)
 );
 

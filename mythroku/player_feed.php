@@ -1,6 +1,9 @@
 <?php
 require_once 'settings.php';
 
+// Weather API classes
+class Weather extends XmlInjector {}
+
 // MythTV Services API classes
 class Program extends XmlInjector{
 	const NONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
@@ -78,7 +81,28 @@ class item extends XmlEmitter {
 				, 'streamUrl'=>new streamUrl()
 			)
 		);
-		if(is_a($show,'Program')){
+		if(is_a($show,'Weather')){
+			$ShowLength = 0;
+			$title = "$show->Location,  $show->Temperature";
+			$subtitle = "$show->Conditions, $show->WindSpeed, $show->WindDirection, $show->Clouds";
+			$synopsis = "$subtitle $show->Source";
+
+			$this->title = new title(array('content'=>$title)); 
+			$this->contentQuality = new contentQuality(array('content'=>$RokuDisplayType));
+			$this->subtitle = new subtitle(array('content'=>$subtitle));
+			$this->addToAttributes('sdImg', "http://openweathermap.org/img/w/$show->Icon");
+			$this->addToAttributes('hdImg', "http://openweathermap.org/img/w/$show->Icon");
+			$this->contentId = new contentId(array('content'=>$show->Location));
+			//$this->contentType = new contentType(array('content'=>'TV'));
+			//$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required
+			
+			$this->synopsis = new synopsis(array('content'=>$synopsis));
+			$this->genres = new genres(array('content'=>$show->Temperature));
+			$this->runtime = new runtime(array('content'=>0));
+						
+			$this->date = new date(array('content'=>date("F j, Y, g:i a", convert_datetime($show->AsOf))));
+			$this->tvormov = new tvormov(array('content'=>'weather'));
+		}elseif(is_a($show,'Program')){
 			/// MythTV Program schema
 			
 			$ShowLength = convert_datetime($show->EndTime) - convert_datetime($show->StartTime);
