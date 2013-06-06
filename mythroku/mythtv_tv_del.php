@@ -18,7 +18,7 @@ if (isset($_GET['basename']))
         
         $fname = $recording->storagegroups->dirname . strtok($recording->basename, "."); 
         foreach(glob($fname . "*") as $file){
-            error_log( "here we delete $file from the filesyste.", 0 ); 
+            error_log( "here we delete $file from the filesystem.", 0 ); 
             unlink($file);
         }
     }

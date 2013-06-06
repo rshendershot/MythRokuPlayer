@@ -16,79 +16,88 @@ if(isset($_GET['Weather'])) {
 	$weatherList = new SimpleXMLElement($weatherSvc, NULL, TRUE);
 	//print $weatherList->asXML(); return;
 	
-	$items = array();
-	foreach($weatherList->xpath('//current') as $value) {
-		$nameEl = $value->xpath('//city/@name');  
-		$tempEl = $value->xpath('//temperature/@value');
-		$iconEl = $value->xpath('//weather/@icon');
-		$conditionsEl = $value->xpath('//weather/@value');
-		$windspeadEl = $value->xpath('//wind/speed/@name');
-		$winddirectionEl = $value->xpath('//wind/direction/@code');
-		$cloudsEl = $value->xpath('//clouds/@name');
-		
-		$asofEl = $value->xpath('//lastupdate/@value');
-		
-		$temp = round((float)$tempEl[0]);
-		
-		$weatherTpl = new SimpleXMLElement('<Weather/>');
-		$weatherTpl->addChild('Location', (string)$nameEl[0]);
-		$weatherTpl->addChild('Temperature', $temp.' F.');
-		$weatherTpl->addChild('Icon', (string)$iconEl[0]);
-		$weatherTpl->addChild('Conditions', (string)$conditionsEl[0]);
-		$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
-		$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
-		$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
-		$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
-		$weatherTpl->addChild('Source', 'Provided by http://openweathermap.org/');
-		
-		$current = new Weather($weatherTpl);
-		
-		$items[] = new item($current);
-	}
-	foreach($weatherList->xpath('//forecast/time') as $value) {
-		$nameEl = $value->xpath('//location/name');  
-		$tempMaxEl = $value->xpath('.//temperature/@max');
-		$tempMinEl = $value->xpath('.//temperature/@min');
-		$iconEl = $value->xpath('.//symbol/@var');
-		$conditionsEl = $value->xpath('.//precipitation/@type');
-		$windspeadEl = $value->xpath('.//windSpeed/@name');
-		$winddirectionEl = $value->xpath('.//windDirection/@code');
-		$cloudsEl = $value->xpath('.//clouds/@value');
-		
-		$asofEl = $value->xpath('.//@day');
-		
-		$tempMax = round((float)$tempMaxEl[0]);
-		$tempMin = round((float)$tempMinEl[0]);
-		
-		$conditions = (string)$conditionsEl[0];
-		$precip = (empty($conditions) ? 'No Precipitation' : $conditions);
-		
-		$weatherTpl = new SimpleXMLElement('<Weather/>');
-		$weatherTpl->addChild('Location', (string)$nameEl[0]);
-		$weatherTpl->addChild('Temperature', "$tempMin...$tempMax F.");
-		$weatherTpl->addChild('Icon', (string)$iconEl[0]);
-		$weatherTpl->addChild('Conditions', ucwords($precip));
-		$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
-		$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
-		$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
-		$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
-		$weatherTpl->addChild('Source', 'Provided by http://openweathermap.org/');
-		
-		$current = new Weather($weatherTpl);
-		
-		$items[] = new item($current);		
+	if(!empty($weatherList)){
+		$items = array();
+		foreach($weatherList->xpath('//current') as $value) {
+			$nameEl = $value->xpath('//city/@name');  
+			$tempEl = $value->xpath('//temperature/@value');
+			$iconEl = $value->xpath('//weather/@icon');
+			$conditionsEl = $value->xpath('//weather/@value');
+			$windspeadEl = $value->xpath('//wind/speed/@name');
+			$winddirectionEl = $value->xpath('//wind/direction/@code');
+			$cloudsEl = $value->xpath('//clouds/@name');
+			
+			$asofEl = $value->xpath('//lastupdate/@value');
+			
+			$temp = round((float)$tempEl[0]);
+			
+			$weatherTpl = new SimpleXMLElement('<Weather/>');
+			$weatherTpl->addChild('Location', (string)$nameEl[0]);
+			$weatherTpl->addChild('Temperature', $temp.' F.');
+			$weatherTpl->addChild('Icon', (string)$iconEl[0]);
+			$weatherTpl->addChild('Conditions', (string)$conditionsEl[0]);
+			$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
+			$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
+			$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
+			$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+			$weatherTpl->addChild('Source', 'Provided by http://openweathermap.org/');
+			
+			$current = new Weather($weatherTpl);
+			
+			$items[] = new item($current);
+		}
+		foreach($weatherList->xpath('//forecast/time') as $value) {
+			$nameEl = $value->xpath('//location/name');  
+			$tempMaxEl = $value->xpath('.//temperature/@max');
+			$tempMinEl = $value->xpath('.//temperature/@min');
+			$iconEl = $value->xpath('.//symbol/@var');
+			$conditionsEl = $value->xpath('.//precipitation/@type');
+			$windspeadEl = $value->xpath('.//windSpeed/@name');
+			$winddirectionEl = $value->xpath('.//windDirection/@code');
+			$cloudsEl = $value->xpath('.//clouds/@value');
+			
+			$asofEl = $value->xpath('.//@day');
+			
+			$tempMax = round((float)$tempMaxEl[0]);
+			$tempMin = round((float)$tempMinEl[0]);
+			
+			$conditions = (string)$conditionsEl[0];
+			$precip = (empty($conditions) ? 'No Precipitation' : $conditions);
+			
+			$weatherTpl = new SimpleXMLElement('<Weather/>');
+			$weatherTpl->addChild('Location', (string)$nameEl[0]);
+			$weatherTpl->addChild('Temperature', "$tempMin...$tempMax F.");
+			$weatherTpl->addChild('Icon', (string)$iconEl[0]);
+			$weatherTpl->addChild('Conditions', ucwords($precip));
+			$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
+			$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
+			$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
+			$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+			$weatherTpl->addChild('Source', 'Provided by http://openweathermap.org/');
+			
+			$current = new Weather($weatherTpl);
+			
+			$items[] = new item($current);		
+		}
+		usort($items, 'items_date_compare');
+
+		$feed = new feed(
+			array(
+				'resultLength'=>new resultLength(array('content'=>count($items)))
+				, 'endIndex'=>new endIndex(array('content'=>count($items)))
+				, 'item'=>$items
+			)
+		);	
+	}else{
+		$feed = new feed(
+			array(
+				'resultLength'=>new resultLength(array('content'=>count($items)))
+				, 'endIndex'=>new endIndex(array('content'=>count($items)))
+				, 'item'=>array(new item(new Program(new SimpleXMLElement(Program::rsEMPTY))))
+			)		
+		);				
 	}
 
-	usort($items, 'items_date_compare');
-	
-	$feed = new feed(
-		array(
-			'resultLength'=>new resultLength(array('content'=>count($items)))
-			, 'endIndex'=>new endIndex(array('content'=>count($items)))
-			, 'item'=>$items
-		)
-	);	
-	
 	print $feed;
 	
 }else{

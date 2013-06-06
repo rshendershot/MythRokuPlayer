@@ -49,13 +49,23 @@ if(isset($_GET['Upcoming'])) {
 	}
 	usort($items, 'items_date_compare');
 	
-	$feed = new feed(
-		array(
-			'resultLength'=>new resultLength(array('content'=>count($items)))
-			, 'endIndex'=>new endIndex(array('content'=>count($items)))
-			, 'item'=>$items
-		)
-	);	
+	if(count($items)){
+		$feed = new feed(
+			array(
+				'resultLength'=>new resultLength(array('content'=>count($items)))
+				, 'endIndex'=>new endIndex(array('content'=>count($items)))
+				, 'item'=>$items
+			)
+		);
+	}else{
+		$feed = new feed(
+			array(
+				'resultLength'=>new resultLength(array('content'=>count($items)))
+				, 'endIndex'=>new endIndex(array('content'=>count($items)))
+				, 'item'=>array(new item(new Program(new SimpleXMLElement(Program::rsNONE))))
+			)		
+		);		
+	}	
 	
 	print $feed;
 	

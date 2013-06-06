@@ -6,7 +6,8 @@ class Weather extends XmlInjector {}
 
 // MythTV Services API classes
 class Program extends XmlInjector{
-	const NONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
+	const rsNONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
+	const rsEMPTY = '<Program><Title>Service returned nothing.</Title><Description>Data from the service was empty.  Please try again later.</Description></Program>';
 	public $isRecording = false;
 	public $hasJob = false;
 }

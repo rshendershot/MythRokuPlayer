@@ -53,7 +53,7 @@ if(isset($_GET['Date'])) {
 			array(
 				'resultLength'=>new resultLength(array('content'=>count($items)))
 				, 'endIndex'=>new endIndex(array('content'=>count($items)))
-				, 'item'=>array(new item(new Program(new SimpleXMLElement(Program::NONE))))
+				, 'item'=>array(new item(new Program(new SimpleXMLElement(Program::rsNONE))))
 			)		
 		);		
 	}	
