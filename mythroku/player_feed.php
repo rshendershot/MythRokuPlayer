@@ -182,7 +182,7 @@ class item extends XmlEmitter {
 			$this->contentType = new contentType(array('content'=>'Movie'));
 			$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required
 			$this->synopsis = new synopsis(array('content'=>normalizeHtml($show->plot)));
-			$this->genres = new genres(array('content'=>normalizeHtml($category->category)));
+			$this->genres = new genres(array('content'=>normalizeHtml(empty($category->category) ? '':$category->category)));
 			$this->runtime = new runtime(array('content'=>$show->length));
 			$this->date = new date(array('content'=>"Year: $show->year"));
 			$this->tvormov = new tvormov(array('content'=>'movie'));
