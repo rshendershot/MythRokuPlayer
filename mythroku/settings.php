@@ -156,11 +156,11 @@ function convert_date( $date )
 {
     list($year, $month, $day) = explode('-', $date);
 
-    if ( 0 == $year  ) { $year  = 1900; }
-    if ( 0 == $month ) { $month = 1;    }
-    if ( 0 == $day   ) { $day   = 1;    }
+    if ( 0 === $year  ) { $year  = 1900; }
+    if ( 0 === $month ) { $month = 1;    }
+    if ( 0 === $day   ) { $day   = 1;    }
 
-    $timestamp = mktime(0, 0, 0, $month, $day, $year);
+    $timestamp = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
 
     return $timestamp;
 }
@@ -186,11 +186,11 @@ function convert_datetime_pre( $str ) //mythtv  0.25
     list($year, $month,  $day)    = explode('-', $date);
     list($hour, $minute, $second) = explode(':', $time);
 
-    if ( 0 == $year  ) { $year  = 1900; }
-    if ( 0 == $month ) { $month = 1;    }
-    if ( 0 == $day   ) { $day   = 1;    }
+    if ( 0 === $year  ) { $year  = 1900; }
+    if ( 0 === $month ) { $month = 1;    }
+    if ( 0 === $day   ) { $day   = 1;    }
 
-    return mktime($hour, $minute, $second, $month, $day, $year);
+    return mktime((int)$hour, (int)$minute, (int)$second, (int)$month, (int)$day, (int)$year);
 }
 
 function normalizeHtml($string){

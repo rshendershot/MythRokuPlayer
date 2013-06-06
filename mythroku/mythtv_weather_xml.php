@@ -61,7 +61,7 @@ if(isset($_GET['Weather'])) {
 			$tempMax = round((float)$tempMaxEl[0]);
 			$tempMin = round((float)$tempMinEl[0]);
 			
-			$conditions = (string)$conditionsEl[0];
+			$conditions = empty($conditionsEl[0]) ? '':(string)$conditionsEl[0];
 			$precip = (empty($conditions) ? 'No Precipitation' : $conditions);
 			
 			$weatherTpl = new SimpleXMLElement('<Weather/>');
