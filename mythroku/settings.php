@@ -56,24 +56,27 @@ abstract class XmlEmitter implements Countable {
 	private $content;
 
 	protected function addToAttributes($atr, $property){
-		if(property_exists($this, $atr)){
-			$this->attributes[$atr] = $property;
-			return true;
-		}		
-		return false;
+		if(!property_exists($this, $atr))
+			error_log("XmlEmitter::addToAttributes  overriding containment, setting $atr, $property", 0);
+		$this->attributes[$atr] = $property;
+		return true;
+	}
+	protected function getAttribute($attribute){
+		error_log("returning attribute for $attribute:  $this->attributes[$attribute]", 0);
+		return $this->attributes[$attribute];
 	}
 	protected function setContent($value){
-		if(is_scalar($value)){
+		if(is_scalar($value) || empty($value)){
 			$this->content = $value;
 			return true;
 		}
-		//print "non-scalar value: $value";
+		error_log("XmlEmitter::setContent  non-scalar value: ".print_r($value, true), 0);
 		return false;
 	}
 	public function __construct()
     {
         $arguments = func_get_args();
-        //if(defined('_DEBUG')) print_r($arguments);
+        if(defined('_DEBUG')) print_r($arguments);
 
         if(!empty($arguments)) {
             foreach($arguments[0] as $key => $property) {
@@ -84,12 +87,19 @@ abstract class XmlEmitter implements Countable {
                 }
             }
         }   
-        //if(defined('_DEBUG')) print_r($this);                                    	
+        if(defined('_DEBUG')) print_r($this);                                    	
     }	
 	public function count() {
 		return count(get_object_vars($this));
 	}
-	public function Value() { return $this->content; }
+	public function Value() { 
+		foreach($this as $key => $value) {	
+   			if($key == 'content') {
+   				$this->setContent($value);
+   			}
+		}		
+		return $this->content; 
+	}
 	public function __toString() {	
 		$stringBuffer = "<" . get_class($this);
 		$end =	"</" . get_class($this) . ">";
