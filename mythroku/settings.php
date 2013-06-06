@@ -1,33 +1,37 @@
 <?php
 require_once 'php-activerecord/ActiveRecord.php';
 
-const UseUTC = 'true';  //for MythTV version 0.26 and onward this should be true.
+//EDIT-HERE: for MythTV version 0.26 and onward this should be true.
+const UseUTC = 'true';  
 
-$WebHostIP = "192.168.1.130";                           // web server IP address
-$WebServer = "http://" . $WebHostIP . "/mythweb";       // include path to mythweb eg, http://yourip/mythweb
-$MythRokuDir = "mythroku";                              // name of your mythroku directory in the mythweb folder
+//EDIT-HERE: set to the number of upcoming to show in the Top Upcoming and Weather Forecaset display
+$UpcomingListLimit = 5;     
 
-$MythBackendIP = $WebHostIP;                              // Myth Backend server IP
-$MythBackendPort = "6544";                                // Myth Backend services port   
+//EDIT-HERE: Weather Forecaset location - weather information provided by http://openweathermap.org
+$City = 'District of Columbia';
+$State = '';
+$Country = 'USA';
+
+//EDIT-HERE: Addresses of systems needed to use MythRokuPlayer
+$WebHostIP = "192.168.1.130";  // web server IP address
+$MysqlServer  = $WebHostIP;     // mysql server ip/name
+$MythTVdb     = "mythconverg";  // mythtv database name
+$MythTVdbuser = "mythtv";       // mythtv database user
+$MythTVdbpass = "mythtv";       // mythtv database password
+$MythBackendIP = $WebHostIP;   // Myth Backend server IP
+$MythBackendPort = "6544";     // Myth Backend services port   
+
+// Edits are not normally needed below.  Note:  SD works for heterogenous households (for both HD and SD televisions)
+$WebServer = "http://" . $WebHostIP . "/mythweb";
+$MythRokuDir = "mythroku";
 
 $MythContentSvc = "http://" . $MythBackendIP . ":" . $MythBackendPort . "/Content/";
 $MythDvrSvc = "http://" . $MythBackendIP . ":" . $MythBackendPort . "/Dvr/";
 $localSvcDir = '';
 $localSvc = "$WebServer/$MythRokuDir/$localSvcDir/";
 
-$MysqlServer  = $WebHostIP;     // mysql server ip/name
-$MythTVdb     = "mythconverg";  // mythtv database name
-$MythTVdbuser = "mythtv";       // mythtv database user
-$MythTVdbpass = "mythtv";       // mythtv database password
-
 $RokuDisplayType = "SD";	// set to the same as your Roku player under display type, HD or SD  
 $BitRate = "1500";			// bit rate of endcoded streams
-
-$UpcomingListLimit = 5;     // set to the number of upcoming to show in the Top Upcoming and Weather Forecaset display
-
-$City = 'District of Columbia';
-$State = '';
-$Country = 'USA';
 
 $db_connections = array(
    'MYSQL' => "mysql://$MythTVdbuser:$MythTVdbpass@$MysqlServer/$MythTVdb"
