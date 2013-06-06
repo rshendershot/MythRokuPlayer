@@ -5,11 +5,26 @@ require_once 'settings.php';
 class Weather extends XmlInjector {}
 
 // MythTV Services API classes
-class Program extends XmlInjector{
-	const rsNONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
-	const rsEMPTY = '<Program><Title>Service returned nothing.</Title><Description>Data from the service was empty.  Please try again later.</Description></Program>';
+class Program extends XmlInjector {
 	public $isRecording = false;
 	public $hasJob = false;
+}
+class ProgramTpl extends Program {
+	const rsNONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
+	const rsEMPTY = '<Program><Title>Service returned nothing.</Title><Description>Data from the service was empty.  Please try again later.</Description></Program>';
+
+	public function __construct($xml){
+		if(UseUTC)
+			$this->StartTime=gmdate('Y-m-d H:i:s');
+		else
+			$this->StartTime=date('Y-m-d H:i:s');
+		$this->EndTime=$this->StartTime;
+		$this->SubTitle='Information';
+		$this->ProgramId=$this->SubTitle;
+		$this->Category=$this->SubTitle;
+		
+		parent::__construct($xml);
+	}
 }
 
 // MythRokuPlayer menu classes
@@ -128,8 +143,12 @@ class item extends XmlEmitter {
 			$this->synopsis = new synopsis(array('content'=>normalizeHtml($show->Description)));
 			$this->genres = new genres(array('content'=>normalizeHtml($show->Category)));
 			$this->runtime = new runtime(array('content'=>$ShowLength));
-			$this->date = new date(array('content'=>date("F j, Y, g:i a", convert_datetime($show->StartTime))));
+			if(!is_a($show, 'ProgramTpl)'))
+				$this->date = new date(array('content'=>date("F j, Y, g:i a", convert_datetime($show->StartTime))));
+			else
+				$this->date = new date(array('content'=>$show->StartTime));
 			$this->tvormov = new tvormov(array('content'=>'upcoming'));
+			//error_log(">>>>DATE: $show->StartTime  ==>  $this->date", 0);
 		}elseif(is_a($show,'Recorded')){
 			/// TV from Recorded table
 			

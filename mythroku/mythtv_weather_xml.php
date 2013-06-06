@@ -93,7 +93,7 @@ if(isset($_GET['Weather'])) {
 			array(
 				'resultLength'=>new resultLength(array('content'=>count($items)))
 				, 'endIndex'=>new endIndex(array('content'=>count($items)))
-				, 'item'=>array(new item(new Program(new SimpleXMLElement(Program::rsEMPTY))))
+				, 'item'=>array(new item(new ProgramTpl(new SimpleXMLElement(ProgramTpl::rsEMPTY))))
 			)		
 		);				
 	}
