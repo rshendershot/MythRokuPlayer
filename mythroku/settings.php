@@ -1,8 +1,6 @@
 <?php
 require_once 'php-activerecord/ActiveRecord.php';
-
-//EDIT-HERE: for MythTV version 0.26 and onward this should be true.
-const UseUTC = 'true';  
+const DB_UTC_VER = '1307';  // http://www.mythtv.org/wiki?title=Category:DB_Table&oldid=56896
 
 //EDIT-HERE: set to the number of upcoming to show in the Top Upcoming and Weather Forecaset display
 $UpcomingListLimit = 5;     
@@ -165,9 +163,20 @@ function convert_date( $date )
     return $timestamp;
 }
 
-function convert_datetime($str)
-{
-	if(UseUTC)
+function useUTC(){
+	$sql = "select data from mythconverg.settings where value='DBSchemaVer'";
+	$conditions = array('conditions'=>array('value = ?', 'DBSchemaVer'));
+	$settings = MythSettings::first($conditions);
+	$value = $settings->data;
+	
+	if(defined('_DEBUG')) error_log(">>> DB SCHEMA: $value", 0);
+	
+	return (int)$value >= (int)DB_UTC_VER ? true:false;
+}
+
+function convert_datetime($str) {
+	//convert date formatted string to unix timestamp
+	if(useUTC())
 		return convert_datetime_utc($str);
 	else
 		return convert_datetime_pre($str);
@@ -176,12 +185,13 @@ function convert_datetime($str)
 
 function convert_datetime_utc($str) 
 {
-	//function to convert mysql timestamp to unix time
+	if(defined('_DEBUG')) error_log(">>>convert_datetime_utc  $str", 0);
 	return strtotime( $str. ' UTC' );
 }
 
 function convert_datetime_pre( $str ) //mythtv  0.25
 {
+	if(defined('_DEBUG')) error_log(">>>convert_datetime_pre  $str", 0);
     list($date, $time)            = explode(' ', $str);
     list($year, $month,  $day)    = explode('-', $date);
     list($hour, $minute, $second) = explode(':', $time);

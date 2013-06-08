@@ -22,14 +22,17 @@ if(isset($_GET['Date'])) {
 			break;
 	}
 
-	//$intervalQry = "starttime between adddate(utc_timestamp(), interval $interval) and utc_timestamp() ";
+	if(useUTC())
+		$intervalQry = "starttime between adddate(utc_timestamp(), interval $interval) and utc_timestamp() ";
+	else
+		$intervalQry = "starttime between adddate(now(), interval $interval) and now() ";
 	
-	$conditions = array('conditions' => array("basename like ? AND starttime between adddate(utc_timestamp(), interval $interval) and utc_timestamp()", '%.mp4'));
+	$conditions = array('conditions' => array("basename like ? AND $intervalQry", '%.mp4'));
 	$record = Recorded::all( $conditions );
 	error_log("COUNT of RECORDED: ".count($record));
 	
 	$vselect = array('select' => '*, case releasedate when (releasedate is null) then insertdate else releasedate end as starttime');
-	$conditions = array('conditions' => array("filename like ? AND host > ? HAVING starttime between adddate(utc_timestamp(), interval $interval) and utc_timestamp()", '%.m%4%', ''));
+	$conditions = array('conditions' => array("filename like ? AND host > ? HAVING $intervalQry", '%.m%4%', ''));
 	$video = VideoMetadata::all( array_merge($vselect, $conditions) );
 	error_log("COUNT of VIDEOMETADATA: ".count($video));
 	

@@ -14,7 +14,7 @@ class ProgramTpl extends Program {
 	const rsEMPTY = '<Program><Title>Service returned nothing.</Title><Description>Data from the service was empty.  Please try again later.</Description></Program>';
 
 	public function __construct($xml){
-		if(UseUTC)
+		if(useUTC())
 			$this->StartTime=gmdate('Y-m-d H:i:s');
 		else
 			$this->StartTime=date('Y-m-d H:i:s');
@@ -148,7 +148,6 @@ class item extends XmlEmitter {
 			else
 				$this->date = new date(array('content'=>$show->StartTime));
 			$this->tvormov = new tvormov(array('content'=>'upcoming'));
-			//error_log(">>>>DATE: $show->StartTime  ==>  $this->date", 0);
 		}elseif(is_a($show,'Recorded')){
 			/// TV from Recorded table
 			

@@ -29,7 +29,13 @@ if(isset($_GET['Upcoming'])) {
 		$flags = (int)$programFlagsEl[0];
 		$status = (int)$statusEl[0];  
 		$chanid = (string)$chanidEl[0];
-		$starttime = (string)$startTimeEl[0];
+		$startTS = (string)$startTimeEl[0];
+		
+		$timestamp = convert_datetime($startTS);
+		if(useUTC())
+			$starttime = gmdate('Y-m-d H:i:s', $timestamp );
+		else
+			$starttime = date('Y-m-d H:i:s', $timestamp );	
 		
 		$parms = array('chanid'=>$chanid, 'starttime'=>$starttime);
 		$jobs = new SimpleXMLElement("$jobqueueSvc?".http_build_query($parms), NULL, TRUE);
