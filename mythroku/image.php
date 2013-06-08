@@ -19,6 +19,7 @@ if (isset ($_GET['image'])) { //send a file spec
 	$preview = rawurldecode($_GET['preview']);
 	$chanid = ltrim(substr($preview,0,6),'_');
 	$start = $starttime = substr($preview,6);
+	
 	if(defined('_DEBUG')) error_log(">>>PREVIEW: chanid $chanid : startime $starttime", 0);
 	
 	if(!useUTC()){
