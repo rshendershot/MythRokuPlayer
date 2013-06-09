@@ -186,11 +186,11 @@ class item extends XmlEmitter {
 			// http://www.mythtv.org/wiki/Video_Library#Metadata_Grabber_Troubleshooting
 			// http://www.mythtv.org/wiki/MythVideo_File_Parsing#Filenames
 //			if(!empty($show->screenshot)){
-//				$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
-//				$imgfile = $screenart->dirname . $show->screenshot;
+				$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
+				$imgfile = $screenart->dirname . $show->screenshot;
 //			}elseif(!empty($show->fanart)){
-				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
-				$imgfile = $fanart->dirname . $show->fanart;
+//				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
+//				$imgfile = $fanart->dirname . $show->fanart;
 //			}else{
 //				$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
 //				$imgfile = $coverart->dirname . $show->coverfile;
