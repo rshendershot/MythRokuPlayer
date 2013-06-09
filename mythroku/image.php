@@ -63,9 +63,10 @@ function output($file)
 	header('Content-Length: ' . filesize($file));
 	header('Content-Type: ' . finfo_file($finfo, $file), true);
 	
-	error_log( "*** ".implode("|", headers_list()), 0 );
+	if(defined('_DEBUG')) error_log( "*** ".implode("|", headers_list()), 0 );
 	
-	readfile($file);	
+	readfile($file);
+	//echo file_get_contents( $file );  //no real performance improvement here -RSH	
 }
 
 function rangeDownload($file)
@@ -146,7 +147,7 @@ function rangeDownload($file)
     header("Content-Range: bytes $start-$end/$size");
     header("Content-Length: $length");
     
-    error_log( "*** ".implode("|", headers_list()), 0 );
+    if(defined('_DEBUG')) error_log( "*** ".implode("|", headers_list()), 0 );
 
     // Start buffered download
     $buffer = 1024 * 8;

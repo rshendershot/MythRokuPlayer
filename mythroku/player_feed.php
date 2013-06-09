@@ -179,19 +179,28 @@ class item extends XmlEmitter {
 		}elseif(is_a($show,'VideoMetadata')){
 			/// Video from VideoMetadata table
 			
-			$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
-			$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
-			$videos = StorageGroup::first( array('conditions' => array('groupname = ?', 'Videos')) );
-	    	$category = VideoCategory::first( array('conditions' => array('intid = ?', $show->category)) );    	
-	    	
+			$videos = StorageGroup::first( array('conditions' => array('groupname = ?', 'Videos')) );	    	
 	    	$streamfile = $videos->dirname . $show->filename;
-	    	$coverfile = $coverart->dirname . $show->coverfile; 
-	    	$screenfile = $screenart->dirname . $show->screenshot;
-	    	
 	    	$streamUrl = "$WebServer/$MythRokuDir/image.php?image=" . rawurlencode($streamfile);	    	   	
+
+			// http://www.mythtv.org/wiki/Video_Library#Metadata_Grabber_Troubleshooting
+			// http://www.mythtv.org/wiki/MythVideo_File_Parsing#Filenames
+//			if(!empty($show->screenshot)){
+//				$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
+//				$imgfile = $screenart->dirname . $show->screenshot;
+//			}elseif(!empty($show->fanart)){
+				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
+				$imgfile = $fanart->dirname . $show->fanart;
+//			}else{
+//				$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
+//				$imgfile = $coverart->dirname . $show->coverfile;
+//			}
+			//TODO coverart and fanart are 5-10X sizeof screenshots.  videometadata doesn't contain screenshots for movies.  create screenshots and update db
+	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?image=" . rawurlencode($imgfile);
 	    	
-	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?image=" . rawurlencode($screenfile);
-	    		 			
+	    	//TODO lookup genres for item::genres.  can be an array?	 			
+	    	$category = VideoCategory::first( array('conditions' => array('intid = ?', $show->category)) );    	
+
 			$this->title = new title(array('content'=>normalizeHtml($show->title))); 
 			$this->contentQuality = new contentQuality(array('content'=>$RokuDisplayType));
 			$this->subtitle = new subtitle(array('content'=>normalizeHtml($show->subtitle)));
