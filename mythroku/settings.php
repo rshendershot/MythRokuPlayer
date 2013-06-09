@@ -164,14 +164,15 @@ function convert_date( $date )
 }
 
 function useUTC(){
-	$sql = "select data from mythconverg.settings where value='DBSchemaVer'";
-	$conditions = array('conditions'=>array('value = ?', 'DBSchemaVer'));
-	$settings = MythSettings::first($conditions);
-	$value = $settings->data;
-	
-	if(defined('_DEBUG')) error_log(">>> DB SCHEMA: $value", 0);
-	
-	return (int)$value >= (int)DB_UTC_VER ? true:false;
+	if(!defined('_UTC')){
+		$conditions = array('conditions'=>array('value = ?', 'DBSchemaVer'));
+		$settings = MythSettings::first($conditions);
+		$value = $settings->data;		
+		error_log(">>> DB SCHEMA: $value", 0);
+		
+		define('_UTC', (int)$value >= (int)DB_UTC_VER ? true:false);		
+	}
+	return _UTC == true; 
 }
 
 function convert_datetime($str) {
