@@ -5,19 +5,19 @@ include_once 'player_feed.php';
 //const _DEBUG = 'true';
 
 if(isset($_GET['Group'])) {
-	$select = rawurldecode($_GET['Group']);
+	$select = str_replace(' ', '%', rawurldecode($_GET['Group']));
 	$SQL = <<<EOF
 select v.*,case v.category when 0 then 'Default' else c.category end as categoryKey 
 from videometadata v left join videocategory c on c.intid = v.category
 where v.filename like '%.m%4%' 
 and v.host > ''
-having categoryKey = '$select';
+having categoryKey like '$select';
 EOF;
 
 	//build feed for this specific group	
 	error_log("selecting Group: $select", 0);
 
-	$conditions = array('conditions' => array('basename like ? AND playgroup=?', '%.mp4', $select));
+	$conditions = array('conditions' => array('basename like ? AND playgroup like ?', '%.mp4', $select));
 	$record = Recorded::all( $conditions );
 	error_log("COUNT of RECORDED: ".count($record));
 	

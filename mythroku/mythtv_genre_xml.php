@@ -5,20 +5,20 @@ include_once 'player_feed.php';
 //const _DEBUG = 'true';
 
 if(isset($_GET['Genre'])) {
-	$select = rawurldecode($_GET['Genre']);
+	$select = str_replace(' ', '%', rawurldecode($_GET['Genre']));
 	$SQL = <<<EOF
 select g.genre, v.* from videometadatagenre a 
 join videometadata v on v.intid = a.idvideo
 join videogenre g on g.intid = a.idgenre
 where v.filename like '%.m%4%' 
 and v.host > ''
-and g.genre = '$select'
+and g.genre like '$select'
 EOF;
 
 	//build feed for this specific genre	
 	error_log("selecting Genre: $select", 0);
 
-	$conditions = array('conditions' => array('basename like ? AND category=?', '%.mp4', $select));
+	$conditions = array('conditions' => array('basename like ? AND category like ?', '%.mp4', $select));
 	$record = Recorded::all( $conditions );
 	error_log("COUNT of RECORDED: ".count($record));
 	
