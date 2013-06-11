@@ -68,11 +68,11 @@ EOF;
 	
 	$rec_cat = Recorded::find_by_sql( 'select distinct playgroup from recorded' );
 	foreach ( $rec_cat as $value ) {
-       $results[] = $value->playgroup;
+       $results[] = str_replace('-', ' ', $value->playgroup);
 	}	
 	$vid_genre = VideoCategory::find_by_sql( 'select category from videocategory' );
 	foreach ( $vid_genre as $value ) {
-    	$results[] = $value->category;   
+    	$results[] = str_replace('-', ' ', $value->category);   
 	}	
 	asort($results);
 	$results = array_unique($results);
