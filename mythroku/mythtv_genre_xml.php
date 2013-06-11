@@ -69,11 +69,11 @@ EOF;
 	
 	$rec_cat = Recorded::find_by_sql( 'select distinct category from recorded' );
 	foreach ( $rec_cat as $value ) {
-       $results[] = str_replace('-', ' ', $value->category);
+       $results[] = ucwords(str_replace('-', ' ', $value->category));
 	}	
 	$vid_genre = VideoMetadata::find_by_sql( 'select genre from videogenre' );
 	foreach ( $vid_genre as $value ) {
-    	$results[] = str_replace('-', ' ', $value->genre);   
+    	$results[] = ucwords(str_replace('-', ' ', $value->genre));   
 	}	
 	asort($results);
 	$results = array_unique($results);

@@ -68,11 +68,11 @@ EOF;
 	
 	$rec_cat = Recorded::find_by_sql( 'select distinct playgroup from recorded' );
 	foreach ( $rec_cat as $value ) {
-       $results[] = str_replace('-', ' ', $value->playgroup);
+       $results[] = ucwords(str_replace('-', ' ', $value->playgroup));
 	}	
 	$vid_genre = VideoCategory::find_by_sql( 'select category from videocategory' );
 	foreach ( $vid_genre as $value ) {
-    	$results[] = str_replace('-', ' ', $value->category);   
+    	$results[] = ucwords(str_replace('-', ' ', $value->category));   
 	}	
 	asort($results);
 	$results = array_unique($results);
