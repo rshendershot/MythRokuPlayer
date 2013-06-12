@@ -112,41 +112,40 @@ Function showHomeScreen(screen) As Integer
             else if msg.isListItemSelected() then
                 print "list item selected | index = "; msg.GetIndex()
                 kid = m.Categories.Kids[msg.GetIndex()]
-		if msg.GetIndex() = 2 then
-			print "Display settings screen"
-			serverURL = RegRead("ServerURL")
-			screen = CreateObject("roKeyboardScreen")
-			port = CreateObject("roMessagePort")
-			screen.SetMessagePort(port)
-			screen.SetTitle("Video Server URL")
-			screen.SetText(serverURL)
-			screen.SetDisplayText("Enter URL for mythroku, e.g. http://myip/mythweb/mythroku")
-			screen.SetMaxLength(100)
-			screen.AddButton(1, "finished")
-			screen.Show()
-	
-			while true
-				msg = wait(0, screen.GetMessagePort())
-				print "message received"
-				if type(msg) = "roKeyboardScreenEvent"
-					if msg.isScreenClosed() then
-						return 0
-					else if msg.isButtonPressed() then
-						print "Evt: ";msg.GetMessage();" idx:"; msg.GetIndex()
-						if msg.GetIndex() = 1
-							searchText = screen.GetText()
-							print "search text: "; searchText
-							RegWrite("ServerURL", searchText)
-							return 0
-						endif
-					endif
-				endif
-			end while
-    
-		elseif kid.type = "special_category" then
+        		if msg.GetIndex() = 2 then
+        			print "Display settings screen"
+        			serverURL = RegRead("ServerURL")
+        			screen = CreateObject("roKeyboardScreen")
+        			port = CreateObject("roMessagePort")
+        			screen.SetMessagePort(port)
+        			screen.SetTitle("Video Server URL")
+        			screen.SetText(serverURL)
+        			screen.SetDisplayText("Enter URL for mythroku, e.g. http://myip/mythweb/mythroku")
+        			screen.SetMaxLength(100)
+        			screen.AddButton(1, "finished")
+        			screen.Show()
+        	
+        			while true
+        				msg = wait(0, screen.GetMessagePort())
+        				print "message received"
+        				if type(msg) = "roKeyboardScreenEvent"
+        					if msg.isScreenClosed() then
+        						return 0
+        					else if msg.isButtonPressed() then
+        						print "Evt: ";msg.GetMessage();" idx:"; msg.GetIndex()
+        						if msg.GetIndex() = 1
+        							searchText = screen.GetText()
+        							print "search text: "; searchText
+        							RegWrite("ServerURL", searchText)
+        							return 0
+        						endif
+        					endif
+        				endif
+        			end while
+		        else if kid.type = "special_category" then
                     displaySpecialCategoryScreen()
                 else
-		    print "cat"
+    		        print "cat"
                     displayCategoryPosterScreen(kid)
                 end if
             else if msg.isScreenClosed() then
@@ -158,7 +157,6 @@ Function showHomeScreen(screen) As Integer
     return 0
 
 End Function
-
 
 '**********************************************************
 '** When a poster on the home screen is selected, we call
