@@ -58,10 +58,14 @@ abstract class XmlEmitter implements Countable {
 	private $content;
 
 	protected function addToAttributes($atr, $property){
-		if(!property_exists($this, $atr))
-			error_log("XmlEmitter::addToAttributes  overriding containment, setting $atr, $property", 0);
-		$this->attributes[$atr] = $property;
-		return true;
+		if(is_scalar($property) || empty($property)){
+			if(!property_exists($this, $atr))
+				error_log("XmlEmitter::addToAttributes  overriding containment, setting $atr, $property", 0);
+			$this->attributes[$atr] = $property;
+			return true;
+		}
+		error_log("XmlEmitter::setContent  non-scalar value: ".print_r($property, true), 0);
+		return false;
 	}
 	protected function getAttribute($attribute){
 		error_log("returning attribute for $attribute:  $this->attributes[$attribute]", 0);
