@@ -50,7 +50,7 @@ if (isset ($_GET['image'])) { //send a file spec
 			}
     	} catch(Exception $e) {
     		//http_response_code(304);  //only for PHP 5.4 and later
-    		header(':', true, '304'); 
+    		header(':', true, '404'); 
     	}
 	}	
 }
