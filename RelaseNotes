@@ -1,3 +1,10 @@
+V2.2    06/2013 Richard Hendershot
+    make Group and Genre top level menu entries
+    Combine MythVideo and Recorded
+    add view into schedules
+    add weather PoC for accessing external feeds
+    create class hierarchy framework to create core system resources: Item, Feed, Program, etc.
+    continue support for original MythRokuPlayer Roku channel dist
 V2.0    07/2011 Richard Hendershot
     convert to PHP ActiveRecord for data access layer
     clean up use of videometadata for mythvideo (mythtv_movies_xml.php)
