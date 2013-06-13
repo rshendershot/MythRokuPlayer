@@ -1,7 +1,7 @@
 <?php
 require_once 'settings.php';
-include 'player_feed.php';
 
+// jobqueue classes
 class Jobs extends XmlEmitter {}
 
 $chanid = '';
@@ -45,6 +45,6 @@ $jobs = new Jobs(
 	)
 );
 
-print $jobs;
+print $jobs;  //consumer gets XML in response to its jobqueue service call
 	
 ?>
