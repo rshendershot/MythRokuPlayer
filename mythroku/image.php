@@ -18,7 +18,14 @@ if (isset ($_GET['image'])) { //send a file spec
 } elseif (isset($_GET['preview'])) { //send a key of chanid and starttime. will be a preview image since any rq for playable is Range.  We assure that is a File request.
 	$preview = rawurldecode($_GET['preview']);
 	$chanid = ltrim(substr($preview,0,6),'_');
-	$starttime = substr($preview,6);
+	$start = $starttime = substr($preview,6);
+	
+	if(defined('_DEBUG')) error_log(">>>PREVIEW: chanid $chanid : startime $starttime", 0);
+	
+	if(!useUTC()){
+		$timestamp=convert_datetime($starttime);
+		$start = gmdate('Y-m-d H:i:s', $timestamp );
+	}
 
 	if($chanid && $starttime) {		
 		$conditions = array('conditions' => array('chanid=? and starttime=? ', $chanid, $starttime)); 
@@ -28,12 +35,11 @@ if (isset ($_GET['image'])) { //send a file spec
     		error_log(
     			"*** " . implode( '|',
 			    	get_headers(
-						$MythContentSvc . 'GetPreviewImage' . rawurlencode("?ChanId=$chanid&StartTime=$starttime")
+						$MythContentSvc . 'GetPreviewImage' . rawurlencode("?ChanId=$chanid&StartTime=$start")
 					)	
 				)			
 			,0);		
-    	;}
-    	
+    	;}    	
     	
     	try {
 			if(filesize($file)){    		
@@ -43,7 +49,8 @@ if (isset ($_GET['image'])) { //send a file spec
 				throw new Exception("unable to get file size of: $file");
 			}
     	} catch(Exception $e) {
-    		http_response_code(304); 
+    		//http_response_code(304);  //only for PHP 5.4 and later
+    		header(':', true, '404'); 
     	}
 	}	
 }
@@ -56,9 +63,10 @@ function output($file)
 	header('Content-Length: ' . filesize($file));
 	header('Content-Type: ' . finfo_file($finfo, $file), true);
 	
-	error_log( "*** ".implode("|", headers_list()), 0 );
+	if(defined('_DEBUG')) error_log( "*** ".implode("|", headers_list()), 0 );
 	
-	readfile($file);	
+	readfile($file);
+	//echo file_get_contents( $file );  //no real performance improvement here -RSH	
 }
 
 function rangeDownload($file)
@@ -139,7 +147,7 @@ function rangeDownload($file)
     header("Content-Range: bytes $start-$end/$size");
     header("Content-Length: $length");
     
-    error_log( "*** ".implode("|", headers_list()), 0 );
+    if(defined('_DEBUG')) error_log( "*** ".implode("|", headers_list()), 0 );
 
     // Start buffered download
     $buffer = 1024 * 8;

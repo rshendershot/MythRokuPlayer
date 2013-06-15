@@ -1,5 +1,6 @@
-MythRokuPlayer is for streaming mythtv recordings and video via Roku player
-It is based on the videoplayer example from Roku
+MythRokuPlayer2 provides a framework for access to MythTV Videos and Recordings
+in a simple context oriented UI.  Additional services (eg. Weather info) are 
+easily integrated using the class system.  Still works with original channel.
 
 prerequisits:
 
@@ -7,13 +8,16 @@ prerequisits:
 -handbrakecli (for converting recordings to H.264 format)
 -Mythtv video are stored in H.264 format (mp4)
 -web user (eg. apache) permission to delete recordings
--PHP ActiveRecord and its depends
+-php-gd
+-php-xml
+-php-pdo
+-PHP ActiveRecord (in a php included location)
 
 for more information see the Roku developer site:
 http://www.roku.com/developer
 
 
-1) you need to set up you Roku box in developer mode to install new channels.
+1) you can set up your Roku box in developer mode to install the dev channel.
 	Use remote and enter Home 3x, Up 2x, Right, Left, Right, Left, Right
 	
 	add the following to your .bashrc file "ROKU_DEV_TARGET=roku.ip" 
@@ -23,16 +27,15 @@ http://www.roku.com/developer
  	modify /usr/share/mythtv/mythweb/includes/utils.php by adding the 
 	following around line 247
 	
-	case 'mp4' : return "$url.mp4";
+	   case 'mp4' : return "$url.mp4";
 	
-        and in the following file /usr/share/mythtv/mythweb/modules/stream/stream_raw.pl
-
+   and in the following file /usr/share/mythtv/mythweb/modules/stream/stream_raw.pl
 	add an additonal elseif in the file type section 
 
         elsif ($basename =~ /\.mp4$/) {
-        $type = 'video/mp4';
-        $suffix = '.mp4';
-	}
+            $type = 'video/mp4';
+            $suffix = '.mp4';
+    	}
 	
 	if you are using authentication to protect your mythweb (best practice)
 	you need to add the following to your mythweb.conf file (near the top)
@@ -68,15 +71,18 @@ http://www.roku.com/developer
 	This will automatically encode a recording to mp4 format which can then be
 	streamed by roku
 	
-5) install mythroku to your roku player
-	in the mythroku directory (containing this read me) simply type
+5) if you have modified the UI code, install MythRokuPlayer to your roku player
+	in the MythRokuPlayer directory (containing this read me) simply type
 	
-	make install
+	   make && make install
 
+    Or install the original private channel;
 	once installed you will need to set the path to the mythroku directory
 	on your webserver on the mythroku settings on roku
 
 	eg. http//192.168.1.10/mythweb/mythroku
+	
+	mythroku should be a symlink in mythweb to MythRokuPlayer/mythroku
 
 6) Debuging, you have a couple of options:
 	

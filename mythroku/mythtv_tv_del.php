@@ -1,7 +1,7 @@
 <?php
 
 //get the local info from the settings file
-require_once './settings.php';
+require_once 'settings.php';
 
 if (isset($_GET['basename']))
 {
@@ -9,21 +9,20 @@ if (isset($_GET['basename']))
     $conditions = array('conditions' => array('basename = ? ', $basefname));
     $recordings = Recorded::all($conditions);
     if(count($recordings) != 1) {
-        print "There are " . count($recordings) . " items with the basename: $basefname";
+        error_log( "There are " . count($recordings) . " items with the basename: $basefname", 0 );
     }else{
         $recording = $recordings[0];
         
-        print "\nhere we delete $recording->basename from the database."; 
+        error_log( "here we delete $recording->basename from the database.", 0 ); 
         $recording->delete();
         
         $fname = $recording->storagegroups->dirname . strtok($recording->basename, "."); 
         foreach(glob($fname . "*") as $file){
-            print "\nhere we delete $file from the filesyste."; 
+            error_log( "here we delete $file from the filesystem.", 0 ); 
             unlink($file);
         }
     }
 }else{
-    print "the 'basename' was not passed to this routine!";
     error_log("the 'basename' was not passed to this routine!", 0);
 }
 
