@@ -15,8 +15,7 @@ LOGFILE="/var/log/mythtv/rokuencode.log"
 newbname=`echo $MPGFILE | sed 's/\(.*\)\..*/\1/'`
 newname="$MYTHDIR/$newbname.mp4"
 
-echo "" >> $LOGFILE
-echo "Roku Encode $MPGFILE to $newname, details in $LOGFILE"
+echo "Roku Encode $MPGFILE to $newname" >> $LOGFILE
 
 date=`date`
 echo "$newbname:$date Encoding" >> $LOGFILE

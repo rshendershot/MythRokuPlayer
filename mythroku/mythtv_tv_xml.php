@@ -1,9 +1,9 @@
 <?php
 
 //get the local info from the settings file
-require_once './settings.php';
+require_once 'settings.php';
 
-$conditions = array('conditions' => array('basename like ? ', '%.mp4'));
+$conditions = array('conditions' => array('basename like ? AND playgroup NOT IN( ?, ?, ?, ?, ? )', '%.mp4', 'EDUCATION', 'POLITICS', 'KIDS', 'MOVIES', 'TODO'));
 $order = array('order' => 'starttime ASC');
 $select = array('select' => '*, case title regexp \'^The \' when 1 then SUBSTRING(title,5) else title end as titleSortkey');
 if (isset($_GET['sort'])) //there is not GET in the session when running php from CLI
@@ -11,19 +11,37 @@ if (isset($_GET['sort'])) //there is not GET in the session when running php fro
     switch($_GET['sort'])
     {
         case "date":
-            $order = array('order' => 'starttime DESC');
+            $order = array('order' => 'starttime DESC, titleSortkey ASC, originalairdate ASC');
             break;
         case "title":
-            $order = array('order' => 'titleSortkey ASC');
+            $order = array('order' => 'titleSortkey ASC, originalairdate DESC');
             break;
-        case "playgroup":
-            $order = array('order' => 'playgroup ASC');
+        case "special":
+            $order = array('order' => 'starttime DESC, titleSortkey ASC, originalairdate ASC');
+            $conditions = array('conditions' => array('basename like ? AND playgroup = ?', '%.mp4', 'KIDS'));
             break;
-        case "genre":
-            $order = array('order' => 'category ASC');
+        case "political":
+            $order = array('order' => 'starttime DESC, titleSortkey ASC, originalairdate ASC');
+            $conditions = array('conditions' => array('basename like ? AND playgroup = ?', '%.mp4', 'POLITICS'));
+            break;
+        case "education":
+            $order = array('order' => 'titleSortkey ASC, starttime DESC, originalairdate DESC');
+            $conditions = array('conditions' => array('basename like ? AND playgroup = ?', '%.mp4', 'EDUCATION'));
+            break;
+        case "movies":
+            $order = array('order' => 'starttime DESC, titleSortkey ASC, originalairdate ASC');
+            $conditions = array('conditions' => array('basename like ? AND playgroup = ?', '%.mp4', 'MOVIES'));
             break;
         case "channel":
-            $order = array('order' => 'chanid ASC');
+            $order = array('order' => 'chanid ASC, starttime DESC, titleSortkey ASC, originalairdate ASC');
+            break;
+        case "playgroup":
+            $order = array('order' => 'playgroup ASC, starttime DESC, titleSortkey ASC, originalairdate ASC');
+            $conditions = array('conditions' => array('basename like ? ', '%.mp4'));
+            break;
+        case "todo":
+            $order = array('order' => 'starttime DESC, titleSortkey ASC, originalairdate ASC');
+            $conditions = array('conditions' => array('basename like ? AND playgroup = ?', '%.mp4', 'TODO'));
             break;
         default:
             break;

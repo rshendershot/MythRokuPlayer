@@ -1,7 +1,7 @@
 <?php
 
 //get the local info from the settings file
-require_once './settings.php';
+require_once 'settings.php';
 
 $conditions = array('conditions' => array('filename like ? AND host > ?', '%.m%4%', '')); //using combination of Storage Group and locally hosted video the host value in videometadata is currently only set for the backend machine.  TODO: check for actual host name
 $order = array('order' => 'insertdate ASC');
@@ -58,7 +58,7 @@ print "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>
 				" hdImg=\"" . $WebServer . "/" . $MythRokuDir . "/image.php?image=" . rawurlencode($screenfile) . "\" >
 			<title>" . htmlspecialchars(preg_replace('/[^(\x20-\x7F)]*/','', $value->title )) . "</title>
 			<contentId>" . $value->filename . "</contentId>
-			<contentType>Movies</contentType>
+			<contentType>Movie</contentType>
 			<contentQuality>". $RokuDisplayType . "</contentQuality>
 			<media>
 				<streamFormat>mp4</streamFormat>
