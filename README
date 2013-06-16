@@ -2,6 +2,10 @@ MythRokuPlayer2 provides a framework for access to MythTV Videos and Recordings
 in a simple context oriented UI.  Additional services (eg. Weather info) are 
 easily integrated using the class system.  Still works with original channel.
 
+***  This software is provided AS-IS without warranty or liability, either expressed or implied.  ***
+
+
+
 prerequisits:
 
 -functioning mythtv backend and mythweb
