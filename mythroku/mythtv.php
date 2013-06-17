@@ -2,6 +2,8 @@
 require_once 'settings.php';
 include_once 'player_feed.php';
 
+if(defined('_DEBUG')) error_log( ">>>".print_r($_SERVER,1), 0 );
+
 ////TV
 //$tv_date = new categoryLeaf(
 //	array(XmlEmitter::ATR.'description'=>'some description', XmlEmitter::ATR.'title'=>'Date', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=date")
