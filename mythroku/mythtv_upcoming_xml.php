@@ -76,7 +76,7 @@ if(isset($_GET['Upcoming'])) {
 	print $feed;
 	
 }else{
-	//build category from available groups	
+	// build category static groupings: All $limit, All	
 
 	$upcoming = new category(
 		array(XmlEmitter::ATR.'title'=>'Upcoming'
