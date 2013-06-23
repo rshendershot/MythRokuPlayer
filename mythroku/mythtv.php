@@ -69,6 +69,9 @@ include 'mythtv_date_xml.php';
 //UPCOMING
 include 'mythtv_upcoming_xml.php';
 
+//NEW
+include 'mythtv_new_xml.php';
+
 //WEATHER
 include 'mythtv_weather_xml.php';
 
@@ -108,6 +111,7 @@ $top = new categories(
 			$date
 			, $upcoming
 			, $conf  //-- This MUST be the third item.  The UI references it (2) by zero-based index. --//
+			, $new
 			, $weather
 			, $group
 			, $genre

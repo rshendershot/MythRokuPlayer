@@ -312,5 +312,10 @@ class MythSettings extends ActiveRecord\Model
 {
 	static $table_name = 'settings';
 }
+
+class Guide extends ActiveRecord\Model
+{
+	static $table_name = 'program';
+}
  
 ?>
