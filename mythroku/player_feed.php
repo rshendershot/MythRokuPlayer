@@ -151,6 +151,17 @@ class item extends XmlEmitter {
 			$this->tvormov = new tvormov(array('content'=>'upcoming'));
 		}elseif(is_a($show,'Guide')){
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
+			//TODO indicate if an item is already scheduled
+			if($show->last && $show->first){
+				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_conflict.png";
+				$show->category = 'ONLY CHANCE!';
+			} elseif($show->last) {
+				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_other.png";
+				$show->category = 'LAST CHANCE.';
+			} else {
+				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_scheduled.png";
+			}
+			
 			$this->title = new title(array('content'=>normalizeHtml($show->title)));
 			$this->contentQuality = new contentQuality(array('content'=>$RokuDisplayType));
 			$this->subtitle = new subtitle(array('content'=>normalizeHtml($show->subtitle)));

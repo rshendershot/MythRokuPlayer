@@ -10,17 +10,23 @@ if(isset($_GET['New'])) {
 	//build feed for this specific genre	
 	error_log("selecting New: $select", 0);
 	
-	$conditions = array('conditions'=>'manualid=0 AND starttime>now() AND starttime< adddate(now(), interval 1 day)');
+	$interval = '1 week';
+	if(useUTC())
+		$intervalQry = "starttime BETWEEN utc_timestamp() AND adddate(utc_timestamp(), interval $interval) ";
+	else
+		$intervalQry = "starttime BETWEEN now() AND adddate(now(), interval $interval) ";
+	
+	$conditions = array('conditions'=>"manualid=0 AND $intervalQry");
 	switch ( $select ) {
-		case 'Series': $conditions['conditions'].= " AND category_type='series' AND subtitle='Pilot'"; break;
-		case 'Specials': $conditions['conditions'].= " AND category='special'"; break;
-		case 'Movies': $conditions['conditions'].= " AND category='movie' AND airdate>=year(now())-2"; break;
+		case 'Series': $conditions['conditions'].= " AND category_type='series' AND subtitle='Pilot' AND programid like '%001' AND( first=true OR syndicatedepisodenumber = '' )"; break;
+		case 'Specials': $conditions['conditions'].= " AND category='Special'  AND originalairdate> adddate(now(), interval -1 month) AND( first=true OR last=true )"; break;
+		case 'Movies': $conditions['conditions'].= " AND category_type='movie' AND airdate>=year(now())-2 AND( first=true OR last=true )"; break;
 		default:
 			break;
 	}	
 	
 	$guide = Guide::all( $conditions );
-	error_log("COUNT of PROGRAM: ".count($guide));
+	error_log("COUNT of GUIDE: ".count($guide));
 	
 	$items = array();
 	$shows = array_values(array_merge($guide));
@@ -28,7 +34,7 @@ if(isset($_GET['New'])) {
 		$items[] = new item($show);
 	}
 	$items = array_unique($items);
-	usort($items, 'items_title_compare');
+	usort($items, 'items_date_compare');
 	
 	if(count($items)){
 		$feed = new feed(
@@ -54,10 +60,10 @@ if(isset($_GET['New'])) {
 	// build category static groupings: TV, Movies, All
 
 	$new = new category(
-		array(XmlEmitter::ATR.'title'=>'New'
-			, XmlEmitter::ATR.'description'=>'Pilots, Premieres and recent Movies'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/bookmark.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/bookmark.png"
+		array(XmlEmitter::ATR.'title'=>'Guide'
+			, XmlEmitter::ATR.'description'=>'New Pilots, Premieres and recent Movies'
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/view-new.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/view-new.png"
 			, 'categoryLeaf'=>array()
 		)
 	);

@@ -111,8 +111,8 @@ $top = new categories(
 			$date
 			, $upcoming
 			, $conf  //-- This MUST be the third item.  The UI references it (2) by zero-based index. --//
-			, $new
 			, $weather
+			, $new
 			, $group
 			, $genre
 		)
