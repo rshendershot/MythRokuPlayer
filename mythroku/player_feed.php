@@ -97,7 +97,8 @@ class item extends XmlEmitter {
 				, 'streamUrl'=>new streamUrl()
 			)
 		);
-		if(is_a($show,'Weather')){
+		if(1==0){ //dummy to make editing easier - RSH
+		}elseif(is_a($show,'Weather')){
 			$ShowLength = 0;
 			$title = "$show->Location,  $show->Temperature";
 			$subtitle = "$show->Conditions, $show->WindSpeed, $show->WindDirection, $show->Clouds";
@@ -116,7 +117,7 @@ class item extends XmlEmitter {
 			$this->genres = new genres(array('content'=>$show->Temperature));
 			$this->runtime = new runtime(array('content'=>0));
 						
-			$this->date = new date(array('content'=>date('D dMo', convert_date($show->AsOf))));
+			$this->date = new date(array('content'=>date('D dMo', convert_datetime($show->AsOf))));
 			$this->tvormov = new tvormov(array('content'=>'weather'));
 		}elseif(is_a($show,'Program')){
 			/// MythTV Program schema
@@ -148,6 +149,32 @@ class item extends XmlEmitter {
 			else
 				$this->date = new date(array('content'=>$show->StartTime));
 			$this->tvormov = new tvormov(array('content'=>'upcoming'));
+		}elseif(is_a($show,'Guide')){
+			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
+			//TODO indicate if an item is already scheduled
+			if($show->last && $show->first){
+				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_conflict.png";
+				$show->category = 'ONLY CHANCE!';
+			} elseif($show->last) {
+				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_other.png";
+				$show->category = 'LAST CHANCE.';
+			} else {
+				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_scheduled.png";
+			}
+			
+			$this->title = new title(array('content'=>normalizeHtml($show->title)));
+			$this->contentQuality = new contentQuality(array('content'=>$RokuDisplayType));
+			$this->subtitle = new subtitle(array('content'=>normalizeHtml($show->subtitle)));
+			$this->addToAttributes('sdImg', $imgUrl);
+			$this->addToAttributes('hdImg', $imgUrl);
+			$this->contentId = new contentId(array('content'=>$show->programid));
+			//$this->contentType = new contentType(array('content'=>'TV'));
+			//$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required
+			$this->synopsis = new synopsis(array('content'=>normalizeHtml($show->description)));
+			$this->genres = new genres(array('content'=>normalizeHtml($show->category)));
+			$this->runtime = new runtime(array('content'=>$ShowLength));
+			$this->date = new date(array('content'=>date("F j, Y, g:i a", convert_datetime($show->starttime))));
+			$this->tvormov = new tvormov(array('content'=>'new'));			
 		}elseif(is_a($show,'Recorded')){
 			/// TV from Recorded table
 			

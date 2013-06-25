@@ -22,7 +22,7 @@ if (isset ($_GET['image'])) { //send a file spec
 	
 	if(defined('_DEBUG')) error_log(">>>PREVIEW: chanid $chanid : startime $starttime", 0);
 	
-	if(!useUTC()){
+	if(!useUTC()){  //even with myth 0.25 schema, mythbackend services require UTC date in parameters.
 		$timestamp=convert_datetime($starttime);
 		$start = gmdate('Y-m-d H:i:s', $timestamp );
 	}
