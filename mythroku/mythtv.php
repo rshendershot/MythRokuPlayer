@@ -2,6 +2,8 @@
 require_once 'settings.php';
 include_once 'player_feed.php';
 
+if(defined('_DEBUG')) error_log( ">>>".print_r($_SERVER,1), 0 );
+
 ////TV
 //$tv_date = new categoryLeaf(
 //	array(XmlEmitter::ATR.'description'=>'some description', XmlEmitter::ATR.'title'=>'Date', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=date")
@@ -67,6 +69,9 @@ include 'mythtv_date_xml.php';
 //UPCOMING
 include 'mythtv_upcoming_xml.php';
 
+//NEW
+include 'mythtv_new_xml.php';
+
 //WEATHER
 include 'mythtv_weather_xml.php';
 
@@ -107,6 +112,7 @@ $top = new categories(
 			, $upcoming
 			, $conf  //-- This MUST be the third item.  The UI references it (2) by zero-based index. --//
 			, $weather
+			, $new
 			, $group
 			, $genre
 		)

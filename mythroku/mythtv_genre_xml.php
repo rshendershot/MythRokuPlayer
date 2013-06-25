@@ -53,7 +53,7 @@ EOF;
 	print $feed;
 	
 }else{
-	//build category from available genres	
+	// build category from available genres	
 
 	$genre = new category(
 		array(XmlEmitter::ATR.'title'=>'Genre'

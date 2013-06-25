@@ -154,19 +154,6 @@ abstract class XmlEmitter implements Countable {
 
 //--- Utility functions ---//
 
-function convert_date( $date )
-{
-    list($year, $month, $day) = explode('-', $date);
-
-    if ( 0 === $year  ) { $year  = 1900; }
-    if ( 0 === $month ) { $month = 1;    }
-    if ( 0 === $day   ) { $day   = 1;    }
-
-    $timestamp = mktime(0, 0, 0, (int)$month, (int)$day, (int)$year);
-
-    return $timestamp;
-}
-
 function useUTC(){
 	if(!defined('_UTC')){
 		$conditions = array('conditions'=>array('value = ?', 'DBSchemaVer'));
@@ -181,31 +168,7 @@ function useUTC(){
 
 function convert_datetime($str) {
 	//convert date formatted string to unix timestamp
-	if(useUTC())
-		return convert_datetime_utc($str);
-	else
-		return convert_datetime_pre($str);
-		
-}
-
-function convert_datetime_utc($str) 
-{
-	if(defined('_DEBUG')) error_log(">>>convert_datetime_utc  $str", 0);
-	return strtotime( $str. ' UTC' );
-}
-
-function convert_datetime_pre( $str ) //mythtv  0.25
-{
-	if(defined('_DEBUG')) error_log(">>>convert_datetime_pre  $str", 0);
-    list($date, $time)            = explode(' ', $str);
-    list($year, $month,  $day)    = explode('-', $date);
-    list($hour, $minute, $second) = explode(':', $time);
-
-    if ( 0 === $year  ) { $year  = 1900; }
-    if ( 0 === $month ) { $month = 1;    }
-    if ( 0 === $day   ) { $day   = 1;    }
-
-    return mktime((int)$hour, (int)$minute, (int)$second, (int)$month, (int)$day, (int)$year);
+	return strtotime( useUTC() ? "$str UTC" : $str);
 }
 
 function normalizeHtml($string){
@@ -311,6 +274,11 @@ class JobQueue extends ActiveRecord\Model
 class MythSettings extends ActiveRecord\Model
 {
 	static $table_name = 'settings';
+}
+
+class Guide extends ActiveRecord\Model
+{
+	static $table_name = 'program';
 }
  
 ?>

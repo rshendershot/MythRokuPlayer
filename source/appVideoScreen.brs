@@ -40,13 +40,13 @@ Function showVideoScreen(episode As Object)
             if msg.isScreenClosed()
                 print "Screen closed"
                 exit while
-            elseif msg.isRequestFailed()
+            else if msg.isRequestFailed()
                 print "Video request failure: "; msg.GetIndex(); " " msg.GetData() 
-            elseif msg.isStatusMessage()
+            else if msg.isStatusMessage()
                 print "Video status: "; msg.GetIndex(); " " msg.GetData() 
-            elseif msg.isButtonPressed()
+            else if msg.isButtonPressed()
                 print "Button pressed: "; msg.GetIndex(); " " msg.GetData()
-            elseif msg.isPlaybackPosition() then
+            else if msg.isPlaybackPosition() then
                 nowpos = msg.GetIndex()
                 RegWrite(episode.ContentId, nowpos.toStr())
             else

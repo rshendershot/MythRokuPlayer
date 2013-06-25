@@ -64,7 +64,8 @@ if(isset($_GET['Date'])) {
 	print $feed;
 
 }else{
-//	build category static groupings: Week, Month, Year, All	
+	//	build category static groupings: Week, Month, Year, All
+		
 	$date = new category(
 		array(XmlEmitter::ATR.'title'=>'Date'
 			, XmlEmitter::ATR.'description'=>'Select a Date'

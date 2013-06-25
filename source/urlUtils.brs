@@ -145,7 +145,7 @@ Function http_get_to_string_with_retry() as String
             if type(event) = "roUrlEvent"
                 str = event.GetString()
                 exit while        
-            elseif event = invalid
+            else if event = invalid
                 m.Http.AsyncCancel()
                 REM reset the connection on timeouts
                 m.Http = CreateURLTransferObject(m.Http.GetUrl())
@@ -175,7 +175,7 @@ Function http_get_to_string_with_timeout(seconds as Integer) as String
         event = wait(timeout%, m.Http.GetPort())
         if type(event) = "roUrlEvent"
             str = event.GetString()
-        elseif event = invalid
+        else if event = invalid
             Dbg("AsyncGetToString timeout")
             m.Http.AsyncCancel()
         else
@@ -201,7 +201,7 @@ Function http_post_from_string_with_timeout(val As String, seconds as Integer) a
         if type(event) = "roUrlEvent"
 			print "1"
 			str = event.GetString()
-        elseif event = invalid
+        else if event = invalid
 			print "2"
             Dbg("AsyncPostFromString timeout")
             m.Http.AsyncCancel()

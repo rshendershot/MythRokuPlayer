@@ -76,11 +76,11 @@ if(isset($_GET['Upcoming'])) {
 	print $feed;
 	
 }else{
-	//build category from available groups	
+	// build category static groupings: Top $limit, All	
 
 	$upcoming = new category(
-		array(XmlEmitter::ATR.'title'=>'Upcoming'
-			, XmlEmitter::ATR.'description'=>'Scheduled Recordings'
+		array(XmlEmitter::ATR.'title'=>'Schedule'
+			, XmlEmitter::ATR.'description'=>'Upcoming Recordings and Jobs'
 			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/event_viewer.png"
 			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/event_viewer.png"
 			, 'categoryLeaf'=>array()

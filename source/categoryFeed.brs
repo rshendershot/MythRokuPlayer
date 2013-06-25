@@ -138,9 +138,9 @@ Function ParseCategoryNode(xml As Object) As dynamic
         o.ShortDescriptionLine2 = xml@Description
         o.SDPosterURL = xml@sd_img
         o.HDPosterURL = xml@hd_img
-    elseif xml.GetName() = "categoryLeaf" then
+    else if xml.GetName() = "categoryLeaf" then
         o.Type = "normal"
-    elseif xml.GetName() = "specialCategory" then
+    else if xml.GetName() = "specialCategory" then
         if invalid <> xml.GetAttributes() then
             for each a in xml.GetAttributes()
                 if a = "type" then
@@ -183,14 +183,14 @@ Function ParseCategoryNode(xml As Object) As dynamic
             kid.SDPosterURL = xml@sd_img
             kid.HDPosterURL = xml@hd_img
             o.AddKid(kid)
-        elseif name = "categoryLeaf" then
+        else if name = "categoryLeaf" then
             print "categoryLeaf: " + e@title + " [" + e@description + "]"
             kid = ParseCategoryNode(e)
             kid.Title = e@title
             kid.Description = e@Description
             kid.Feed = e@feed
             o.AddKid(kid)
-        elseif name = "specialCategory" then
+        else if name = "specialCategory" then
             print "specialCategory: " + e@title + " [" + e@description + "]"
             kid = ParseCategoryNode(e)
             kid.Title = e@title
