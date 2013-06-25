@@ -117,7 +117,7 @@ class item extends XmlEmitter {
 			$this->genres = new genres(array('content'=>$show->Temperature));
 			$this->runtime = new runtime(array('content'=>0));
 						
-			$this->date = new date(array('content'=>date('D dMo', convert_date($show->AsOf))));
+			$this->date = new date(array('content'=>date('D dMo', convert_datetime($show->AsOf))));
 			$this->tvormov = new tvormov(array('content'=>'weather'));
 		}elseif(is_a($show,'Program')){
 			/// MythTV Program schema
