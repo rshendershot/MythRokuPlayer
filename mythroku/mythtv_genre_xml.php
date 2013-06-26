@@ -7,12 +7,14 @@ include_once 'player_feed.php';
 if(isset($_GET['Genre'])) {
 	$select = str_replace(' ', '%', rawurldecode($_GET['Genre']));
 	$SQL = <<<EOF
-select g.genre, v.* from videometadatagenre a 
-join videometadata v on v.intid = a.idvideo
-join videogenre g on g.intid = a.idgenre
+select (case when g.genre is null then 'Default' else g.genre end) as genre
+, v.* 
+from videometadata v
+left join videometadatagenre a on a.idvideo = v.intid
+left join videogenre g on g.intid = a.idgenre
 where v.filename like '%.m%4%' 
 and v.host > ''
-and g.genre like '$select'
+having genre like '$select'
 EOF;
 
 	//build feed for this specific genre	
@@ -71,7 +73,7 @@ EOF;
 	foreach ( $rec_cat as $value ) {
        $results[] = ucwords(str_replace('-', ' ', $value->category));
 	}	
-	$vid_genre = VideoMetadata::find_by_sql( 'select distinct g.genre from videogenre g left join videometadatagenre vmg on vmg.idgenre = g.intid join videometadata vm on vm.intid = vmg.idvideo' );
+	$vid_genre = VideoMetadata::find_by_sql( "select (case when g.genre is null then 'Default' else g.genre end) as genre from videometadata v left join videometadatagenre a on a.idvideo = v.intid left join videogenre g on g.intid = a.idgenre");
 	foreach ( $vid_genre as $value ) {
     	$results[] = ucwords(str_replace('-', ' ', $value->genre));   
 	}	
