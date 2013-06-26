@@ -10,12 +10,13 @@ if(isset($_GET['Weather'])) {
 	//build feed for this specific group	
 	error_log("selecting Weather: $select", 0);
 
-	// Location in the form of 'City Name, State Abbreviation, Country Abreviation'  
-	$weatherType = 'mode=xml&units=imperial&cnt='.$UpcomingListLimit;
+	// Location in the form of 'City Name, State Abbreviation, Country Abreviation' 
+	$cnt = $UpcomingListLimit + 1;
+	$weatherType = 'mode=xml&units=imperial&cnt='.$cnt;
 	$weatherSvc = "http://api.openweathermap.org/data/2.5/$select&$weatherType";
-	$weatherList = new SimpleXMLElement($weatherSvc, NULL, TRUE);
-	//print $weatherList->asXML(); return;
+	if(defined('_DEBUG')) error_log(">>> weather service request: $weatherSvc", 0);
 	
+	$weatherList = new SimpleXMLElement($weatherSvc, NULL, TRUE);	
 	if(!empty($weatherList)){
 		$items = array();
 		foreach($weatherList->xpath('//current') as $value) {
@@ -28,7 +29,7 @@ if(isset($_GET['Weather'])) {
 			$cloudsEl = $value->xpath('//clouds/@name');
 			
 			$asofEl = $value->xpath('//lastupdate/@value');
-			
+						
 			$temp = round((float)$tempEl[0]);
 			
 			$weatherTpl = new SimpleXMLElement('<Weather/>');
@@ -57,6 +58,14 @@ if(isset($_GET['Weather'])) {
 			$cloudsEl = $value->xpath('.//clouds/@value');
 			
 			$asofEl = $value->xpath('.//@day');
+			$AsOf = (string)$asofEl[0];
+			$forecastTime = strtotime($AsOf);
+			if(!useUTC())
+				$currentTime = strtotime(gmdate('Y-m-d'));
+			else 
+				$currentTime = strtotime(date('Y-m-d'));
+			if($forecastTime < $currentTime)
+				continue;
 			
 			$tempMax = round((float)$tempMaxEl[0]);
 			$tempMin = round((float)$tempMinEl[0]);
@@ -72,7 +81,7 @@ if(isset($_GET['Weather'])) {
 			$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
 			$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
 			$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
-			$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+			$weatherTpl->addChild('AsOf', $AsOf);
 			$weatherTpl->addChild('Source', 'Provided by http://openweathermap.org/');
 			
 			$current = new Weather($weatherTpl);
