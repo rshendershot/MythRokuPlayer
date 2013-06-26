@@ -66,11 +66,11 @@ EOF;
 	$menu = array();
 	$results = array();
 	
-	$rec_cat = Recorded::find_by_sql( 'select distinct playgroup from recorded' );
+	$rec_cat = Recorded::find_by_sql( "select distinct playgroup from recorded where basename like '%.mp4'" );
 	foreach ( $rec_cat as $value ) {
        $results[] = ucwords(str_replace('-', ' ', $value->playgroup));
 	}	
-	$vid_genre = VideoCategory::find_by_sql( 'select category from videocategory' );
+	$vid_genre = VideoCategory::find_by_sql( 'select distinct vc.category from videocategory vc join videometadata v on v.category = vc.intid' );
 	foreach ( $vid_genre as $value ) {
     	$results[] = ucwords(str_replace('-', ' ', $value->category));   
 	}	
