@@ -71,7 +71,7 @@ EOF;
 	foreach ( $rec_cat as $value ) {
        $results[] = ucwords(str_replace('-', ' ', $value->category));
 	}	
-	$vid_genre = VideoMetadata::find_by_sql( 'select genre from videogenre' );
+	$vid_genre = VideoMetadata::find_by_sql( 'select distinct g.genre from videogenre g left join videometadatagenre vmg on vmg.idgenre = g.intid join videometadata vm on vm.intid = vmg.idvideo' );
 	foreach ( $vid_genre as $value ) {
     	$results[] = ucwords(str_replace('-', ' ', $value->genre));   
 	}	
