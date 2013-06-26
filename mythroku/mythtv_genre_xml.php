@@ -67,7 +67,7 @@ EOF;
 	$menu = array();
 	$results = array();
 	
-	$rec_cat = Recorded::find_by_sql( 'select distinct category from recorded' );
+	$rec_cat = Recorded::find_by_sql( "select distinct category from recorded where basename like '%.mp4'" );
 	foreach ( $rec_cat as $value ) {
        $results[] = ucwords(str_replace('-', ' ', $value->category));
 	}	
