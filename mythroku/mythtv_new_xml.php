@@ -62,8 +62,8 @@ if(isset($_GET['New'])) {
 	$new = new category(
 		array(XmlEmitter::ATR.'title'=>'Guide'
 			, XmlEmitter::ATR.'description'=>'New Pilots, Premieres and recent Movies'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/view-new.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/view-new.png"
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/view-right-new-4.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/view-right-new-4.png"
 			, 'categoryLeaf'=>array()
 		)
 	);

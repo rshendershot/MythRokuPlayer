@@ -57,8 +57,8 @@ EOF;
 	$group = new category(
 		array(XmlEmitter::ATR.'title'=>'Group'
 			, XmlEmitter::ATR.'description'=>'Select a Group'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/galleryfolder.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/galleryfolder.png"
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/tab-detach.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/tab-detach.png"
 			, 'categoryLeaf'=>array()
 		)
 	);

@@ -90,8 +90,8 @@ if(isset($_GET['Upcoming'])) {
 	$upcoming = new category(
 		array(XmlEmitter::ATR.'title'=>'Schedule'
 			, XmlEmitter::ATR.'description'=>'Upcoming Recordings and Jobs'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/event_viewer.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/event_viewer.png"
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/wifi-radar.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/wifi-radar.png"
 			, 'categoryLeaf'=>array()
 		)
 	);
