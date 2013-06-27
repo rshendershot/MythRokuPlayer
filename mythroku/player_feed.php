@@ -6,8 +6,10 @@ class Weather extends XmlInjector {}
 
 // MythTV Services API classes
 class Program extends XmlInjector {
+	public $isScheduled = false;
 	public $isRecording = false;
 	public $hasJob = false;
+	public $isConflict = false;
 }
 class ProgramTpl extends Program {
 	const rsNONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
@@ -123,14 +125,19 @@ class item extends XmlEmitter {
 			/// MythTV Program schema
 			
 			$ShowLength = convert_datetime($show->EndTime) - convert_datetime($show->StartTime);
-			if($show->isRecording){
-				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_other.png";
+			if($show->isScheduled){
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_green.png";
+			} elseif($show->isRecording){
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_blue.png";
 				$show->Category = 'NOW RECORDING!';
 			} elseif($show->hasJob) {
-				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_conflict.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_orange.png";
 				$show->Category = 'NOW PROCESSING A JOB!';
+			} elseif($show->isConflict) {
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_red.png";
+				$show->Category = 'SCHEDULE CONFLICT!';
 			} else {
-				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_scheduled.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 			}
 			
 			$this->title = new title(array('content'=>normalizeHtml($show->Title))); 
@@ -153,13 +160,13 @@ class item extends XmlEmitter {
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
 			//TODO indicate if an item is already scheduled
 			if($show->last && $show->first){
-				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_conflict.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_red.png";
 				$show->category = 'ONLY CHANCE!';
 			} elseif($show->last) {
-				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_other.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_orange.png";
 				$show->category = 'LAST CHANCE.';
 			} else {
-				$imgUrl = "$WebServer/$MythRokuDir/images/mythtv_scheduled.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_green.png";
 			}
 			
 			$this->title = new title(array('content'=>normalizeHtml($show->title)));
