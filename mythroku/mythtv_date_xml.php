@@ -69,8 +69,8 @@ if(isset($_GET['Date'])) {
 	$date = new category(
 		array(XmlEmitter::ATR.'title'=>'Date'
 			, XmlEmitter::ATR.'description'=>'Select a Date'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/Date-Time.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/Date-Time.png"
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png"
 			, 'categoryLeaf'=>array()
 		)
 	);

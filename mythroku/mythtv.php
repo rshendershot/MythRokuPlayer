@@ -2,60 +2,6 @@
 require_once 'settings.php';
 include_once 'player_feed.php';
 
-if(defined('_DEBUG')) error_log( ">>>".print_r($_SERVER,1), 0 );
-
-////TV
-//$tv_date = new categoryLeaf(
-//	array(XmlEmitter::ATR.'description'=>'some description', XmlEmitter::ATR.'title'=>'Date', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=date")
-//);
-//$tv_title = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Title', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=title")
-//);
-//$tv_special = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Special', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=special")
-//);
-//$tv_political = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Political', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=political")
-//);
-//$tv_ed = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Educational', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=education")
-//);
-//$tv_movies = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Movies', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=movies")
-//);
-//$tv_channel = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Channel', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=channel")
-//);
-//$tv_group = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Group', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=playgroup")
-//);
-//$tv_todo = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'ToDo', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_tv_xml.php?sort=todo")
-//);
-//$tv = new category(
-//	array(XmlEmitter::ATR.'title'=>'TV'
-//		, XmlEmitter::ATR.'description'=>'Television'
-//		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/Mythtv_tv.png"
-//		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/Mythtv_tv.png"
-//		, 'categoryLeaf'=>array($tv_date, $tv_title, $tv_special, $tv_political, $tv_ed, $tv_movies, $tv_channel, $tv_group, $tv_todo)
-//	)
-//);
-//
-////VID
-//$vid_date = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Date', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_movies_xml.php?sort=date")
-//);
-//$vid_title = new categoryLeaf(
-//	array(XmlEmitter::ATR.'title'=>'Title', XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_movies_xml.php?sort=title")
-//);
-//$vid = new category(
-//	array(XmlEmitter::ATR.'title'=>'VID'
-//		, XmlEmitter::ATR.'description'=>'Videos'
-//		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/Mythtv_movie.png"
-//		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/Mythtv_movie.png"
-//		, 'categoryLeaf'=>array($vid_date, $vid_title)
-//	)
-//);
 
 //GROUP  (recorded.playgroup and videometadata.category which are both user defined)
 include 'mythtv_group_xml.php';
@@ -82,8 +28,8 @@ $config = new categoryLeaf(
 $conf = new category(
 	array(XmlEmitter::ATR.'title'=>'Settings'
 		, XmlEmitter::ATR.'description'=>'Configuration'
-		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/Mythtv_settings.png"
-		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/Mythtv_settings.png"
+		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/preferences-system-2.png"
+		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/preferences-system-2.png"
 		, 'categoryLeaf'=>array($config)
 	)
 );
@@ -95,8 +41,8 @@ $conf = new category(
 //$all = new category(
 //	array(XmlEmitter::ATR.'title'=>'All'
 //		, XmlEmitter::ATR.'description'=>'All Movie and TV'
-//		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/mythtv_all.png"
-//		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_all.png"
+//		, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/zoom-out.png"
+//		, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/zoom-out.png"
 //		, 'categoryLeaf'=>array($mythtv_all)
 //	)
 //);
@@ -111,6 +57,7 @@ $top = new categories(
 			$date
 			, $upcoming
 			, $conf  //-- This MUST be the third item.  The UI references it (2) by zero-based index. --//
+			//, $all
 			, $weather
 			, $new
 			, $group

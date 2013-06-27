@@ -13,11 +13,14 @@ if(isset($_GET['Upcoming'])) {
 	$jobqueueSvc = "$localSvc/jobqueue_service.php";	
 	$recordingSvc = "$MythDvrSvc/GetRecordedList?Descending=true";
 	$upcomingSvc = "$MythDvrSvc/GetUpcomingList";
-	if ($select == 'Top')
+	$conflictSvc = "$MythDvrSvc/GetConflictList";
+	if ($select == 'Top'){
 		$upcomingSvc .= "?Count=$UpcomingListLimit";	
-	
-	$upcomingList = new SimpleXMLElement($upcomingSvc, NULL, TRUE);
+		$conflictSvc .= "?Count=$UpcomingListLimit";	
+	}
 	$recordingList = new SimpleXMLElement($recordingSvc, NULL, TRUE);
+	$upcomingList = new SimpleXMLElement($upcomingSvc, NULL, TRUE);
+	$conflictList = new SimpleXMLElement($conflictSvc, NULL, TRUE);
 	
 	$items = array();
 	foreach($recordingList->xpath('//Program') as $value) {
@@ -51,6 +54,12 @@ if(isset($_GET['Upcoming'])) {
 	}
 	foreach($upcomingList->xpath('//Program') as $value) {
 		$program = new Program($value);
+		$program->isScheduled = true;
+		$items[] = new item($program);
+	}
+	foreach($conflictList->xpath('//Program') as $value) {		
+		$program = new Program($value);
+		$program->isConflict = true;
 		$items[] = new item($program);
 	}
 	usort($items, 'items_date_compare');
@@ -81,8 +90,8 @@ if(isset($_GET['Upcoming'])) {
 	$upcoming = new category(
 		array(XmlEmitter::ATR.'title'=>'Schedule'
 			, XmlEmitter::ATR.'description'=>'Upcoming Recordings and Jobs'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/event_viewer.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/event_viewer.png"
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/wifi-radar.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/wifi-radar.png"
 			, 'categoryLeaf'=>array()
 		)
 	);

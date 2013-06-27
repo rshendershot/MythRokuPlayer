@@ -60,8 +60,8 @@ EOF;
 	$genre = new category(
 		array(XmlEmitter::ATR.'title'=>'Genre'
 			, XmlEmitter::ATR.'description'=>'Select a Genre'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/bookmark.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/bookmark.png"
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/bookmark-5.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/bookmark-5.png"
 			, 'categoryLeaf'=>array()
 		)
 	);
