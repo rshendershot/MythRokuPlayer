@@ -57,7 +57,7 @@ if(isset($_GET['New'])) {
 	print $feed;
 	
 }else{
-	// build category static groupings: TV, Movies, All
+	// build category static groupings: Series, Specials, Movies
 
 	$new = new category(
 		array(XmlEmitter::ATR.'title'=>'Guide'
