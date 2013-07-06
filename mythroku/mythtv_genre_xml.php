@@ -22,10 +22,10 @@ EOF;
 
 	$conditions = array('conditions' => array('basename like ? AND category like ?', '%.mp4', $select));
 	$record = Recorded::all( $conditions );
-	error_log("COUNT of RECORDED: ".count($record));
+	error_log("COUNT of RECORDED: ".count($record), 0);
 	
 	$video = VideoMetadata::find_by_sql( $SQL );
-	error_log("COUNT of VIDEOMETADATA: ".count($video));
+	error_log("COUNT of VIDEOMETADATA: ".count($video), 0);
 	
 	$items = array();
 	$shows = array_values(array_merge($record, $video));

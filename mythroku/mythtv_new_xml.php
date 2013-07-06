@@ -26,7 +26,7 @@ if(isset($_GET['New'])) {
 	}	
 	
 	$guide = Guide::all( $conditions );
-	error_log("COUNT of GUIDE: ".count($guide));
+	error_log("COUNT of GUIDE: ".count($guide), 0);
 	
 	$items = array();
 	$shows = array_values(array_merge($guide));
