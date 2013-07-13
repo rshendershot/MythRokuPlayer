@@ -29,12 +29,12 @@ if(isset($_GET['Date'])) {
 	
 	$conditions = array('conditions' => array("basename like ? AND $intervalQry", '%.mp4'));
 	$record = Recorded::all( $conditions );
-	error_log("COUNT of RECORDED: ".count($record));
+	error_log("COUNT of RECORDED: ".count($record), 0);
 	
 	$vselect = array('select' => '*, case releasedate when (releasedate is null) then insertdate else releasedate end as starttime');
 	$conditions = array('conditions' => array("filename like ? AND host > ? HAVING $intervalQry", '%.m%4%', ''));
 	$video = VideoMetadata::all( array_merge($vselect, $conditions) );
-	error_log("COUNT of VIDEOMETADATA: ".count($video));
+	error_log("COUNT of VIDEOMETADATA: ".count($video), 0);
 	
 	$items = array();
 	$shows = array_values(array_merge($record, $video));

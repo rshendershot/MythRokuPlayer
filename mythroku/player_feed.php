@@ -246,7 +246,7 @@ class item extends XmlEmitter {
 			$this->synopsis = new synopsis(array('content'=>normalizeHtml($show->plot)));
 			$this->genres = new genres(array('content'=>normalizeHtml(empty($category->category) ? '':$category->category)));
 			$this->runtime = new runtime(array('content'=>$show->length * 60));
-			$this->date = new date(array('content'=>"Year: $show->year"));
+			$this->date = new date(array('content'=>date("Y-m-d", convert_datetime($show->starttime))));
 			$this->tvormov = new tvormov(array('content'=>'movie'));
 			$this->starrating = new starrating(array('content'=>$show->userrating * 10));
 		}else{
