@@ -315,4 +315,3 @@ class Guide extends ActiveRecord\Model
 }
  
 ?>
-
