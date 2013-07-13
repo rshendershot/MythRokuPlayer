@@ -7,11 +7,14 @@ include_once 'player_feed.php';
 if(isset($_GET['Group'])) {
 	$select = str_replace(' ', '%', rawurldecode($_GET['Group']));
 	$SQL = <<<EOF
-select v.*,case v.category when 0 then 'Default' else c.category end as categoryKey 
+select 
+  (case v.category when 0 then 'Default' else c.category end) as category
+, (case releasedate when (releasedate is null) then insertdate else releasedate end) as starttime
+,v.*
 from videometadata v left join videocategory c on c.intid = v.category
 where v.filename like '%.m%4%' 
 and v.host > ''
-having categoryKey like '$select';
+having category like '$select';
 EOF;
 
 	//build feed for this specific group	
@@ -19,10 +22,10 @@ EOF;
 
 	$conditions = array('conditions' => array('basename like ? AND playgroup like ?', '%.mp4', $select));
 	$record = Recorded::all( $conditions );
-	error_log("COUNT of RECORDED: ".count($record));
+	error_log("COUNT of RECORDED: ".count($record), 0);
 	
 	$video = VideoMetadata::find_by_sql( $SQL );
-	error_log("COUNT of VIDEOMETADATA: ".count($video));
+	error_log("COUNT of VIDEOMETADATA: ".count($video), 0);
 	
 	$items = array();
 	$shows = array_values(array_merge($record, $video));
