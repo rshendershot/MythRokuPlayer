@@ -279,6 +279,40 @@ class MythSettings extends ActiveRecord\Model
 class Guide extends ActiveRecord\Model
 {
 	static $table_name = 'program';
+	
+	static function getStatusName($status){
+		switch ($status) {
+			case -13: return "other recording";
+			case -12: return "other tuning";
+			case -11: return "missed future";
+			case -10: return "tuning";
+			case -9: return "failed";
+			case -8: return "tuner busy";
+			case -7: return "low disk space";
+			case -6: return "cancelled";
+			case -5: return "missed";
+			case -4: return "aborted";
+			case -3: return "recorded";
+			case -2: return "recording";
+			case -1: return "will record";
+			case 0: return "unknown";
+			case 1: return "dont record";
+			case 2: return "previousl recording";
+			case 3: return "recorded";
+			case 4: return "earlier showing";
+			case 5: return "too many recordings";
+			case 6: return "not listed";
+			case 7: return "conflict";
+			case 8: return "later showing";
+			case 9: return "repeat";
+			case 10: return "inactive";
+			case 11: return "never record";
+			case 12: return "off line";
+			case 13: return "other showing";
+			default: return "undefined";
+		}
+	}
 }
  
 ?>
+

@@ -12,26 +12,31 @@ if(isset($_GET['New'])) {
 	
 	$interval = '1 week';
 	if(useUTC())
-		$intervalQry = "starttime BETWEEN utc_timestamp() AND adddate(utc_timestamp(), interval $interval) ";
+		$intervalQry = "program.starttime BETWEEN utc_timestamp() AND adddate(utc_timestamp(), interval $interval) ";
 	else
-		$intervalQry = "starttime BETWEEN now() AND adddate(now(), interval $interval) ";
+		$intervalQry = "program.starttime BETWEEN now() AND adddate(now(), interval $interval) ";
 	
-	$conditions = array('conditions'=>"manualid=0 AND $intervalQry");
+	$conditions = array('conditions'=>"program.manualid=0 AND $intervalQry");
 	switch ( $select ) {
-		case 'Series': $conditions['conditions'].= " AND category_type='series' AND subtitle='Pilot' AND programid like '%001' AND( first=true OR syndicatedepisodenumber = '' )"; break;
-		case 'Specials': $conditions['conditions'].= " AND category='Special'  AND originalairdate> adddate(now(), interval -1 month) AND( first=true OR last=true )"; break;
-		case 'Movies': $conditions['conditions'].= " AND category_type='movie' AND airdate>=year(now())-2 AND( first=true OR last=true )"; break;
+		case 'Series': $conditions['conditions'].= " AND program.category_type='series' AND program.subtitle='Pilot' AND program.programid like '%001' AND( program.first=true OR program.syndicatedepisodenumber = '' )"; break;
+		case 'Specials': $conditions['conditions'].= " AND program.category='Special'  AND program.originalairdate> adddate(now(), interval -1 month) AND( program.first=true OR program.last=true )"; break;
+		case 'Movies': $conditions['conditions'].= " AND program.category_type='movie' AND program.airdate>=year(now())-2 AND( program.first=true OR program.last=true )"; break;
 		default:
 			break;
 	}	
 	
-	$guide = Guide::all( $conditions );
+	$joins = array('joins'=>'LEFT JOIN oldrecorded o on(program.programid=o.programid AND program.starttime=o.starttime)');
+	$query = array('select'=>'program.*, o.recstatus, o.station ');
+	$guide = Guide::all( array_merge($query, $joins, $conditions) );
 	error_log("COUNT of GUIDE: ".count($guide), 0);
 	
 	$items = array();
 	$shows = array_values(array_merge($guide));
 	foreach($shows as $item => $show ){
-		$items[] = new item($show);
+		if($show->recstatus != 8 && $show->recstatus != 4 ) { //later or earlier showings removed from list
+			//error_log(">>> chanid: $show->chanid  time: $show->starttime  recstatus: $show->recstatus", 0);
+			$items[] = new item($show);
+		}
 	}
 	$items = array_unique($items);
 	usort($items, 'items_date_compare');
