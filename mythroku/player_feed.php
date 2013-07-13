@@ -159,17 +159,35 @@ class item extends XmlEmitter {
 		}elseif(is_a($show,'Guide')){
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
 			//TODO indicate if an item is already scheduled
-			if($show->last && $show->first){
+			if($show->recstatus == -1){
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_purple.png";
+				$show->category .= ' (WILL RECORD)';
+			} elseif($show->last && $show->first){
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_red.png";
-				$show->category = 'ONLY CHANCE!';
+				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { //inactive or conflict
+					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
+					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
+				} else {
+					$show->category .= ' (ONLY CHANCE)';
+				}
 			} elseif($show->last) {
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_orange.png";
-				$show->category = 'LAST CHANCE.';
+				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { //inactive or conflict
+					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
+					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
+				} else {
+					$show->category .= ' (LAST CHANCE)';
+				}				
 			} else {
-				$imgUrl = "$WebServer/$MythRokuDir/images/oval_green.png";
+				if(!empty($show->recstatus)) {
+					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
+					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
+				} else {
+					$imgUrl = "$WebServer/$MythRokuDir/images/oval_green.png";
+				}
 			}
 			
-			$this->title = new title(array('content'=>normalizeHtml($show->title)));
+			$this->title = new title(array('content'=>normalizeHtml($show->station.' '.$show->title)));
 			$this->contentQuality = new contentQuality(array('content'=>$RokuDisplayType));
 			$this->subtitle = new subtitle(array('content'=>normalizeHtml($show->subtitle)));
 			$this->addToAttributes('sdImg', $imgUrl);
