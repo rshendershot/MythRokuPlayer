@@ -7,11 +7,14 @@ include_once 'player_feed.php';
 if(isset($_GET['Group'])) {
 	$select = str_replace(' ', '%', rawurldecode($_GET['Group']));
 	$SQL = <<<EOF
-select v.*,case v.category when 0 then 'Default' else c.category end as categoryKey 
+select 
+  (case v.category when 0 then 'Default' else c.category end) as category
+, (case releasedate when (releasedate is null) then insertdate else releasedate end) as starttime
+,v.*
 from videometadata v left join videocategory c on c.intid = v.category
 where v.filename like '%.m%4%' 
 and v.host > ''
-having categoryKey like '$select';
+having category like '$select';
 EOF;
 
 	//build feed for this specific group	

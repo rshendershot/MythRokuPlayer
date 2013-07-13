@@ -7,7 +7,9 @@ include_once 'player_feed.php';
 if(isset($_GET['Genre'])) {
 	$select = str_replace(' ', '%', rawurldecode($_GET['Genre']));
 	$SQL = <<<EOF
-select (case when g.genre is null then 'Default' else g.genre end) as genre
+select 
+  (case when g.genre is null then 'Default' else g.genre end) as genre
+, (case releasedate when (releasedate is null) then insertdate else releasedate end) as starttime
 , v.* 
 from videometadata v
 left join videometadatagenre a on a.idvideo = v.intid
