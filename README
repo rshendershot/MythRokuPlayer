@@ -15,7 +15,7 @@ prerequisits:
 -php-gd
 -php-xml
 -php-pdo
--PHP ActiveRecord (in a php included location)
+-PHP ActiveRecord, in a php included location   (http://www.phpactiverecord.org)
 
 for more information see the Roku developer site:
 http://www.roku.com/developer
