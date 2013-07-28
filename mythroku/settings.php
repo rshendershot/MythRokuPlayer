@@ -1,5 +1,5 @@
 <?php
-require_once 'php-activerecord/ActiveRecord.php';
+require_once 'php-activerecord/ActiveRecord.php'; // http://www.phpactiverecord.org
 const DB_UTC_VER = '1307';  // http://www.mythtv.org/wiki?title=Category:DB_Table&oldid=56896
 
 //EDIT-HERE: set to the number of upcoming to show in the Top Upcoming and Weather Forecaset display
