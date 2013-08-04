@@ -160,8 +160,11 @@ class item extends XmlEmitter {
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
 			//TODO indicate if an item is already scheduled
 			if($show->recstatus == -1){
-				$imgUrl = "$WebServer/$MythRokuDir/images/oval_purple.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_blue.png";
 				$show->category .= ' (WILL RECORD)';
+			} elseif($show->recstatus == 10 || $show->recstatus == 7){
+				$imgUrl = "$WebServer/$MythRokuDir/images/oval_purple.png";
+				$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 			} elseif($show->last && $show->first){
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_red.png";
 				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { //inactive or conflict
