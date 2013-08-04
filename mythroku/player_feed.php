@@ -161,12 +161,12 @@ class item extends XmlEmitter {
 			if($show->recstatus == -1){
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_blue.png";
 				$show->category .= ' (WILL RECORD)';
-			} elseif($show->recstatus == 10 || $show->recstatus == 7){
+			} elseif($show->recstatus == 10 || $show->recstatus == 7){ //inactive or conflict
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_purple.png";
 				$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 			} elseif($show->last && $show->first){
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_red.png";
-				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { //inactive or conflict
+				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
 					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 				} else {
@@ -174,7 +174,7 @@ class item extends XmlEmitter {
 				}
 			} elseif($show->last) {
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_orange.png";
-				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { //inactive or conflict
+				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
 					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 				} else {
