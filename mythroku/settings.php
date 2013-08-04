@@ -2,9 +2,6 @@
 require_once 'php-activerecord/ActiveRecord.php'; // http://www.phpactiverecord.org
 const DB_UTC_VER = '1307';  // http://www.mythtv.org/wiki?title=Category:DB_Table&oldid=56896
 
-//EDIT-HERE: set to the number of upcoming to show in the Top Upcoming and Weather Forecaset display
-$UpcomingListLimit = 5;     
-
 //EDIT-HERE: Weather Forecaset location - weather information provided by http://openweathermap.org
 $City = 'District of Columbia';
 $State = '';
@@ -18,6 +15,18 @@ $MythTVdbuser = "mythtv";       // mythtv database user
 $MythTVdbpass = "mythtv";       // mythtv database password
 $MythBackendIP = $WebHostIP;   // Myth Backend server IP
 $MythBackendPort = "6544";     // Myth Backend services port   
+
+//EDIT-HERE: set to the number of upcoming to show in the Top Upcoming and Weather Forecaset display
+$UpcomingListLimit = 5;     
+
+//EDIT-HERE: set to the number of New Shows query rows to return
+$NewShowsQueryLimit = 500;     
+
+//EDIT-HERE: set to the type of Sports New-Shows to include.  Uncomment only the type you desire
+//$NewSportsQueryType = 'Sports%';  //Note: this selection return everything! It is limited though by $NewShowsQueryLimit setting     
+//$NewSportsQueryType = 'Sports talk';
+//$NewSportsQueryType = 'Sports non-event';
+$NewSportsQueryType = 'Sports event';
 
 // Edits are not normally needed below.  Note:  SD works for heterogenous households (for both HD and SD televisions)
 $WebServer = "http://" . $WebHostIP . "/mythweb";
