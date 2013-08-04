@@ -21,9 +21,12 @@ if(isset($_GET['New'])) {
 		case 'Series': $conditions['conditions'].= " AND program.category_type='series' AND program.subtitle='Pilot' AND program.programid like '%001' AND( program.first=true OR program.syndicatedepisodenumber = '' )"; break;
 		case 'Specials': $conditions['conditions'].= " AND program.category='Special'  AND program.originalairdate> adddate(now(), interval -1 month) AND( program.first=true OR program.last=true )"; break;
 		case 'Movies': $conditions['conditions'].= " AND program.category_type='movie' AND program.airdate>=year(now())-2 AND( program.first=true OR program.last=true )"; break;
+		case 'Sports': $conditions['conditions'].= " AND program.category LIKE '$NewSportsQueryType' AND program.PreviouslyShown=false AND( program.first=true OR program.last=true ) AND( program.originalairdate is null OR program.originalairdate> adddate(now(), interval -1 day) )"; break;
 		default:
 			break;
 	}	
+	$conditions['conditions'].= " ORDER BY program.starttime";
+	$conditions['conditions'].= " LIMIT $NewShowsQueryLimit";
 	
 	$joins = array('joins'=>'LEFT JOIN oldrecorded o on(program.programid=o.programid AND program.starttime=o.starttime)');
 	$query = array('select'=>'program.*, o.recstatus, o.station ');
@@ -74,7 +77,7 @@ if(isset($_GET['New'])) {
 	);
 
 	$menu = array();
-	$results = array('Series','Specials','Movies');	
+	$results = array('Series','Specials','Movies','Sports');	
 	
 	foreach ( $results as $value ) {
 		$parms = array('New'=>rawurlencode($value));
