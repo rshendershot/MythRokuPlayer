@@ -10,6 +10,7 @@ $order = array('order' => 'titleSortkey ASC');
 $conditions = array('conditions' => array('basename like ? ', '%.mp4'));
 $record = Recorded::all( array_merge($select, $conditions, $order) );
 
+$select['select'] .= ', case releasedate when (releasedate is null) then insertdate else releasedate end as starttime';
 $conditions = array('conditions' => array('filename like ? AND host > ?', '%.m%4%', ''));
 $video = VideoMetadata::all( array_merge($select, $conditions, $order) );
 
