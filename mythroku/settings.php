@@ -306,7 +306,7 @@ class Guide extends ActiveRecord\Model
 			case -1: return "will record";
 			case 0: return "unknown";
 			case 1: return "dont record";
-			case 2: return "previousl recording";
+			case 2: return "previous recording";
 			case 3: return "recorded";
 			case 4: return "earlier showing";
 			case 5: return "too many recordings";

@@ -158,16 +158,15 @@ class item extends XmlEmitter {
 			$this->tvormov = new tvormov(array('content'=>'upcoming'));
 		}elseif(is_a($show,'Guide')){
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
-			//TODO indicate if an item is already scheduled
 			if($show->recstatus == -1){
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_blue.png";
 				$show->category .= ' (WILL RECORD)';
-			} elseif($show->recstatus == 10 || $show->recstatus == 7){
+			} elseif($show->recstatus == 10 || $show->recstatus == 7){ //inactive or conflict
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_purple.png";
 				$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 			} elseif($show->last && $show->first){
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_red.png";
-				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { //inactive or conflict
+				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
 					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 				} else {
@@ -175,7 +174,7 @@ class item extends XmlEmitter {
 				}
 			} elseif($show->last) {
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_orange.png";
-				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { //inactive or conflict
+				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
 					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 				} else {
