@@ -280,7 +280,14 @@ class resultLength extends XmlEmitter {}
 class endIndex extends XmlEmitter {}
 
 class title extends XmlEmitter {}
-class contentId extends XmlEmitter {}
+class contentId extends XmlEmitter {
+	public function __construct(){
+		$arguments = func_get_args();		
+		$arguments[0]['content'] = crc32($arguments[0]['content']);
+		
+		parent::__construct($arguments[0]);
+	}
+}
 class contentType extends XmlEmitter {} //TV,Movie
 class contentQuality extends XmlEmitter {} //SD,HD
 class synopsis extends XmlEmitter {}
