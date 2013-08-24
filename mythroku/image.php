@@ -8,8 +8,10 @@ if (isset ($_GET['image'])) { //send a file spec
 	$file = rawurldecode($_GET['image']);
 	if (file_exists($file)) {					
         if (isset($_SERVER['HTTP_RANGE'])) {
+        	error_log(">>> range download: $file", 0);
             rangeDownload($file);
         } else {
+        	error_log(">>> output: $file", 0);
         	output($file);
         }												
 	} else {
@@ -57,16 +59,16 @@ if (isset ($_GET['image'])) { //send a file spec
 
 function output($file)
 {
-	$finfo = finfo_open(FILEINFO_MIME_TYPE);
-	if (!$finfo) 
-		throw new Exception('cannot get file_info.');	
-	header('Content-Length: ' . filesize($file));
-	header('Content-Type: ' . finfo_file($finfo, $file), true);
-	
-	if(defined('_DEBUG')) error_log( "*** ".implode("|", headers_list()), 0 );
-	
-	readfile($file);
-	//echo file_get_contents( $file );  //no real performance improvement here -RSH	
+	$fp = fopen($file, "r");
+	if ($fp) {
+		while (!feof($fp)) {			
+			echo fread($fp, 1024);  //changing the buffer size here seems to make little difference as the chunk is followed by a request for a range -RSH
+			flush();
+		}
+		fclose($fp);
+	}else{
+		throw new Exception("Unable to open a file handle to $file");
+	}
 }
 
 function rangeDownload($file)
