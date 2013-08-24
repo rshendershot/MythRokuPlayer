@@ -8,10 +8,8 @@ if (isset ($_GET['image'])) { //send a file spec
 	$file = rawurldecode($_GET['image']);
 	if (file_exists($file)) {					
         if (isset($_SERVER['HTTP_RANGE'])) {
-        	error_log(">>> range download: $file", 0);
             rangeDownload($file);
         } else {
-        	error_log(">>> output: $file", 0);
         	output($file);
         }												
 	} else {
