@@ -21,11 +21,23 @@ for more information see the Roku developer site:
 http://www.roku.com/developer
 
 
-1) you can set up your Roku box in developer mode to install the dev channel.
+1) You can use the private MythRokuPlayer channel, but if you wish to customize
+	the player User Interface BrighScript code then you must "side-load" a
+	development version.  
+	
+	If you use the private channel (http://owner.roku.com/Account/ChannelCode/?code=YWWMH) 
+	then you can skip to #2
+	
+	you can set up your Roku box in developer mode to install the dev channel.
 	Use remote and enter Home 3x, Up 2x, Right, Left, Right, Left, Right
+	
+	Make note of the IP and the password (firmware asof 5.2) that you set!
 	
 	add the following to your .bashrc file "ROKU_DEV_TARGET=roku.ip" 
 	Where roku.ip is the ip address of your Roku player.
+	
+	for Roku box with 5.2 or later firmware a side-load requires authentication.
+	add ROKU_DEV_PASSWORD=roku.passwd to your environment
 
 2) you need to modify mythweb to enable streaming of mp4 files.
  	modify /usr/share/mythtv/mythweb/includes/utils.php by adding the 

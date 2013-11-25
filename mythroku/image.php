@@ -18,28 +18,30 @@ if (isset ($_GET['image'])) { //send a file spec
 } elseif (isset($_GET['preview'])) { //send a key of chanid and starttime. will be a preview image since any rq for playable is Range.  We assure that is a File request.
 	$preview = rawurldecode($_GET['preview']);
 	$chanid = ltrim(substr($preview,0,6),'_');
-	$start = $starttime = substr($preview,6);
-	
-	if(defined('_DEBUG')) error_log(">>>PREVIEW: chanid $chanid : startime $starttime", 0);
+	$starttime = substr($preview,6);
 	
 	if(!useUTC()){  //even with myth 0.25 schema, mythbackend services require UTC date in parameters.
 		$timestamp=convert_datetime($starttime);
-		$start = gmdate('Y-m-d H:i:s', $timestamp );
+		$starttime = gmdate('Y-m-dTH:i:s', $timestamp );
 	}
-
+	$rawstarttime = str_replace(' ', 'T', $starttime);
+	
+	if(defined('_DEBUG')) error_log(">>>PREVIEW: chanid $chanid : startime $starttime", 0);
+	
 	if($chanid && $starttime) {		
 		$conditions = array('conditions' => array('chanid=? and starttime=? ', $chanid, $starttime)); 
-		$record = Recorded::first( $conditions );
+		$record = Recorded::first( $conditions );		
 		$file = $record->storagegroups->dirname . $record->basename . '.png'; 
     	if(!file_exists($file)) { //generate preview images since the user may not be invoking this from myth frontend
-    		error_log(
-    			"*** " . implode( '|',
-			    	get_headers(
-						$MythContentSvc . 'GetPreviewImage' . rawurlencode("?ChanId=$chanid&StartTime=$start")
-					)	
-				)			
-			,0);		
-    	;}    	
+    		file_get_contents($MythContentSvc . 'GetPreviewImage' . "?ChanId=$chanid&StartTime=$rawstarttime");
+//     		error_log(
+//     			"*** " . implode( '|',
+// 			    	get_headers(
+// 						$MythContentSvc . 'GetPreviewImage' . rawurlencode("?ChanId=$chanid&StartTime=$rawstarttime")
+// 					)	
+// 				)			
+// 			,0);		
+    	}    	
     	
     	try {
 			if(filesize($file)){    		
