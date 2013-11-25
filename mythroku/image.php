@@ -22,7 +22,7 @@ if (isset ($_GET['image'])) { //send a file spec
 	
 	if(!useUTC()){  //even with myth 0.25 schema, mythbackend services require UTC date in parameters.
 		$timestamp=convert_datetime($starttime);
-		$starttime = gmdate('Y-m-dTH:i:s', $timestamp );
+		$starttime = gmdate('Y-m-d H:i:s', $timestamp );
 	}
 	$rawstarttime = str_replace(' ', 'T', $starttime);
 	
