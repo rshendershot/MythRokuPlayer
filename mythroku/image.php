@@ -59,6 +59,12 @@ if (isset ($_GET['image'])) { //send a file spec
 
 function output($file)
 {
+	$finfo = finfo_open(FILEINFO_MIME_TYPE);
+	if (!$finfo) 
+		throw new Exception('cannot get file_info.');	
+	header('Content-Length: ' . filesize($file));
+	header('Content-Type: ' . finfo_file($finfo, $file), true);
+	
 	$fp = fopen($file, "r");
 	if ($fp) {
 		while (!feof($fp)) {			
