@@ -2,7 +2,7 @@
 require_once 'settings.php';
 include_once 'player_feed.php';
 
-// const _DEBUG = 'true';
+//const _DEBUG = 'true';
 
 if(isset($_GET['Weather'])) {
 	$select = rawurldecode($_GET['Weather']);	
@@ -66,7 +66,7 @@ if(isset($_GET['Weather'])) {
 			$conditionsEl = $value->xpath('.//conditions');
 			$windspeadEl = $value->xpath('.//maxwind/mph');
 			$winddirectionEl = $value->xpath('.//maxwind/dir');
-			$cloudsEl = ""; //$value->xpath('.//clouds/@value');
+			$cloudsEl = "";
 			$humidityEl = $value->xpath('.//maxhumidity');
 			
 			$asofEl = $value->xpath('.//date/pretty');
@@ -78,7 +78,7 @@ if(isset($_GET['Weather'])) {
 			$weatherTpl->addChild('Location', (string)$nameEl[0]);
 			$weatherTpl->addChild('Temperature', "$tempMin...$tempMax F.");
 			$weatherTpl->addChild('Icon', (string)$iconEl[0]);
-			$weatherTpl->addChild('Conditions', (string)$conditionsEl[0]); //ucwords($precip));
+			$weatherTpl->addChild('Conditions', (string)$conditionsEl[0]);
 			$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
 			$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
 			$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
@@ -118,8 +118,8 @@ if(isset($_GET['Weather'])) {
 	$weather = new category(
 		array(XmlEmitter::ATR.'title'=>'Weather'
 			, XmlEmitter::ATR.'description'=>'AS-IS - a proof-of-concept with no warranty'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/weather-freezing-rain.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/weather-freezing-rain.png"
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/wundergroundLogo_4c.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/wundergroundLogo_4c.png"
 			, 'categoryLeaf'=>array()
 		)
 	);
