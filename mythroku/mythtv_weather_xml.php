@@ -117,7 +117,7 @@ if(isset($_GET['Weather'])) {
 
 	$weather = new category(
 		array(XmlEmitter::ATR.'title'=>'Weather'
-			, XmlEmitter::ATR.'description'=>'AS-IS - a proof-of-concept with no warranty'
+			, XmlEmitter::ATR.'description'=>'Conditions and Forecast'
 			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/wundergroundLogo_4c.png"
 			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/wundergroundLogo_4c.png"
 			, 'categoryLeaf'=>array()
