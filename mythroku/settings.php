@@ -286,6 +286,8 @@ class JobQueue extends ActiveRecord\Model
 class MythSettings extends ActiveRecord\Model
 {
 	static $table_name = 'settings';
+	
+	static $primary_key = 'value';
 }
 
 class Guide extends ActiveRecord\Model

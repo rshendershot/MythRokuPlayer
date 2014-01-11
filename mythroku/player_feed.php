@@ -14,7 +14,8 @@ class Program extends XmlInjector {
 class ProgramTpl extends Program {
 	const rsNONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
 	const rsEMPTY = '<Program><Title>Service returned nothing.</Title><Description>Data from the service was empty.  Please try again later.</Description></Program>';
-
+	const rsERROR = '<Program><Title/><Description/></Program>';
+	
 	public function __construct($xml){
 		if(useUTC())
 			$this->StartTime=gmdate('Y-m-d H:i:s');
