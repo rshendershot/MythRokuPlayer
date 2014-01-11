@@ -14,7 +14,8 @@ class Program extends XmlInjector {
 class ProgramTpl extends Program {
 	const rsNONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
 	const rsEMPTY = '<Program><Title>Service returned nothing.</Title><Description>Data from the service was empty.  Please try again later.</Description></Program>';
-
+	const rsERROR = '<Program><Title/><Description/></Program>';
+	
 	public function __construct($xml){
 		if(useUTC())
 			$this->StartTime=gmdate('Y-m-d H:i:s');
@@ -103,14 +104,15 @@ class item extends XmlEmitter {
 		}elseif(is_a($show,'Weather')){
 			$ShowLength = 0;
 			$title = "$show->Location,  $show->Temperature";
-			$subtitle = "$show->Conditions, $show->WindSpeed, $show->WindDirection, $show->Clouds";
+			$subtitle = "$show->Conditions, $show->WindDirection@$show->WindSpeed mph, hum $show->Humidity";
+			$subtitle .= empty($show->Clouds) ? "" : ", vis $show->Clouds mi.";
 			$synopsis = "$subtitle $show->Source";
 
 			$this->title = new title(array('content'=>$title)); 
 			$this->contentQuality = new contentQuality(array('content'=>$RokuDisplayType));
 			$this->subtitle = new subtitle(array('content'=>$subtitle));
-			$this->addToAttributes('sdImg', "http://openweathermap.org/img/w/$show->Icon");
-			$this->addToAttributes('hdImg', "http://openweathermap.org/img/w/$show->Icon");
+			$this->addToAttributes('sdImg', "$show->Icon");
+			$this->addToAttributes('hdImg', "$show->Icon");
 			$this->contentId = new contentId(array('content'=>$show->Location));
 			//$this->contentType = new contentType(array('content'=>'TV'));
 			//$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required

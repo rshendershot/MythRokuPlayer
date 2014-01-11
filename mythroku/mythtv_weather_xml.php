@@ -6,97 +6,115 @@ include_once 'player_feed.php';
 
 if(isset($_GET['Weather'])) {
 	$select = rawurldecode($_GET['Weather']);	
-
-	//build feed for this specific group	
+	
+	//build feed for this specific group
 	error_log("selecting Weather: $select", 0);
 
-	// Location in the form of 'City Name, State Abbreviation, Country Abreviation' 
-	$cnt = $UpcomingListLimit + 1;
-	$weatherType = 'mode=xml&units=imperial&cnt='.$cnt;
-	$weatherSvc = "http://api.openweathermap.org/data/2.5/$select&$weatherType";
-	if(defined('_DEBUG')) error_log(">>> weather service request: $weatherSvc", 0);
-	
-	$weatherList = new SimpleXMLElement($weatherSvc, NULL, TRUE);	
-	if(!empty($weatherList)){
-		$items = array();
-		foreach($weatherList->xpath('//current') as $value) {
-			$nameEl = $value->xpath('//city/@name');  
-			$tempEl = $value->xpath('//temperature/@value');
-			$iconEl = $value->xpath('//weather/@icon');
-			$conditionsEl = $value->xpath('//weather/@value');
-			$windspeadEl = $value->xpath('//wind/speed/@name');
-			$winddirectionEl = $value->xpath('//wind/direction/@code');
-			$cloudsEl = $value->xpath('//clouds/@name');
-			
-			$asofEl = $value->xpath('//lastupdate/@value');
-						
-			$temp = round((float)$tempEl[0]);
-			
-			$weatherTpl = new SimpleXMLElement('<Weather/>');
-			$weatherTpl->addChild('Location', (string)$nameEl[0]);
-			$weatherTpl->addChild('Temperature', $temp.' F.');
-			$weatherTpl->addChild('Icon', (string)$iconEl[0]);
-			$weatherTpl->addChild('Conditions', (string)$conditionsEl[0]);
-			$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
-			$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
-			$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
-			$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
-			$weatherTpl->addChild('Source', 'Provided by http://openweathermap.org/');
-			
-			$current = new Weather($weatherTpl);
-			
-			$items[] = new item($current);
-		}
-		foreach($weatherList->xpath('//forecast/time') as $value) {
-			$nameEl = $value->xpath('//location/name');  
-			$tempMaxEl = $value->xpath('.//temperature/@max');
-			$tempMinEl = $value->xpath('.//temperature/@min');
-			$iconEl = $value->xpath('.//symbol/@var');
-			$conditionsEl = $value->xpath('.//precipitation/@type');
-			$windspeadEl = $value->xpath('.//windSpeed/@name');
-			$winddirectionEl = $value->xpath('.//windDirection/@code');
-			$cloudsEl = $value->xpath('.//clouds/@value');
-			
-			$asofEl = $value->xpath('.//@day');
-			$AsOf = (string)$asofEl[0];
-			$forecastTime = strtotime($AsOf);
-			if(!useUTC())
-				$currentTime = strtotime(gmdate('Y-m-d'));
-			else 
-				$currentTime = strtotime(date('Y-m-d'));
-			if($forecastTime < $currentTime)
-				continue;
-			
-			$tempMax = round((float)$tempMaxEl[0]);
-			$tempMin = round((float)$tempMinEl[0]);
-			
-			$conditions = empty($conditionsEl[0]) ? '':(string)$conditionsEl[0];
-			$precip = (empty($conditions) ? 'No Precipitation' : $conditions);
-			
-			$weatherTpl = new SimpleXMLElement('<Weather/>');
-			$weatherTpl->addChild('Location', (string)$nameEl[0]);
-			$weatherTpl->addChild('Temperature', "$tempMin...$tempMax F.");
-			$weatherTpl->addChild('Icon', (string)$iconEl[0]);
-			$weatherTpl->addChild('Conditions', ucwords($precip));
-			$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
-			$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
-			$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
-			$weatherTpl->addChild('AsOf', $AsOf);
-			$weatherTpl->addChild('Source', 'Provided by http://openweathermap.org/');
-			
-			$current = new Weather($weatherTpl);
-			
-			$items[] = new item($current);		
-		}
-		usort($items, 'items_date_compare');
+	$weatherType = '.xml';
+	$pws = "pws:" . (int)$PWS;
+	$resource = "conditions/forecast10day/$pws/q/$Country/$State/$City$weatherType"; 
 
-		$feed = new feed(
-			array(
-				'resultLength'=>new resultLength(array('content'=>count($items)))
-				, 'endIndex'=>new endIndex(array('content'=>count($items)))
-				, 'item'=>$items
-			)
-		);	
+	$weatherSvc = "http://api.wunderground.com/api/$API_KEY/$resource";
+	$weatherList = get_last_query_result($weatherSvc); 	
+	
+	$items = array();
+	if(!empty($weatherList)){
+		if(can_process_feed($weatherList)){
+			foreach($weatherList->xpath('//response/current_observation') as $value) {
+				if($select != "conditions")	continue;
+	
+				$nameEl = $value->xpath('.//observation_location/city');  
+				$tempEl = $value->xpath('.//temp_f');
+				$iconEl = $value->xpath('.//icon_url');
+				
+				$conditionsEl = $value->xpath('.//weather');
+				$windspeadEl = $value->xpath('.//wind_mph');
+				$winddirectionEl = $value->xpath('.//wind_dir');
+				$cloudsEl = $value->xpath('.//visibility_mi');
+				$humidityEl = $value->xpath('.//relative_humidity');
+				
+				$asofEl = $value->xpath('.//observation_time_rfc822');
+							
+				$temp = round((float)$tempEl[0]);
+				
+				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Location', (string)$nameEl[0]);
+				$weatherTpl->addChild('Temperature', $temp.' F.');
+				$weatherTpl->addChild('Icon', (string)$iconEl[0]);
+				$weatherTpl->addChild('Conditions', (string)$conditionsEl[0]);
+				$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
+				$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
+				$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
+				$weatherTpl->addChild('Humidity', (string)$humidityEl[0]);
+				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
+				
+				$current = new Weather($weatherTpl);
+				
+				$items[] = new item($current);
+			}
+			
+			foreach($weatherList->xpath('//response/forecast/simpleforecast/forecastdays/forecastday') as $value) {
+				if($select != "forecast") continue;
+				
+				$nameEl = $value->xpath('//observation_location/city');  
+				$tempMaxEl = $value->xpath('.//high/fahrenheit');
+				$tempMinEl = $value->xpath('.//low/fahrenheit');
+				$iconEl = $value->xpath('.//icon_url');
+				
+				$conditionsEl = $value->xpath('.//conditions');
+				$windspeadEl = $value->xpath('.//maxwind/mph');
+				$winddirectionEl = $value->xpath('.//maxwind/dir');
+				$cloudsEl = "";
+				$humidityEl = $value->xpath('.//maxhumidity');
+				
+				$asofEl = $value->xpath('.//date/pretty');
+				
+				$tempMax = round((float)$tempMaxEl[0]);
+				$tempMin = round((float)$tempMinEl[0]);			
+				
+				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Location', (string)$nameEl[0]);
+				$weatherTpl->addChild('Temperature', "$tempMin...$tempMax F.");
+				$weatherTpl->addChild('Icon', (string)$iconEl[0]);
+				$weatherTpl->addChild('Conditions', (string)$conditionsEl[0]);
+				$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
+				$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
+				$weatherTpl->addChild('Clouds', (string)$cloudsEl);
+				$weatherTpl->addChild('Humidity', (string)$humidityEl[0] . "%");
+				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
+				
+				$current = new Weather($weatherTpl);
+				
+				$items[] = new item($current);		
+			}
+			
+			usort($items, 'items_date_compare');
+	
+			$feed = new feed(
+				array(
+					'resultLength'=>new resultLength(array('content'=>count($items)))
+					, 'endIndex'=>new endIndex(array('content'=>count($items)))
+					, 'item'=>$items
+				)
+			);
+		}else{
+			$msg = (string)$weatherList->xpath('//error/type')[0];
+			if(!empty($weatherList->xpath('//error/description'))) 
+				$msg .= ':' . (string)$weatherList->xpath('//error/description')[0];
+			$info = new ProgramTpl(new SimpleXMLElement(ProgramTpl::rsERROR));
+			$info->Title = "Exception";
+			$info->Description = $msg; 
+
+			$feed = new feed(
+				array(
+					'resultLength'=>new resultLength(array('content'=>count($items)))
+					, 'endIndex'=>new endIndex(array('content'=>count($items)))
+					, 'item'=>array(new item($info))
+				)		
+			);				
+		}	
 	}else{
 		$feed = new feed(
 			array(
@@ -114,19 +132,20 @@ if(isset($_GET['Weather'])) {
 
 	$weather = new category(
 		array(XmlEmitter::ATR.'title'=>'Weather'
-			, XmlEmitter::ATR.'description'=>'AS-IS - a proof-of-concept with no warranty'
-			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/weather-freezing-rain.png"
-			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/weather-freezing-rain.png"
+			, XmlEmitter::ATR.'description'=>'Conditions and Forecast'
+			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/wundergroundLogo_4c.png"
+			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/wundergroundLogo_4c.png"
 			, 'categoryLeaf'=>array()
 		)
 	);
 	
 	$menu = array();
-	$results = array('weather', 'forecast');	
+	$results = array('conditions', 'forecast');	
 	
 	foreach ( $results as $value ) {
-		$resource = ($value=='forecast' ? 'forecast/daily' : $value);
-		$parms = array('Weather'=>rawurlencode("$resource?q=$City,$State,$Country"));
+		$parms = array('Weather'=>rawurlencode("$value"));
+		error_log(">>>" . rawurldecode($parms['Weather']),0);
+		
     	$menu[] = new categoryLeaf( 
     		array(XmlEmitter::ATR.'title'=>ucwords($value)
     		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_weather_xml.php?".http_build_query($parms))  
@@ -135,8 +154,50 @@ if(isset($_GET['Weather'])) {
 	
 	$weather->categoryLeaf = $menu;
 
-	return $weather;	
+	return $weather;		
+}
+
+function get_last_query_result($svc)
+{
+	$conditions = array('conditions'=>array('value = ?', 'MrpLastWeatherResults'));
+	$MrpLastWeatherResults = MythSettings::first($conditions);
 	
-}	
+	if(empty($MrpLastWeatherResults)){
+		$MrpLastWeatherResults = new MythSettings();
+		$MrpLastWeatherResults->value = 'MrpLastWeatherResults';
+		//TODO: refactor
+		$MrpLastWeatherResults->hostname = new DateTime("-10 minutes"); //init with obsolete timestamp
+		$MrpLastWeatherResults->save(); 
+	}
+	
+	$lastCall = new DateTime($MrpLastWeatherResults->hostname);
+	$tooSoon = new DateTime("-10 minutes"); 
+	if($lastCall <= $tooSoon || empty($MrpLastWeatherResults->data))
+	{
+		try{
+			error_log(">>>calling weather service: $svc", 0);
+			
+			$data = new SimpleXMLElement($svc, NULL, TRUE);			
+			if(can_process_feed($data))
+				$MrpLastWeatherResults->data = bin2hex(gzcompress($data->asXML(), 9));
+			else 
+				return $data;
+		}catch (Exception $e){
+			return new SimpleXMLElement("<error> <type>Exception</type> <description>". $e->getMessage() ."</description> </error>");
+		}
+		$MrpLastWeatherResults->hostname = new DateTime();
+		$MrpLastWeatherResults->save();
+	}
+	
+	error_log(">>>using stored weather results: $MrpLastWeatherResults->hostname", 0);
+	return simplexml_load_string(gzuncompress(hex2bin($MrpLastWeatherResults->data)));	
+}
+
+function can_process_feed($xml){
+	$error = $xml->xpath('//error');
+	$feature = $xml->xpath('//features/feature');
+	
+	return (empty($error) && !empty($feature));
+}
 
 ?>
