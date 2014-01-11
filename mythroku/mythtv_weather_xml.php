@@ -6,20 +6,20 @@ include_once 'player_feed.php';
 
 if(isset($_GET['Weather'])) {
 	$select = rawurldecode($_GET['Weather']);	
-
-	//build feed for this specific group	
+	
+	//build feed for this specific group
 	error_log("selecting Weather: $select", 0);
 
 	$weatherType = '.xml';
 	$pws = "pws:" . (int)$PWS;
 	$resource = "conditions/forecast10day/$pws/q/$Country/$State/$City$weatherType"; 
 
-	$weatherSvc = "http://api.wunderground.com/ap/$API/$resource";
-	$weatherList = get_last_conditions_result($weatherSvc); 	
+	$weatherSvc = "http://api.wunderground.com/api/$API_KEY/$resource";
+	$weatherList = get_last_query_result($weatherSvc); 	
 	
 	$items = array();
 	if(!empty($weatherList)){
-		if(process_feed($weatherList)){
+		if(can_process_feed($weatherList)){
 			foreach($weatherList->xpath('//response/current_observation') as $value) {
 				if($select != "conditions")	continue;
 	
@@ -102,11 +102,11 @@ if(isset($_GET['Weather'])) {
 		}else{
 			$msg = (string)$weatherList->xpath('//error/type')[0];
 			if(!empty($weatherList->xpath('//error/description'))) 
-				$msg .= (string)$weatherList->xpath('//error/description')[0];
+				$msg .= ':' . (string)$weatherList->xpath('//error/description')[0];
 			$info = new ProgramTpl(new SimpleXMLElement(ProgramTpl::rsERROR));
 			$info->Title = "Exception";
-			$info->Description = $msg; //(string)$weatherList->xpath('//error/type')[0] .':'. (string)$weatherList->xpath('//error/description')[0];
-// 			print_r($weatherList);
+			$info->Description = $msg; 
+
 			$feed = new feed(
 				array(
 					'resultLength'=>new resultLength(array('content'=>count($items)))
@@ -157,7 +157,7 @@ if(isset($_GET['Weather'])) {
 	return $weather;		
 }
 
-function get_last_conditions_result($svc)
+function get_last_query_result($svc)
 {
 	$conditions = array('conditions'=>array('value = ?', 'MrpLastWeatherResults'));
 	$MrpLastWeatherResults = MythSettings::first($conditions);
@@ -178,14 +178,12 @@ function get_last_conditions_result($svc)
 			error_log(">>>calling weather service: $svc", 0);
 			
 			$data = new SimpleXMLElement($svc, NULL, TRUE);			
-			if(process_feed($data))
+			if(can_process_feed($data))
 				$MrpLastWeatherResults->data = bin2hex(gzcompress($data->asXML(), 9));
 			else 
 				return $data;
 		}catch (Exception $e){
-			$msg = $e->getMessage();
-			error_log(">>>SVC ERROR: " . $msg, 0);
-			return new SimpleXMLElement("<error> <type>Exception</type> <description>$msg</description> </error>");
+			return new SimpleXMLElement("<error> <type>Exception</type> <description>". $e->getMessage() ."</description> </error>");
 		}
 		$MrpLastWeatherResults->hostname = new DateTime();
 		$MrpLastWeatherResults->save();
@@ -195,7 +193,7 @@ function get_last_conditions_result($svc)
 	return simplexml_load_string(gzuncompress(hex2bin($MrpLastWeatherResults->data)));	
 }
 
-function process_feed($xml){
+function can_process_feed($xml){
 	$error = $xml->xpath('//error');
 	$feature = $xml->xpath('//features/feature');
 	

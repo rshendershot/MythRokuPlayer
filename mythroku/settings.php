@@ -6,10 +6,6 @@ const DB_UTC_VER = '1307';  // http://www.mythtv.org/wiki?title=Category:DB_Tabl
 $City = 'District of Columbia';
 $State = '';
 $Country = 'USA';
-$API='';      //API key required.  Signup for your own key at 
-  
-$PWS=false;  //use local user stations for reporting  see http://www.wunderground.com/weather/api
-$RADIUS='50';  //default for radar map is 100. adjust this to zoom in or out.
 
 //EDIT-HERE: Addresses of systems needed to use MythRokuPlayer
 $WebHostIP = "192.168.1.130";  // web server IP address
@@ -32,7 +28,7 @@ $NewShowsQueryLimit = 500;
 //$NewSportsQueryType = 'Sports non-event';
 $NewSportsQueryType = 'Sports event';
 
-// Edits are not normally needed below.  Note:  SD works for heterogenous households (for both HD and SD televisions)
+// EDITs are not normally needed below.  Note:  SD works for heterogenous households (for both HD and SD televisions)
 $WebServer = "http://" . $WebHostIP . "/mythweb";
 $MythRokuDir = "mythroku";
 
@@ -43,6 +39,10 @@ $localSvc = "$WebServer/$MythRokuDir/$localSvcDir/";
 
 $RokuDisplayType = "SD";	// set to the same as your Roku player under display type, HD or SD  
 $BitRate = "1500";			// bit rate of endcoded streams
+
+$PWS=false;  //use local user stations for reporting  see http://www.wunderground.com/weather/api
+$RADIUS='50';  //default for radar map is 100. adjust this to zoom in or out.
+$API_KEY='8d114d04cff24445';  //NOTE: wunderground limits use velocity so this may become obsolete without warning.
 
 $db_connections = array(
    'MYSQL' => "mysql://$MythTVdbuser:$MythTVdbpass@$MysqlServer/$MythTVdb"
