@@ -2,7 +2,7 @@
 require_once 'php-activerecord/ActiveRecord.php'; // http://www.phpactiverecord.org
 const DB_UTC_VER = '1307';  // http://www.mythtv.org/wiki?title=Category:DB_Table&oldid=56896
 
-//EDIT-HERE: Weather Forecaset location - weather information provided by http://openweathermap.org
+//EDIT-HERE: Weather Forecaset location
 $City = 'District of Columbia';
 $State = '';
 $Country = 'USA';
