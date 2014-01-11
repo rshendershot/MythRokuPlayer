@@ -6,7 +6,8 @@ const DB_UTC_VER = '1307';  // http://www.mythtv.org/wiki?title=Category:DB_Tabl
 $City = 'District of Columbia';
 $State = '';
 $Country = 'USA';
-$API='';  //API key required.  Signup for your own key at 
+$API='';      //API key required.  Signup for your own key at 
+  
 $PWS=false;  //use local user stations for reporting  see http://www.wunderground.com/weather/api
 $RADIUS='50';  //default for radar map is 100. adjust this to zoom in or out.
 
