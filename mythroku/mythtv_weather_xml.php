@@ -189,7 +189,7 @@ function get_last_query_result($svc)
 		$MrpLastWeatherResults->save();
 	}
 	
-	error_log(">>>using stored weather results: $svc", 0);
+	error_log(">>>using stored weather results: $MrpLastWeatherResults->hostname", 0);
 	return simplexml_load_string(gzuncompress(hex2bin($MrpLastWeatherResults->data)));	
 }
 
