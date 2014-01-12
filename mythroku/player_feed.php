@@ -104,7 +104,10 @@ class item extends XmlEmitter {
 		}elseif(is_a($show,'Weather')){
 			$ShowLength = 0;
 			$title = "$show->Location,  $show->Temperature";
-			$subtitle = "$show->Conditions, $show->WindDirection@$show->WindSpeed mph, hum $show->Humidity";
+			$subtitle = "$show->Conditions";
+			$subtitle .= empty($show->WindDirection) ? "" : ", $show->WindDirection";
+			$subtitle .= empty($show->WindSpeed) ? "" : "@$show->WindSpeed";
+			$subtitle .= empty($show->Humidity) ? "" : ", hum $show->Humidity";
 			$subtitle .= empty($show->Clouds) ? "" : ", vis $show->Clouds mi.";
 			$synopsis = "$subtitle $show->Source";
 
