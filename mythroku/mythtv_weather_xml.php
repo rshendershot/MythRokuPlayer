@@ -10,9 +10,9 @@ if(isset($_GET['Weather'])) {
 	//build feed for this specific group
 	error_log("selecting Weather: $select", 0);
 
-	$weatherType = '.xml';
+	$weatherType = 'xml';
 	$pws = "pws:" . (int)$PWS;
-	$resource = "conditions/forecast10day/$pws/q/$Country/$State/$City$weatherType"; 
+	$resource = "alerts/conditions/forecast10day/$pws/q/$Country/$State/$City.$weatherType"; 
 
 	$weatherSvc = "http://api.wunderground.com/api/$API_KEY/$resource";
 	$weatherList = get_last_query_result($weatherSvc); 	
@@ -20,6 +20,29 @@ if(isset($_GET['Weather'])) {
 	$items = array();
 	if(!empty($weatherList)){
 		if(can_process_feed($weatherList)){
+			foreach($weatherList->xpath('//response/alerts/alert') as $value) {
+				if($select != "conditions")	continue;
+				
+				$significance = (string)$value->xpath('.//significance')[0];
+				if($significance == 'W'){  //Warning
+					$icon = "$WebServer/$MythRokuDir/images/oval_red.png";
+				}else if($significance == 'A'){  //Watch
+					$icon = "$WebServer/$MythRokuDir/images/oval_orange.png";
+				}else continue;  //skip any other types
+				
+				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Location', (string)$weatherList->xpath('//response/current_observation/display_location/city')[0]);
+				$weatherTpl->addChild('Temperature', (string)$weatherList->xpath('.//description')[0]);
+				$weatherTpl->addChild('Conditions', (string)$weatherList->xpath('.//message')[0]);
+				$weatherTpl->addChild('Icon', $icon);	
+				$weatherTpl->addChild('AsOf', (string)$weatherList->xpath('.//date')[0]);
+				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
+
+				$current = new Weather($weatherTpl);
+				
+				$items[] = new item($current);
+			}
+			
 			foreach($weatherList->xpath('//response/current_observation') as $value) {
 				if($select != "conditions")	continue;
 	

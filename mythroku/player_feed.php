@@ -14,7 +14,7 @@ class Program extends XmlInjector {
 class ProgramTpl extends Program {
 	const rsNONE = '<Program><Title>Nothing Found.</Title><Description>No results from your selection.  This is probably not a problem.</Description></Program>';
 	const rsEMPTY = '<Program><Title>Service returned nothing.</Title><Description>Data from the service was empty.  Please try again later.</Description></Program>';
-	const rsERROR = '<Program><Title/><Description/></Program>';
+	const rsERROR = '<Program><Title/><Description/></Program>';  //it is expected that Title and Description will be filled from the error information before passing this to the Item constructor  -RSH
 	
 	public function __construct($xml){
 		if(useUTC())
@@ -104,7 +104,10 @@ class item extends XmlEmitter {
 		}elseif(is_a($show,'Weather')){
 			$ShowLength = 0;
 			$title = "$show->Location,  $show->Temperature";
-			$subtitle = "$show->Conditions, $show->WindDirection@$show->WindSpeed mph, hum $show->Humidity";
+			$subtitle = "$show->Conditions";
+			$subtitle .= empty($show->WindDirection) ? "" : ", $show->WindDirection";
+			$subtitle .= empty($show->WindSpeed) ? "" : "@$show->WindSpeed";
+			$subtitle .= empty($show->Humidity) ? "" : ", hum $show->Humidity";
 			$subtitle .= empty($show->Clouds) ? "" : ", vis $show->Clouds mi.";
 			$synopsis = "$subtitle $show->Source";
 
