@@ -10,9 +10,9 @@ if(isset($_GET['Weather'])) {
 	//build feed for this specific group
 	error_log("selecting Weather: $select", 0);
 
-	$weatherType = '.xml';
+	$weatherType = 'xml';
 	$pws = "pws:" . (int)$PWS;
-	$resource = "alerts/conditions/forecast10day/$pws/q/$Country/$State/$City$weatherType"; 
+	$resource = "alerts/conditions/forecast10day/$pws/q/$Country/$State/$City.$weatherType"; 
 
 	$weatherSvc = "http://api.wunderground.com/api/$API_KEY/$resource";
 	$weatherList = get_last_query_result($weatherSvc); 	
