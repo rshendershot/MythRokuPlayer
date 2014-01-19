@@ -16,6 +16,7 @@ prerequisits:
 -php-xml
 -php-pdo
 -PHP ActiveRecord, in a php included location   (http://www.phpactiverecord.org)
+-$MythBackendPort (default 6544) is open to the webserver process so that myth backend services can be called.
 
 for more information see the Roku developer site:
 http://www.roku.com/developer
