@@ -124,8 +124,9 @@ if(isset($_GET['Weather'])) {
 			);
 		}else{
 			$msg = (string)$weatherList->xpath('//error/type')[0];
-			if(!empty($weatherList->xpath('//error/description'))) 
-				$msg .= ':' . (string)$weatherList->xpath('//error/description')[0];
+			$desc = (string)$weatherList->xpath('//error/description')[0];
+			if(!empty($desc)) 
+				$msg .= ': $desc';
 			$info = new ProgramTpl(new SimpleXMLElement(ProgramTpl::rsERROR));
 			$info->Title = "Exception";
 			$info->Description = $msg; 
