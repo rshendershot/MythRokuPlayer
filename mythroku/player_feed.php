@@ -102,14 +102,19 @@ class item extends XmlEmitter {
 		);
 		if(1==0){ //dummy to make editing easier - RSH
 		}elseif(is_a($show,'Weather')){
+			//handles Weather current conditions, forecast items, and alerts schemae
+			
 			$ShowLength = 0;
-			$title = "$show->Location,  $show->Temperature";
-			$subtitle = "$show->Conditions";
+			$title = "$show->Location";
+			$title .= empty($show->Temperature) ? "" : ", $show->Temperature";
+			$title .= empty($show->Description) ? "" : ", $show->Description";
+			$subtitle = empty($show->Conditions) ? $show->Message : $show->Conditions;
 			$subtitle .= empty($show->WindDirection) ? "" : ", $show->WindDirection";
 			$subtitle .= empty($show->WindSpeed) ? "" : "@$show->WindSpeed";
 			$subtitle .= empty($show->WindGust) ? "" : ", G$show->WindGust";
 			$subtitle .= empty($show->Humidity) ? "" : ", hum $show->Humidity";
 			$subtitle .= empty($show->Clouds) ? "" : ", vis $show->Clouds mi.";
+			$genre = empty($show->Until) ? $show->Temperature : "until $show->Until";
 			$synopsis = "$subtitle $show->Source";
 
 			$this->title = new title(array('content'=>$title)); 
@@ -122,7 +127,7 @@ class item extends XmlEmitter {
 			//$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required
 			
 			$this->synopsis = new synopsis(array('content'=>$synopsis));
-			$this->genres = new genres(array('content'=>$show->Temperature));
+			$this->genres = new genres(array('content'=>$genre));
 			$this->runtime = new runtime(array('content'=>0));
 						
 			$this->date = new date(array('content'=>date('D dMo', strtotime($show->AsOf))));
@@ -163,6 +168,8 @@ class item extends XmlEmitter {
 				$this->date = new date(array('content'=>$show->StartTime));
 			$this->tvormov = new tvormov(array('content'=>'upcoming'));
 		}elseif(is_a($show,'Guide')){
+			//handles Pilots/Premieres schema
+			
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
 			if($show->recstatus == -1){
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_blue.png";

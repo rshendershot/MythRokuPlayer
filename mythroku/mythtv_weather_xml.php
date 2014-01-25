@@ -32,16 +32,18 @@ if(isset($_GET['Weather'])) {
 				}else continue;  //skip any other types
 				
 				$nameEL = $weatherList->xpath('//response/current_observation/display_location/city');
-				$tempEl = $weatherList->xpath('.//description');
+				$descEl = $weatherList->xpath('.//description');
 				$messageEl = $weatherList->xpath('.//message');
 				$asofEl = $weatherList->xpath('.//date');
+				$untilEl = $weatherList->xpath('.//expires');
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
 				$weatherTpl->addChild('Location', (string)$nameEL[0]);
-				$weatherTpl->addChild('Temperature', (string)$tempEl[0]);
-				$weatherTpl->addChild('Conditions', (string)$messageEl[0]);
+				$weatherTpl->addChild('Description', (string)$descEl[0]);
+				$weatherTpl->addChild('Message', (string)$messageEl[0]);
 				$weatherTpl->addChild('Icon', $icon);	
 				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('Until', (string)$untilEl[0]);
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 
 				$current = new Weather($weatherTpl);
