@@ -23,19 +23,27 @@ if(isset($_GET['Weather'])) {
 			foreach($weatherList->xpath('//response/alerts/alert') as $value) {
 				if($select != "conditions")	continue;
 				
-				$significance = (string)$value->xpath('.//significance')[0];
+				$significanceEl = $value->xpath('.//significance');  //http://www.weather.gov/os/vtec/pdfs/VTEC_explanation6.pdf
+				$significance = (string)$significanceEl[0];
 				if($significance == 'W'){  //Warning
 					$icon = "$WebServer/$MythRokuDir/images/oval_red.png";
 				}else if($significance == 'A'){  //Watch
 					$icon = "$WebServer/$MythRokuDir/images/oval_orange.png";
 				}else continue;  //skip any other types
 				
+				$nameEL = $weatherList->xpath('//response/current_observation/display_location/city');
+				$descEl = $weatherList->xpath('.//description');
+				$messageEl = $weatherList->xpath('.//message');
+				$asofEl = $weatherList->xpath('.//date');
+				$untilEl = $weatherList->xpath('.//expires');
+				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
-				$weatherTpl->addChild('Location', (string)$weatherList->xpath('//response/current_observation/display_location/city')[0]);
-				$weatherTpl->addChild('Temperature', (string)$weatherList->xpath('.//description')[0]);
-				$weatherTpl->addChild('Conditions', (string)$weatherList->xpath('.//message')[0]);
+				$weatherTpl->addChild('Location', (string)$nameEL[0]);
+				$weatherTpl->addChild('Description', (string)$descEl[0]);
+				$weatherTpl->addChild('Message', (string)$messageEl[0]);
 				$weatherTpl->addChild('Icon', $icon);	
-				$weatherTpl->addChild('AsOf', (string)$weatherList->xpath('.//date')[0]);
+				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('Until', (string)$untilEl[0]);
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 
 				$current = new Weather($weatherTpl);
@@ -52,6 +60,7 @@ if(isset($_GET['Weather'])) {
 				
 				$conditionsEl = $value->xpath('.//weather');
 				$windspeadEl = $value->xpath('.//wind_mph');
+				$windgustEl = $value->xpath('.//wind_gust_mph');
 				$winddirectionEl = $value->xpath('.//wind_dir');
 				$cloudsEl = $value->xpath('.//visibility_mi');
 				$humidityEl = $value->xpath('.//relative_humidity');
@@ -67,6 +76,7 @@ if(isset($_GET['Weather'])) {
 				$weatherTpl->addChild('Conditions', (string)$conditionsEl[0]);
 				$weatherTpl->addChild('WindSpeed', (string)$windspeadEl[0]);
 				$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
+				$weatherTpl->addChild('WindGust', (string)$windgustEl[0]);
 				$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
 				$weatherTpl->addChild('Humidity', (string)$humidityEl[0]);
 				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
@@ -122,9 +132,12 @@ if(isset($_GET['Weather'])) {
 					, 'item'=>$items
 				)
 			);
-		}else{
-			$msg = (string)$weatherList->xpath('//error/type')[0];
-			$desc = (string)$weatherList->xpath('//error/description')[0];
+		}else{ 
+			$msgEl = $weatherList->xpath('//error/type');
+			$descEl = $weatherList->xpath('//error/description');
+			
+			$msg = (string)$msgEl[0];
+			$desc = (string)$descEl[0];
 			if(!empty($desc)) 
 				$msg .= ": $desc";
 			$info = new ProgramTpl(new SimpleXMLElement(ProgramTpl::rsERROR));
