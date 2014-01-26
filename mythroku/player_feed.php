@@ -104,7 +104,7 @@ class item extends XmlEmitter {
 		}elseif(is_a($show,'Weather')){
 			//handles Weather current conditions, forecast items, and alerts schemae
 			
-			$ShowLength = 90;
+			$ShowLength = $show->Delay;
 			$title = "$show->Location";
 			$title .= empty($show->Temperature) ? "" : ", $show->Temperature";
 			$title .= empty($show->Description) ? "" : ", $show->Description";

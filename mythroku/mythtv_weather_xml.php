@@ -2,7 +2,7 @@
 require_once 'settings.php';
 include_once 'player_feed.php';
 
-//const _DEBUG = 'true';
+const _DELAY = 90;
 
 if(isset($_GET['Weather'])) {
 	$select = rawurldecode($_GET['Weather']);	
@@ -40,6 +40,7 @@ if(isset($_GET['Weather'])) {
 				$asof = (string)$asofEl[0];
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Delay', _DELAY);
 				$weatherTpl->addChild('Location', (string)$nameEL[0]);
 				$weatherTpl->addChild('Description', (string)$descEl[0]);
 				$weatherTpl->addChild('Message', (string)$messageEl[0]);
@@ -73,6 +74,7 @@ if(isset($_GET['Weather'])) {
 				$temp = round((float)$tempEl[0]);
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Delay', _DELAY);
 				$weatherTpl->addChild('Location', (string)$nameEl[0]);
 				$weatherTpl->addChild('Temperature', $temp.' F.');
 				$weatherTpl->addChild('Icon', (string)$iconEl[0]);
@@ -111,6 +113,7 @@ if(isset($_GET['Weather'])) {
 				$tempMin = round((float)$tempMinEl[0]);			
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Delay', _DELAY);
 				$weatherTpl->addChild('Location', (string)$nameEl[0]);
 				$weatherTpl->addChild('Temperature', "$tempMin...$tempMax F.");
 				$weatherTpl->addChild('Icon', (string)$iconEl[0]);
