@@ -104,7 +104,7 @@ class item extends XmlEmitter {
 		}elseif(is_a($show,'Weather')){
 			//handles Weather current conditions, forecast items, and alerts schemae
 			
-			$ShowLength = 0;
+			$ShowLength = 90;
 			$title = "$show->Location";
 			$title .= empty($show->Temperature) ? "" : ", $show->Temperature";
 			$title .= empty($show->Description) ? "" : ", $show->Description";
@@ -128,7 +128,7 @@ class item extends XmlEmitter {
 			
 			$this->synopsis = new synopsis(array('content'=>$synopsis));
 			$this->genres = new genres(array('content'=>$genre));
-			$this->runtime = new runtime(array('content'=>0));
+			$this->runtime = new runtime(array('content'=>$ShowLength));
 						
 			$this->date = new date(array('content'=>$show->AsOf));
 			$this->tvormov = new tvormov(array('content'=>'weather'));
