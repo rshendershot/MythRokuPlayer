@@ -207,7 +207,7 @@ function get_last_query_result($svc)
 		$MrpLastWeatherResults = new MythSettings();
 		$MrpLastWeatherResults->value = 'MrpLastWeatherResults';
 		//TODO: refactor
-		$MrpLastWeatherResults->hostname = new DateTime("-10 minutes"); //init with obsolete timestamp
+		$MrpLastWeatherResults->hostname = new DateTime("-91 seconds"); //init with obsolete timestamp
 		$MrpLastWeatherResults->save(); 
 	}
 	
