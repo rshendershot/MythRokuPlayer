@@ -34,15 +34,17 @@ if(isset($_GET['Weather'])) {
 				$nameEL = $weatherList->xpath('//response/current_observation/display_location/city');
 				$descEl = $weatherList->xpath('.//description');
 				$messageEl = $weatherList->xpath('.//message');
-				$asofEl = $weatherList->xpath('.//date');
 				$untilEl = $weatherList->xpath('.//expires');
+
+				$asofEl = $weatherList->xpath('.//date_epoch');
+				$asof = (string)$asofEl[0];
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
 				$weatherTpl->addChild('Location', (string)$nameEL[0]);
 				$weatherTpl->addChild('Description', (string)$descEl[0]);
 				$weatherTpl->addChild('Message', (string)$messageEl[0]);
 				$weatherTpl->addChild('Icon', $icon);	
-				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('AsOf', date('A h:i:s', $asof));
 				$weatherTpl->addChild('Until', (string)$untilEl[0]);
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 
@@ -65,7 +67,8 @@ if(isset($_GET['Weather'])) {
 				$cloudsEl = $value->xpath('.//visibility_mi');
 				$humidityEl = $value->xpath('.//relative_humidity');
 				
-				$asofEl = $value->xpath('.//observation_time_rfc822');
+				$asofEl = $value->xpath('.//observation_epoch');
+				$asof = (string)$asofEl[0];
 							
 				$temp = round((float)$tempEl[0]);
 				
@@ -79,7 +82,7 @@ if(isset($_GET['Weather'])) {
 				$weatherTpl->addChild('WindGust', (string)$windgustEl[0]);
 				$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
 				$weatherTpl->addChild('Humidity', (string)$humidityEl[0]);
-				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('AsOf', date('D H:i:s', $asof));
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 				
 				$current = new Weather($weatherTpl);
@@ -101,7 +104,8 @@ if(isset($_GET['Weather'])) {
 				$cloudsEl = "";
 				$humidityEl = $value->xpath('.//maxhumidity');
 				
-				$asofEl = $value->xpath('.//date/pretty');
+				$asofEl = $value->xpath('.//date/epoch');
+				$asof = (string)$asofEl[0];
 				
 				$tempMax = round((float)$tempMaxEl[0]);
 				$tempMin = round((float)$tempMinEl[0]);			
@@ -115,7 +119,7 @@ if(isset($_GET['Weather'])) {
 				$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
 				$weatherTpl->addChild('Clouds', (string)$cloudsEl);
 				$weatherTpl->addChild('Humidity', (string)$humidityEl[0] . "%");
-				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('AsOf', date('D dMo', $asof));
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 				
 				$current = new Weather($weatherTpl);
@@ -208,7 +212,7 @@ function get_last_query_result($svc)
 	}
 	
 	$lastCall = new DateTime($MrpLastWeatherResults->hostname);
-	$tooSoon = new DateTime("-10 minutes"); 
+	$tooSoon = new DateTime("-90 seconds"); 
 	if($lastCall <= $tooSoon || empty($MrpLastWeatherResults->data))
 	{
 		try{
