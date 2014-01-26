@@ -203,6 +203,8 @@ if(isset($_GET['Weather'])) {
 
 function get_last_query_result($svc)
 {
+	//free subscription currently allows 10 request per minute, 500 requests per day
+	$delay = _DELAY;
 	$conditions = array('conditions'=>array('value = ?', 'MrpLastWeatherResults'));
 	$MrpLastWeatherResults = MythSettings::first($conditions);
 	
@@ -210,12 +212,12 @@ function get_last_query_result($svc)
 		$MrpLastWeatherResults = new MythSettings();
 		$MrpLastWeatherResults->value = 'MrpLastWeatherResults';
 		//TODO: refactor
-		$MrpLastWeatherResults->hostname = new DateTime("-91 seconds"); //init with obsolete timestamp
+		$MrpLastWeatherResults->hostname = new DateTime("-$delay seconds"); //init with obsolete timestamp
 		$MrpLastWeatherResults->save(); 
 	}
 	
 	$lastCall = new DateTime($MrpLastWeatherResults->hostname);
-	$tooSoon = new DateTime("-90 seconds"); 
+	$tooSoon = new DateTime("-$delay seconds"); 
 	if($lastCall <= $tooSoon || empty($MrpLastWeatherResults->data))
 	{
 		try{
