@@ -2,7 +2,7 @@
 require_once 'settings.php';
 include_once 'player_feed.php';
 
-//const _DEBUG = 'true';
+const _DELAY = 90;
 
 if(isset($_GET['Weather'])) {
 	$select = rawurldecode($_GET['Weather']);	
@@ -34,15 +34,18 @@ if(isset($_GET['Weather'])) {
 				$nameEL = $weatherList->xpath('//response/current_observation/display_location/city');
 				$descEl = $weatherList->xpath('.//description');
 				$messageEl = $weatherList->xpath('.//message');
-				$asofEl = $weatherList->xpath('.//date');
 				$untilEl = $weatherList->xpath('.//expires');
+
+				$asofEl = $weatherList->xpath('.//date_epoch');
+				$asof = (string)$asofEl[0];
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Delay', _DELAY);
 				$weatherTpl->addChild('Location', (string)$nameEL[0]);
 				$weatherTpl->addChild('Description', (string)$descEl[0]);
 				$weatherTpl->addChild('Message', (string)$messageEl[0]);
 				$weatherTpl->addChild('Icon', $icon);	
-				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('AsOf', date('A h:i:s', $asof));
 				$weatherTpl->addChild('Until', (string)$untilEl[0]);
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 
@@ -65,11 +68,13 @@ if(isset($_GET['Weather'])) {
 				$cloudsEl = $value->xpath('.//visibility_mi');
 				$humidityEl = $value->xpath('.//relative_humidity');
 				
-				$asofEl = $value->xpath('.//observation_time_rfc822');
+				$asofEl = $value->xpath('.//observation_epoch');
+				$asof = (string)$asofEl[0];
 							
 				$temp = round((float)$tempEl[0]);
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Delay', _DELAY);
 				$weatherTpl->addChild('Location', (string)$nameEl[0]);
 				$weatherTpl->addChild('Temperature', $temp.' F.');
 				$weatherTpl->addChild('Icon', (string)$iconEl[0]);
@@ -79,7 +84,7 @@ if(isset($_GET['Weather'])) {
 				$weatherTpl->addChild('WindGust', (string)$windgustEl[0]);
 				$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
 				$weatherTpl->addChild('Humidity', (string)$humidityEl[0]);
-				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('AsOf', date('D H:i:s', $asof));
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 				
 				$current = new Weather($weatherTpl);
@@ -101,12 +106,14 @@ if(isset($_GET['Weather'])) {
 				$cloudsEl = "";
 				$humidityEl = $value->xpath('.//maxhumidity');
 				
-				$asofEl = $value->xpath('.//date/pretty');
+				$asofEl = $value->xpath('.//date/epoch');
+				$asof = (string)$asofEl[0];
 				
 				$tempMax = round((float)$tempMaxEl[0]);
 				$tempMin = round((float)$tempMinEl[0]);			
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Delay', _DELAY);
 				$weatherTpl->addChild('Location', (string)$nameEl[0]);
 				$weatherTpl->addChild('Temperature', "$tempMin...$tempMax F.");
 				$weatherTpl->addChild('Icon', (string)$iconEl[0]);
@@ -115,7 +122,7 @@ if(isset($_GET['Weather'])) {
 				$weatherTpl->addChild('WindDirection', (string)$winddirectionEl[0]);
 				$weatherTpl->addChild('Clouds', (string)$cloudsEl);
 				$weatherTpl->addChild('Humidity', (string)$humidityEl[0] . "%");
-				$weatherTpl->addChild('AsOf', (string)$asofEl[0]);
+				$weatherTpl->addChild('AsOf', date('D dMo', $asof));
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 				
 				$current = new Weather($weatherTpl);
@@ -196,6 +203,8 @@ if(isset($_GET['Weather'])) {
 
 function get_last_query_result($svc)
 {
+	//free subscription currently allows 10 request per minute, 500 requests per day
+	$delay = _DELAY;
 	$conditions = array('conditions'=>array('value = ?', 'MrpLastWeatherResults'));
 	$MrpLastWeatherResults = MythSettings::first($conditions);
 	
@@ -203,12 +212,12 @@ function get_last_query_result($svc)
 		$MrpLastWeatherResults = new MythSettings();
 		$MrpLastWeatherResults->value = 'MrpLastWeatherResults';
 		//TODO: refactor
-		$MrpLastWeatherResults->hostname = new DateTime("-10 minutes"); //init with obsolete timestamp
+		$MrpLastWeatherResults->hostname = new DateTime("-$delay seconds"); //init with obsolete timestamp
 		$MrpLastWeatherResults->save(); 
 	}
 	
 	$lastCall = new DateTime($MrpLastWeatherResults->hostname);
-	$tooSoon = new DateTime("-10 minutes"); 
+	$tooSoon = new DateTime("-$delay seconds"); 
 	if($lastCall <= $tooSoon || empty($MrpLastWeatherResults->data))
 	{
 		try{
