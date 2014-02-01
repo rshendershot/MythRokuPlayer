@@ -41,6 +41,7 @@ $RokuDisplayType = "SD";	// set to the same as your Roku player under display ty
 $BitRate = "1500";			// bit rate of endcoded streams
 
 $PWS=false;  //use local user stations for reporting  see http://www.wunderground.com/weather/api
+$NWS=false;  //use wunderground N.W.S. data instead of its Best Forecast option
 $RADIUS='50';  //default for radar map is 100. adjust this to zoom in or out.
 $API_KEY='8d114d04cff24445';  //NOTE: wunderground limits use velocity so this may become obsolete without warning.
 

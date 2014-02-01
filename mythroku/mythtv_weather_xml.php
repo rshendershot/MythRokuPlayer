@@ -12,7 +12,8 @@ if(isset($_GET['Weather'])) {
 
 	$weatherType = 'xml';
 	$pws = "pws:" . (int)$PWS;
-	$resource = "alerts/conditions/forecast10day/$pws/q/$Country/$State/$City.$weatherType"; 
+	$nws = "bestfct:" . (int)!$NWS;  
+	$resource = "alerts/conditions/forecast10day/$pws/$nws/q/$Country/$State/$City.$weatherType"; 
 
 	$weatherSvc = "http://api.wunderground.com/api/$API_KEY/$resource";
 	$weatherList = get_last_query_result($weatherSvc); 	
