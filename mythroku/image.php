@@ -15,7 +15,7 @@ if (isset ($_GET['image'])) { //send a file spec
 	} else {
 		throw new Exception("unknown file: $file");
 	}
-} elseif (isset($_GET['preview'])) { //send a key of chanid and starttime. will be a preview image since any rq for playable is Range.  We assure that is a File request.
+} elseif (isset($_GET['preview'])) { //send a key of chanid and starttime. 
 	$preview = rawurldecode($_GET['preview']);
 	$chanid = ltrim(substr($preview,0,6),'_');
 	$starttime = substr($preview,6);
