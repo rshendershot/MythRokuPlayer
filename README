@@ -1,13 +1,12 @@
-MythRokuPlayer2 provides a framework for access to MythTV Videos and Recordings
-in a simple context oriented UI.  Additional services (eg. Weather info) are 
-easily integrated using the class system.  Still works with original channel.
+MythRokuPlayer2 provides a framework to easily emit xml schema compatible
+with the original private channel (http://forums.roku.com/viewtopic.php?f=28&t=33704#p214457)
+for access to MythTV Videos and Recordings as well as additional services (eg. Weather info) 
+which are easily integrated using the class system.  
 
-***  This software is provided AS-IS without warranty or liability, either expressed or implied.  ***
+***   This software is provided AS-IS without warranty or liability, either expressed or implied.   ***
 
 
-
-prerequisits:
-
+PREREQUISITS
 -functioning mythtv backend and mythweb
 -handbrakecli (for converting recordings to H.264 format)
 -Mythtv video are stored in H.264 format (mp4)
@@ -15,12 +14,20 @@ prerequisits:
 -php-gd
 -php-xml
 -php-pdo
--PHP ActiveRecord, in a php included location   (http://www.phpactiverecord.org)
+-PHP ActiveRecord, in a php included location   (see http://www.phpactiverecord.org, and Testing below)
 -$MythBackendPort (default 6544) is open to the webserver process so that myth backend services can be called.
 
-for more information see the Roku developer site:
-http://www.roku.com/developer
+INSTALLATION
+There are two parts to the MythRokuPlayer2: The Brightscript UI code which is the Roku channel, 
+and the PHP code which handles requests from the Roku.  Initial installation then requires
+placing mythroku and its files in your mythweb directory.  The mythroku directory can be a 
+symlink to MythRokuPlayer/mythroku so you can extract a zip or clone the code right in your
+mythweb directory.
 
+    [mythweb]$ git clone https://github.com/rshendershot/MythRokuPlayer.git
+    [mythweb]$ ln -s MythRokuPlayer/mythroku
+    
+To finish the install, adjust your installation to your environment as in the following steps:    
 
 1) You can use the private MythRokuPlayer channel, but if you wish to customize
 	the player User Interface BrighScript code then you must "side-load" a
@@ -72,9 +79,10 @@ http://www.roku.com/developer
 
 	You need to edit the settings.php file with your local parameters for example
 	ip or url of your webserver.
-	
-	You need to make a symbolic link in mythweb/data on the mythtv backend that points to the mythvideo directory 
-	for the "movies" category leaf to work.
+
+    Your web server process (apache, www-data, etc.) will need write permissions within
+    your Recordings storage area.  Mythtv owns the recording and its MP4, as well as 
+    preview (PNG) files, but the web server is the process that deletes all of that. 
 
 4) convert recordings from mpg to mp4
 	create a user job in mythtv (mythbackend setup-> general-> Job Queue)
@@ -86,22 +94,38 @@ http://www.roku.com/developer
 	set the AutoRunUserJob1 (or whichever job you set it to) data = 1
 	
 	This will automatically encode a recording to mp4 format which can then be
-	streamed by roku
+	streamed by roku.  It will also update mythconverg.recorded.basename with MP4 extension
+	(the player ignores other filetypes).  Note that mythweb and mythtv frontend will thereafter
+	use the MP4 not the original! 
 	
-5) if you have modified the UI code, install MythRokuPlayer to your roku player
-	in the MythRokuPlayer directory (containing this read me) simply type
-	
-	   make && make install
+5) Testing (using a terminal command-line session in the mythroku directory)
+        php mythtv_all.php   -   should emit XML that would be correct for the player UI
+    You can get a human-readable form of the sd/hd Img or  streamUrl by adding it as a 
+    parameter.  
+    
+    You can also enter img or stream url from the XML directly into your web browser 
+    and monitor your web server error log as there is additional logging information.
+    
+    A simple shortcut to installing PHP-ActiveRecord is to extract the latest daily 
+    directly in your mythroku directory.  Rename php-activerecord_yyyymmdd to php-activerecord
+    if necessary so that you have
+        
+        mythweb/mythroku/php-activerecord/ActiveRecord.php       
+
+6) The player
+    if you have modified the UI code, sideload install MythRokuPlayer to your roku:
+    	in the MythRokuPlayer directory (containing this read me) simply type
+    	
+    	   make && make install
 
     Or install the original private channel;
-	once installed you will need to set the path to the mythroku directory
-	on your webserver on the mythroku settings on roku
+    
+    On the Roku you should have a MythTV (original) or MythTV 2 channel (sideloaded)
+    channel.  Start it and point it to your web server and its path to mythroku
 
 	eg. http//192.168.1.10/mythweb/mythroku
-	
-	mythroku should be a symlink in mythweb to MythRokuPlayer/mythroku
 
-6) Debuging, you have a couple of options:
+7) Debuging (only if you've sideloaded as in #6)
 	
 	telnet $ROKU_DEV_TARGET 8085
 
@@ -110,15 +134,7 @@ http://www.roku.com/developer
 	You may need to comment out the following line
 	bind-address = 127.0.0.1 in /etc/my.cnf to allow access to mysql
 
-	I have created two php files
-	
-	mythtv_movies_test.php
-	mythtv_tv_test.php
-
-	use these to check your setup. They draw the same data that is used to create
-	the xml files for roku. If these do not work then mythroku will not.
-
-
+        
 Good luck and happy streaming.
 
 		
