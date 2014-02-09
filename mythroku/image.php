@@ -20,10 +20,6 @@ if (isset ($_GET['image'])) { //send a file spec
 	$chanid = ltrim(substr($preview,0,6),'_');
 	$starttime = substr($preview,6);
 	
-	if(!useUTC()){  //even with myth 0.25 schema, mythbackend services require UTC date in parameters.
-		$timestamp=convert_datetime($starttime);
-		//$starttime = gmdate('Y-m-d H:i:s', $timestamp );
-	}
 	$rawstarttime = str_replace(' ', 'T', $starttime);
 	
 	if(defined('_DEBUG')) error_log(">>>PREVIEW: chanid $chanid : startime $rawstarttime", 0);
