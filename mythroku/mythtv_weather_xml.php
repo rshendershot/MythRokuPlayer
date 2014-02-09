@@ -226,7 +226,7 @@ function get_last_query_result($svc)
 			
 			$data = new SimpleXMLElement($svc, NULL, TRUE);			
 			if(can_process_feed($data))
-				$MrpLastWeatherResults->data = bin2hex(gzcompress($data->asXML(), 9));
+				$MrpLastWeatherResults->data = gzcompress($data->asXML(), 9);
 			else 
 				return $data;
 		}catch (Exception $e){
@@ -237,7 +237,7 @@ function get_last_query_result($svc)
 	}
 	
 	error_log(">>>using stored weather results: $MrpLastWeatherResults->hostname", 0);
-	return simplexml_load_string(gzuncompress(hex2bin($MrpLastWeatherResults->data)));	
+	return simplexml_load_string(gzuncompress($MrpLastWeatherResults->data));	
 }
 
 function can_process_feed($xml){
