@@ -22,14 +22,14 @@ if (isset ($_GET['image'])) { //send a file spec
 	
 	if(!useUTC()){  //even with myth 0.25 schema, mythbackend services require UTC date in parameters.
 		$timestamp=convert_datetime($starttime);
-		$starttime = gmdate('Y-m-d H:i:s', $timestamp );
+		//$starttime = gmdate('Y-m-d H:i:s', $timestamp );
 	}
 	$rawstarttime = str_replace(' ', 'T', $starttime);
 	
-	if(defined('_DEBUG')) error_log(">>>PREVIEW: chanid $chanid : startime $starttime", 0);
+	if(defined('_DEBUG')) error_log(">>>PREVIEW: chanid $chanid : startime $rawstarttime", 0);
 	
 	if($chanid && $starttime) {		
-		$conditions = array('conditions' => array('chanid=? and starttime=? ', $chanid, $starttime)); 
+		$conditions = array('conditions' => array('chanid=? and starttime=? ', $chanid, $rawstarttime)); 
 		$record = Recorded::first( $conditions );		
 		$file = $record->storagegroups->dirname . $record->basename . '.png'; 
     	if(!file_exists($file)) { //generate preview images since the user may not be invoking this from myth frontend
