@@ -31,10 +31,10 @@ $NewSportsQueryType = 'Sports event';
 // EDITs are not normally needed below.  Note:  SD works for heterogenous households (for both HD and SD televisions)
 $WebServer = "http://" . $WebHostIP . "/mythweb";
 $MythRokuDir = "mythroku";
+$localSvcDir = '';
 
 $MythContentSvc = "http://" . $MythBackendIP . ":" . $MythBackendPort . "/Content/";
 $MythDvrSvc = "http://" . $MythBackendIP . ":" . $MythBackendPort . "/Dvr/";
-$localSvcDir = '';
 $localSvc = "$WebServer/$MythRokuDir/$localSvcDir/";
 
 $RokuDisplayType = "SD";	// set to the same as your Roku player under display type, HD or SD  
