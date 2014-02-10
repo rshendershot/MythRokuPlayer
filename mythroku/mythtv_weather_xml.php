@@ -189,8 +189,6 @@ if(isset($_GET['Weather'])) {
 	
 	foreach ( $results as $value ) {
 		$parms = array('Weather'=>rawurlencode("$value"));
-		error_log(">>>" . rawurldecode($parms['Weather']),0);
-		
     	$menu[] = new categoryLeaf( 
     		array(XmlEmitter::ATR.'title'=>ucwords($value)
     		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_weather_xml.php?".http_build_query($parms))  
