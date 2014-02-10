@@ -1,4 +1,7 @@
 <?php
+
+set_error_handler( "fatal_handler" );
+
 require_once 'php-activerecord/ActiveRecord.php'; // http://www.phpactiverecord.org
 const DB_UTC_VER = '1307';  // http://www.mythtv.org/wiki?title=Category:DB_Table&oldid=56896
 
@@ -48,6 +51,41 @@ $API_KEY='8d114d04cff24445';  //NOTE: wunderground limits use velocity so this m
 $db_connections = array(
    'MYSQL' => "mysql://$MythTVdbuser:$MythTVdbpass@$MysqlServer/$MythTVdb"
 );
+
+//--- Fatal Error Handler ---//
+function fatal_handler($errno, $errstr, $errfile, $errline){
+	error_log(">>> fatal_handler: $errstr;  In $errfile;  At line $errline", 0);
+	
+	print <<<EOF
+<categories>
+	<banner_ad/>
+	<category title="Error" description="Is phpActiveRecord installed?"
+		sd_img=""
+		hd_img="">
+        <categoryLeaf title="see README Testing section."
+            feed=""
+            description="">
+        </categoryLeaf>
+	</category>
+	<category title="Message" description="$errstr"
+		sd_img=""
+		hd_img="">
+		<categoryLeaf title="see webserver log"
+			feed=""
+			description="">
+		</categoryLeaf>
+	</category>
+	<category title="Settings" description="Configuration"
+		sd_img=""
+		hd_img="">
+		<categoryLeaf title="Settings"
+			feed=""
+			description="">
+		</categoryLeaf>
+	</category>			
+</categories>
+EOF;
+}
 
 //--- XML Proxy classes ---//
 abstract class XmlInjector implements Countable {

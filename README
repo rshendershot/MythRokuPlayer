@@ -98,10 +98,19 @@ To finish the install, adjust your installation to your environment as in the fo
 	(the player ignores other filetypes).  Note that mythweb and mythtv frontend will thereafter
 	use the MP4 not the original! 
 	
-5) Testing (using a terminal command-line session in the mythroku directory)
-        php mythtv_all.php   -   should emit XML that would be correct for the player UI
+5) Testing 
+    Using either a command line or your browser, load the testing file
+        php mythtv_all_xml.php
+    or the initial file that the Roku player uses
+        php mythtv.php
+    (in a browser just point to your webserver/mythweb/mythroku/theFile.php)
+    
+    mythtv.php provides the initial categories and mythtv_all_xml.php provides a listing
+    of the recordings and videos that would be sent to the Roku.      
+    
     You can get a human-readable form of the sd/hd Img or  streamUrl by adding it as a 
     parameter.  
+        php mythtv_all_xml.php [img url || stream url]
     
     You can also enter img or stream url from the XML directly into your web browser 
     and monitor your web server error log as there is additional logging information.
@@ -110,7 +119,7 @@ To finish the install, adjust your installation to your environment as in the fo
     directly in your mythroku directory.  Rename php-activerecord_yyyymmdd to php-activerecord
     if necessary so that you have
         
-        mythweb/mythroku/php-activerecord/ActiveRecord.php       
+        mythweb/mythroku/php-activerecord/ActiveRecord.php    
 
 6) The player
     if you have modified the UI code, sideload install MythRokuPlayer to your roku:
