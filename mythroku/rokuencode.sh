@@ -30,9 +30,9 @@ echo "UPDATE recorded SET basename='$newbname.mp4',filesize='$NEWFILESIZE' WHERE
 mysql --user=$DATABASEUSER --password=$DATABASEPASSWORD mythconverg < /tmp/update-database.sql
 
 # update the seek table
-#date=`date`
-#echo "$newname:$date Seek Table/update" >> $LOGFILE
-#mythcommflag --file $newname --rebuild
+date=`date`
+echo "$newname:$date Seek Table/update" >> $LOGFILE
+mythcommflag --file $newname --rebuild
 
 # remove the orignal mpg - note: when the recording is deleted using the roku, this original file will be deleted
 # , but not if deleted from mythtv frontend or mythweb.  see http://www.mythtv.org/wiki/Find_orphans.py for a solution.
