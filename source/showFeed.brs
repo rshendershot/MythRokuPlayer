@@ -137,12 +137,12 @@ Function parse_show_feed(xml As Object, feed As Object) As Void
         item.ContentQuality   = validstr(curShow.contentQuality.GetText())
         item.Synopsis         = validstr(curShow.synopsis.GetText())
         item.Genre            = validstr(curShow.genres.GetText())
-	item.SubTitle         = validstr(curShow.subtitle.GetText())
+	    item.SubTitle         = validstr(curShow.subtitle.GetText())
         item.Runtime          = validstr(curShow.runtime.GetText())
-	item.Date             = validstr(curShow.date.GetText())
-	item.DelCommand       = validstr(curShow.delcommand.GetText())
-	item.TVorMovie        = validstr(curShow.tvormov.GetText())
-	item.StarRating	      = validstr(curShow.starrating.GetText())	
+	    item.Date             = validstr(curShow.date.GetText())
+	    item.DelCommand       = validstr(curShow.delcommand.GetText())
+	    item.TVorMovie        = validstr(curShow.tvormov.GetText())
+	    item.StarRating	      = validstr(curShow.starrating.GetText())	
         item.HDBifUrl         = validstr(curShow.hdBifUrl.GetText())
         item.SDBifUrl         = validstr(curShow.sdBifUrl.GetText())
         item.StreamFormat = validstr(curShow.streamFormat.GetText())
@@ -168,7 +168,7 @@ Function parse_show_feed(xml As Object, feed As Object) As Void
         item.IsHD = true
         'item.StarRating = "50"
         item.ContentType = "episode" 
- 	item.StreamBitrates = [0]	
+ 	    item.StreamBitrates = [0]	
 	
         'media may be at multiple bitrates, so parse an build arrays
         for idx = 0 to 4
