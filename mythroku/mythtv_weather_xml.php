@@ -100,12 +100,19 @@ if(isset($_GET['Weather'])) {
 				$nameEl = $value->xpath('//observation_location/city');
 				$iconEl = $value->xpath('//satellite/image_url');
 				
-				$iconUrl = "$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png";
+				$iconUrl = "";
 				try{
-					$iconUrl = "cache/curRadar.png";
+					$iconDir = "cache";
+					
+					if (!is_dir($iconDir) or !is_writable($iconDir)) {
+						throw new Exception("$iconDir is not writable.");
+					}					
+					
+					$iconUrl = "$iconDir/curRadar.png";					
 					file_put_contents( $iconUrl, file_get_contents(rawurldecode($iconEl[0])) );
 				}catch(Exception $e) {					
 					error_log(">>>Could not get radar image: " . $e->getMessage());
+					$iconUrl = "$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png";
 				}
 				
 				$airport_codeEl = $value->xpath('.//airport_code');
