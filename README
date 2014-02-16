@@ -107,7 +107,7 @@ To finish the install, adjust your installation to your environment as in the fo
         php mythtv.php
     (in a browser just point to your webserver/mythweb/mythroku/theFile.php and view source)
     
-    mythtv.php provides the initial categories and mythtv_all_xml.php provides a listing
+    mythtv.php provides the initial categories and mythtv_all_xml.php gets a listing
     of the recordings and videos that would be sent to the Roku.      
     
     You can get a human-readable form of the sd/hd Img or  streamUrl by adding it as a 
