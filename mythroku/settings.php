@@ -248,8 +248,8 @@ function items_title_compare($a, $b){
 function items_date_compare($a, $b){
 	if(  is_a($a,'item') && is_a($b,'item')  ){
 		$aTime = strtotime($a->date->Value());
-		$bTime = strtotime($b->date->Value());		
-
+		$bTime = strtotime($b->date->Value());	
+		
 		return $aTime < $bTime ? -1 : 1;
 	}else{
 		return 0;
