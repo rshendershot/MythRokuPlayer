@@ -105,7 +105,7 @@ To finish the install, adjust your installation to your environment as in the fo
         php mythtv_all_xml.php
     or the initial file that the Roku player uses
         php mythtv.php
-    (in a browser just point to your webserver/mythweb/mythroku/theFile.php)
+    (in a browser just point to your webserver/mythweb/mythroku/theFile.php and view source)
     
     mythtv.php provides the initial categories and mythtv_all_xml.php provides a listing
     of the recordings and videos that would be sent to the Roku.      
