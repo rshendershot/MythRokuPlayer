@@ -100,12 +100,11 @@ if(isset($_GET['Weather'])) {
 				$nameEl = $value->xpath('//observation_location/city');
 				$iconEl = $value->xpath('//satellite/image_url');
 				
-				$iconUrl = "";				
+				$iconUrl = "$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png";
 				try{
 					$iconUrl = "cache/curRadar.png";
 					file_put_contents( $iconUrl, file_get_contents(rawurldecode($iconEl[0])) );
-				}catch(Exception $e) {
-					$iconUrl = "$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png";
+				}catch(Exception $e) {					
 					error_log(">>>Could not get radar image: " . $e->getMessage());
 				}
 				
