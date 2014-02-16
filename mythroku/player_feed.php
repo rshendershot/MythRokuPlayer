@@ -108,13 +108,13 @@ class item extends XmlEmitter {
 			$title = "$show->Location";
 			$title .= empty($show->Temperature) ? "" : ", $show->Temperature";
 			$title .= empty($show->Description) ? "" : ", $show->Description";
-			$subtitle = empty($show->Conditions) ? $show->Message : $show->Conditions;
+			$subtitle = empty($show->Message) ? $show->Conditions : $show->Message;
 			$subtitle .= empty($show->WindDirection) ? "" : ", $show->WindDirection";
 			$subtitle .= empty($show->WindSpeed) ? "" : "@$show->WindSpeed";
 			$subtitle .= empty($show->WindGust) ? "" : ", G$show->WindGust";
 			$subtitle .= empty($show->Humidity) ? "" : ", hum $show->Humidity";
 			$subtitle .= empty($show->Clouds) ? "" : ", vis $show->Clouds mi.";
-			$genre = empty($show->Until) ? $show->Temperature : "until $show->Until";
+			$genre = empty($show->Until) ? $show->Temperature : $show->Until;
 			$synopsis = "$subtitle $show->Source";
 
 			$this->title = new title(array('content'=>$title)); 

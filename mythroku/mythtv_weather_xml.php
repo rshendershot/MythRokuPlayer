@@ -13,7 +13,7 @@ if(isset($_GET['Weather'])) {
 	$weatherType = 'xml';
 	$pws = "pws:" . (int)$PWS;
 	$nws = "bestfct:" . (int)!$NWS;  
-	$resource = "alerts/conditions/forecast10day/$pws/$nws/q/$Country/$State/$City.$weatherType"; 
+	$resource = "alerts/conditions/forecast10day/yesterday/almanac/satellite/$pws/$nws/q/$Country/$State/$City.$weatherType"; 
 
 	$weatherSvc = "http://api.wunderground.com/api/$API_KEY/$resource";
 	$weatherList = get_last_query_result($weatherSvc); 	
@@ -47,7 +47,7 @@ if(isset($_GET['Weather'])) {
 				$weatherTpl->addChild('Message', (string)$messageEl[0]);
 				$weatherTpl->addChild('Icon', $icon);	
 				$weatherTpl->addChild('AsOf', date('A h:i:s', $asof));
-				$weatherTpl->addChild('Until', (string)$untilEl[0]);
+				$weatherTpl->addChild('Until', "until $untilEl[0]");
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 
 				$current = new Weather($weatherTpl);
@@ -86,11 +86,70 @@ if(isset($_GET['Weather'])) {
 				$weatherTpl->addChild('Clouds', (string)$cloudsEl[0]);
 				$weatherTpl->addChild('Humidity', (string)$humidityEl[0]);
 				$weatherTpl->addChild('AsOf', date('D H:i:s', $asof));
+				$weatherTpl->addChild('Until', "Current Conditions");
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
 				
 				$current = new Weather($weatherTpl);
 				
 				$items[] = new item($current);
+			}
+			
+			foreach($weatherList->xpath('//response/almanac') as $value) {
+				if($select != "conditions")	continue;
+				
+				$nameEl = $value->xpath('//observation_location/city');
+				$iconEl = $value->xpath('//satellite/image_url');
+				
+				$iconUrl = "";
+				$message = "";
+				try{
+					$iconDir = "cache";
+					
+					if (!is_dir($iconDir) or !is_writable($iconDir)) {
+						throw new Exception("$iconDir is not writable.");
+					}					
+					
+					$iconUrl = "$iconDir/curRadar.png";					
+					file_put_contents( $iconUrl, file_get_contents(rawurldecode($iconEl[0])) );
+				}catch(Exception $e) {		
+					$message = $e->getMessage();			
+					error_log(">>>Could not get radar image: " . $message);					
+					$iconUrl = "images/view-calendar-upcoming-days.png";
+				}
+				
+				$airport_codeEl = $value->xpath('.//airport_code');
+				$normal_highEl = $value->xpath('.//temp_high/normal/F');
+				$normal_lowEl = $value->xpath('.//temp_low/normal/F');
+				$record_highEl = $value->xpath('.//temp_high/record/F');
+				$record_high_yearEl = $value->xpath('.//temp_high/recordyear');
+				$record_lowEl = $value->xpath('.//temp_low/record/F');
+				$record_low_yearEl = $value->xpath('.//temp_low/recordyear');				
+				
+				$tempMax = round((float)$normal_highEl[0]);
+				$tempMin = round((float)$normal_lowEl[0]);
+				
+				$recordMax = round((float)$record_highEl[0]);
+				$recordMaxYear = (string)$record_high_yearEl[0];
+				$recordMin = round((float)$record_lowEl[0]);
+				$recordMinYear = (string)$record_low_yearEl[0];
+				
+				$conditions = "Normal: $tempMin...$tempMax F. Records: HI $recordMax ($recordMaxYear) LO $recordMin ($recordMinYear)";
+				
+				$weatherTpl = new SimpleXMLElement('<Weather/>');
+				$weatherTpl->addChild('Delay', 0);
+				$weatherTpl->addChild('Location', "$nameEl[0] ($airport_codeEl[0])");
+				$weatherTpl->addChild('Temperature', "$tempMin...$tempMax F.");
+				$weatherTpl->addChild('Icon', "$WebServer/$MythRokuDir/$iconUrl");
+				//rawurldecode(htmlspecialchars($iconEl[0])));   #probably fails in cookie handling from Roku to wunderground WUBLAST  ?  -RSH
+				$weatherTpl->addChild('Conditions', $conditions);
+				$weatherTpl->addChild('Message', $message);
+				$weatherTpl->addChild('AsOf', date('M j'));
+				$weatherTpl->addChild('Until', "Historical Norms");
+				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
+				
+				$current = new Weather($weatherTpl);
+				
+				$items[] = new item($current);				
 			}
 			
 			foreach($weatherList->xpath('//response/forecast/simpleforecast/forecastdays/forecastday') as $value) {
@@ -128,10 +187,10 @@ if(isset($_GET['Weather'])) {
 				
 				$current = new Weather($weatherTpl);
 				
-				$items[] = new item($current);		
-			}
-			
-			usort($items, 'items_date_compare');
+				$items[] = new item($current);
+
+				usort($items, 'items_date_compare');
+			}						
 	
 			$feed = new feed(
 				array(

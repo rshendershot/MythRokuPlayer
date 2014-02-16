@@ -1,0 +1,1 @@
+mythroku/cache is used to save radar images and must be writable by the webserver process.

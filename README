@@ -70,10 +70,12 @@ To finish the install, adjust your installation to your environment as in the fo
 
 
 3) add the mythroku directory to your mythweb directory and change the permission
-	to that of your webserver. Ensure that the .htaccess file is in that directory
-        as well. The .htaccess file in the mythroku directory simply has:
+	to that of your webserver. Give write permissions to mythroku/cache.
+	
+	Ensure that the .htaccess file is in that directory as well. 
+	The .htaccess file in the mythroku directory simply has:
 
-	RewriteEngine off
+	   RewriteEngine off
 
 	This is to stop mythweb adding its templates to the xml data.
 
@@ -103,9 +105,9 @@ To finish the install, adjust your installation to your environment as in the fo
         php mythtv_all_xml.php
     or the initial file that the Roku player uses
         php mythtv.php
-    (in a browser just point to your webserver/mythweb/mythroku/theFile.php)
+    (in a browser just point to your webserver/mythweb/mythroku/theFile.php and view source)
     
-    mythtv.php provides the initial categories and mythtv_all_xml.php provides a listing
+    mythtv.php provides the initial categories and mythtv_all_xml.php gets a listing
     of the recordings and videos that would be sent to the Roku.      
     
     You can get a human-readable form of the sd/hd Img or  streamUrl by adding it as a 
