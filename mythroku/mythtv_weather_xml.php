@@ -112,7 +112,7 @@ if(isset($_GET['Weather'])) {
 					file_put_contents( $iconUrl, file_get_contents(rawurldecode($iconEl[0])) );
 				}catch(Exception $e) {					
 					error_log(">>>Could not get radar image: " . $e->getMessage());
-					$iconUrl = "$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png";
+					$iconUrl = "images/view-calendar-upcoming-days.png";
 				}
 				
 				$airport_codeEl = $value->xpath('.//airport_code');
