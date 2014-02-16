@@ -101,6 +101,7 @@ if(isset($_GET['Weather'])) {
 				$iconEl = $value->xpath('//satellite/image_url');
 				
 				$iconUrl = "";
+				$message = "";
 				try{
 					$iconDir = "cache";
 					
@@ -110,8 +111,9 @@ if(isset($_GET['Weather'])) {
 					
 					$iconUrl = "$iconDir/curRadar.png";					
 					file_put_contents( $iconUrl, file_get_contents(rawurldecode($iconEl[0])) );
-				}catch(Exception $e) {					
-					error_log(">>>Could not get radar image: " . $e->getMessage());
+				}catch(Exception $e) {		
+					$message = $e->getMessage();			
+					error_log(">>>Could not get radar image: " . $message);					
 					$iconUrl = "images/view-calendar-upcoming-days.png";
 				}
 				
@@ -140,6 +142,7 @@ if(isset($_GET['Weather'])) {
 				$weatherTpl->addChild('Icon', "$WebServer/$MythRokuDir/$iconUrl");
 				//rawurldecode(htmlspecialchars($iconEl[0])));   #probably fails in cookie handling from Roku to wunderground WUBLAST  ?  -RSH
 				$weatherTpl->addChild('Conditions', $conditions);
+				$weatherTpl->addChild('Message', $message);
 				$weatherTpl->addChild('AsOf', date('M j'));
 				$weatherTpl->addChild('Until', "Historical Norms");
 				$weatherTpl->addChild('Source', 'Provided by www.wunderground.com');
