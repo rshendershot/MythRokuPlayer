@@ -32,12 +32,12 @@ if(isset($_GET['Weather'])) {
 					$icon = "$WebServer/$MythRokuDir/images/oval_orange.png";
 				}else continue;  //skip any other types
 				
-				$nameEL = $weatherList->xpath('//response/current_observation/display_location/city');
-				$descEl = $weatherList->xpath('.//description');
-				$messageEl = $weatherList->xpath('.//message');
-				$untilEl = $weatherList->xpath('.//expires');
+				$nameEL = $value->xpath('//response/current_observation/display_location/city');
+				$descEl = $value->xpath('.//description');
+				$messageEl = $value->xpath('.//message');
+				$untilEl = $value->xpath('.//expires');
 
-				$asofEl = $weatherList->xpath('.//date_epoch');
+				$asofEl = $value->xpath('.//date_epoch');
 				$asof = (string)$asofEl[0];
 				
 				$weatherTpl = new SimpleXMLElement('<Weather/>');
