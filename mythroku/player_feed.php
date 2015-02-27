@@ -254,7 +254,7 @@ class item extends XmlEmitter {
 			// http://www.mythtv.org/wiki/MythVideo_File_Parsing#Filenames
 			if(!empty($show->screenshot)){
 				$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
-				$imgfile = !empty($screenart) && !empty($show->screenshot) ? $show->screenshot : "images/oval_grey.png";
+				$imgfile = !empty($screenart) && !empty($show->screenshot) ? $screenart->dirname . $show->screenshot : "images/oval_grey.png";
 			}elseif(!empty($show->fanart)){
 				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
 				$imgfile = $fanart->dirname . $show->fanart;
@@ -266,7 +266,7 @@ class item extends XmlEmitter {
 	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
 	    	
 	    	//TODO lookup genres for item::genres.  can be an array?	 			
-	    	$category = VideoCategory::first( array('conditions' => array('intid = ?', $show->category)) );
+	    	$category = VideoCategory::first( array('conditions' => array('intid = ?', $show->category)) );    	
 
 			$this->title = new title(array('content'=>normalizeHtml($show->title))); 
 			$this->contentQuality = new contentQuality(array('content'=>$RokuDisplayType));
