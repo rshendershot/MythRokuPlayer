@@ -20,10 +20,12 @@ if (isset ($_GET['stream'])) { // send a file spec
 	$file = rawurldecode($_GET['thumbnail']);
 	if (file_exists($file)) {
         $img = new Imagick($file);    // on ubuntu: apt-get install php5-imagick
-        $img->thumbnailImage(250, 0); // proportional resize to width when rows=0
-        header('Content-Length: ' . $img->getImageLength());
+        $img->scaleImage(250,0,false);
+        // can't use line below because imageLength() is not the number of bytes sent. TODO?
+        //header('Content-Length: ' . $img->getImageLength());
         header('Content-Type: image/' . $img->getImageFormat());
         echo $img;
+#        output($file);
     } else {
         throw new Exception("unknown file: $file");
     }
