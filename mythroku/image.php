@@ -3,6 +3,7 @@
 // thank you to phpfreak jonsjava
 
 require_once './settings.php'; 
+include './resizeimage.php';
 
 if (isset ($_GET['stream'])) { // send a file spec
 	$file = rawurldecode($_GET['stream']);   // urls are double encoded see
@@ -19,17 +20,14 @@ if (isset ($_GET['stream'])) { // send a file spec
 } elseif (isset($_GET['thumbnail'])) { // send a file spec
 	$file = rawurldecode($_GET['thumbnail']);
 	if (file_exists($file)) {
-        $img = new Imagick($file);    // on ubuntu: apt-get install php5-imagick
+        $img = new SimpleImage();
+        $img->load($file);
         if ($RokuDisplayType == 'HD' ) {
-            $img->scaleImage(250,0,false);
+            $img->resizeToWidth(250);
         } else {
-            $img->scaleImage(150,0,false);
+            $img->resizeToWidth(150);
         }
-        // can't use line below because imageLength() is not the number of bytes sent. TODO?
-        //header('Content-Length: ' . $img->getImageLength());
-        header('Content-Type: image/' . $img->getImageFormat());
-        echo $img;
-#        output($file);
+        $img->output();
     } else {
         throw new Exception("unknown file: $file");
     }
