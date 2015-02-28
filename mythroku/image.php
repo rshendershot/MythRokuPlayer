@@ -20,7 +20,11 @@ if (isset ($_GET['stream'])) { // send a file spec
 	$file = rawurldecode($_GET['thumbnail']);
 	if (file_exists($file)) {
         $img = new Imagick($file);    // on ubuntu: apt-get install php5-imagick
-        $img->scaleImage(250,0,false);
+        if ($RokuDisplayType == 'HD' ) {
+            $img->scaleImage(250,0,false);
+        } else {
+            $img->scaleImage(150,0,false);
+        }
         // can't use line below because imageLength() is not the number of bytes sent. TODO?
         //header('Content-Length: ' . $img->getImageLength());
         header('Content-Type: image/' . $img->getImageFormat());
