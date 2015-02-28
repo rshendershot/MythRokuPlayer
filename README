@@ -12,9 +12,6 @@ PREREQUISITS
 -Mythtv video are stored in H.264 format (mp4)
 -web user (eg. apache) permission to delete recordings
 -php-gd
--php-imagemagick (http://php.net/manual/en/book.imagick.php). On ubuntu:
-    sudo apt-get install php5-imagick
-    sudo service apache2 reload
 -php-xml
 -php-pdo
 -PHP ActiveRecord, in a php included location   (see http://www.phpactiverecord.org, and Testing below)
