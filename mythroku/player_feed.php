@@ -252,21 +252,21 @@ class item extends XmlEmitter {
 
 			// http://www.mythtv.org/wiki/Video_Library#Metadata_Grabber_Troubleshooting
 			// http://www.mythtv.org/wiki/MythVideo_File_Parsing#Filenames
+	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?stream=" . rawurlencode("images/oval_grey.png");
 			if(!empty($show->screenshot)){
 				$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
-				$imgfile = !empty($screenart) && !empty($show->screenshot) ? $screenart->dirname . $show->screenshot : "images/oval_grey.png";
+				$imgfile = $screenart->dirname . $show->screenshot;
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
 			}elseif(!empty($show->fanart)){
 				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
 				$imgfile = $fanart->dirname . $show->fanart;
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
 			}elseif(!empty($show->coverfile)){
 				$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
 				$imgfile = $coverart->dirname . $show->coverfile;
-			}else{
-				$imgfile = "images/oval_grey.png";
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
 			}
-			//TODO coverart and fanart are 5-10X sizeof screenshots.  videometadata doesn't contain screenshots for movies.  create screenshots and update db
-	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
-	    	
+	    		    	
 	    	//TODO lookup genres for item::genres.  can be an array?	 			
 	    	$category = VideoCategory::first( array('conditions' => array('intid = ?', $show->category)) );    	
 
