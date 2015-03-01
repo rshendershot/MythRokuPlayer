@@ -258,10 +258,12 @@ class item extends XmlEmitter {
 			}elseif(!empty($show->fanart)){
 				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
 				$imgfile = $fanart->dirname . $show->fanart;
-			}else{
-				$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
-				$imgfile = $coverart->dirname . $show->coverfile;
-			}
+            }elseif(!empty($show->coverfile)){
+                $coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
+                $imgfile = $coverart->dirname . $show->coverfile;
+            }else{
+                $imgfile = "images/oval_grey.png";
+            }
 			//TODO coverart and fanart are 5-10X sizeof screenshots.  videometadata doesn't contain screenshots for movies.  create screenshots and update db
 	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
 	    	
