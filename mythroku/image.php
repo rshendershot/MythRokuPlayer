@@ -22,10 +22,9 @@ if (isset ($_GET['stream'])) { // send a file spec
 	if (file_exists($file)) {
         $img = new SimpleImage();
         $img->load($file);
-        if ($RokuDisplayType == 'HD' ) {
-            $img->resizeToWidth(250);
-        } else {
-            $img->resizeToWidth(150);
+        if( $img->getWidth() > 250) {
+            $newsize = $RokuDisplayType == 'HD' ? 250 : 150;
+            $img->resizeToWidth($newsize);
         }
         $img->output();
     } else {
