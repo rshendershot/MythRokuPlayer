@@ -5,8 +5,8 @@
 require_once './settings.php'; 
 include './resizeimage.php';
 
-if (isset ($_GET['stream'])) { // send a file spec
-	$file = rawurldecode($_GET['stream']);   // urls are double encoded see
+if (isset ($_GET['static'])) { // send a file spec
+	$file = rawurldecode($_GET['static']);   // urls are double encoded see
                                              // https://github.com/rshendershot/MythRokuPlayer/issues/33
 	if (file_exists($file)) {					
         if (isset($_SERVER['HTTP_RANGE'])) {
@@ -17,8 +17,8 @@ if (isset ($_GET['stream'])) { // send a file spec
 	} else {
 		throw new Exception("unknown file: $file");
 	}
-} elseif (isset($_GET['thumbnail'])) { // send a file spec
-	$file = rawurldecode($_GET['thumbnail']);
+} elseif (isset($_GET['imagegen'])) { // send a file spec
+	$file = rawurldecode($_GET['imagegen']);
 	if (file_exists($file)) {
         $img = new SimpleImage();
         $img->load($file);

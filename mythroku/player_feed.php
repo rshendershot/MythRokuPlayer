@@ -221,7 +221,7 @@ class item extends XmlEmitter {
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
 	    	$streamfile  = $show->storagegroups->dirname . $show->basename;
 	
-	    	$parms = array('stream'=>$streamfile);
+	    	$parms = array('static'=>$streamfile);
 	    	$streamUrl = "$WebServer/$MythRokuDir/image.php?"
 	    		.http_build_query($parms);
 	
@@ -248,7 +248,7 @@ class item extends XmlEmitter {
 			
 			$videos = StorageGroup::first( array('conditions' => array('groupname = ?', 'Videos')) );	    	
 	    	$streamfile = $videos->dirname . $show->filename;
-	    	$streamUrl = "$WebServer/$MythRokuDir/image.php?stream=" . rawurlencode($streamfile);
+	    	$streamUrl = "$WebServer/$MythRokuDir/image.php?static=" . rawurlencode($streamfile);
 
 			// http://www.mythtv.org/wiki/Video_Library#Metadata_Grabber_Troubleshooting
 			// http://www.mythtv.org/wiki/MythVideo_File_Parsing#Filenames
@@ -265,7 +265,7 @@ class item extends XmlEmitter {
                 $imgfile = "images/oval_grey.png";
             }
 			//TODO coverart and fanart are 5-10X sizeof screenshots.  videometadata doesn't contain screenshots for movies.  create screenshots and update db
-	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
+	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?imagegen=" . rawurlencode($imgfile);
 	    	
 	    	//TODO lookup genres for item::genres.  can be an array?	 			
 	    	$category = VideoCategory::first( array('conditions' => array('intid = ?', $show->category)) );    	
