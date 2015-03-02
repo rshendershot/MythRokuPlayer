@@ -252,19 +252,19 @@ class item extends XmlEmitter {
 
 			// http://www.mythtv.org/wiki/Video_Library#Metadata_Grabber_Troubleshooting
 			// http://www.mythtv.org/wiki/MythVideo_File_Parsing#Filenames
-	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?stream=" . rawurlencode("images/oval_grey.png");
+	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?static=" . rawurlencode("images/oval_grey.png");
 			if(!empty($show->screenshot)){
 				$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
 				$imgfile = $screenart->dirname . $show->screenshot;
-				$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?imagegen=" . rawurlencode($imgfile);
 			}elseif(!empty($show->fanart)){
 				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
 				$imgfile = $fanart->dirname . $show->fanart;
-				$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?imagegen=" . rawurlencode($imgfile);
 			}elseif(!empty($show->coverfile)){
 				$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
 				$imgfile = $coverart->dirname . $show->coverfile;
-				$imgUrl = "$WebServer/$MythRokuDir/image.php?thumbnail=" . rawurlencode($imgfile);
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?imagegen=" . rawurlencode($imgfile);
 			}
 	    		    	
 	    	//TODO lookup genres for item::genres.  can be an array?	 			
