@@ -3,18 +3,33 @@
 // thank you to phpfreak jonsjava
 
 require_once './settings.php'; 
+include './resizeimage.php';
 
-if (isset ($_GET['image'])) { //send a file spec
-	$file = rawurldecode($_GET['image']);
+if (isset ($_GET['static'])) { // send a file spec
+	$file = rawurldecode($_GET['static']);   // urls are double encoded see
+                                             // https://github.com/rshendershot/MythRokuPlayer/issues/33
 	if (file_exists($file)) {					
         if (isset($_SERVER['HTTP_RANGE'])) {
             rangeDownload($file);
         } else {
-        	output($file);
+            output($file);
         }												
 	} else {
 		throw new Exception("unknown file: $file");
 	}
+} elseif (isset($_GET['imagegen'])) { // send a file spec
+	$file = rawurldecode($_GET['imagegen']);
+	if (file_exists($file)) {
+        $img = new SimpleImage();
+        $img->load($file);
+        if( $img->getWidth() > 250) {
+            $newsize = $RokuDisplayType == 'HD' ? 250 : 150;
+            $img->resizeToWidth($newsize);
+        }
+        $img->output();
+    } else {
+        throw new Exception("unknown file: $file");
+    }
 } elseif (isset($_GET['preview'])) { //send a key of chanid and starttime. 
 	$preview = rawurldecode($_GET['preview']);
 	$chanid = ltrim(substr($preview,0,6),'_');
@@ -171,4 +186,4 @@ function rangeDownload($file)
     fclose($fp);
 }                  
 
-?> 
+?>

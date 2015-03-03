@@ -221,7 +221,7 @@ class item extends XmlEmitter {
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
 	    	$streamfile  = $show->storagegroups->dirname . $show->basename;
 	
-	    	$parms = array('image'=>$streamfile);
+	    	$parms = array('static'=>$streamfile);
 	    	$streamUrl = "$WebServer/$MythRokuDir/image.php?"
 	    		.http_build_query($parms);
 	
@@ -248,23 +248,25 @@ class item extends XmlEmitter {
 			
 			$videos = StorageGroup::first( array('conditions' => array('groupname = ?', 'Videos')) );	    	
 	    	$streamfile = $videos->dirname . $show->filename;
-	    	$streamUrl = "$WebServer/$MythRokuDir/image.php?image=" . rawurlencode($streamfile);	    	   	
+	    	$streamUrl = "$WebServer/$MythRokuDir/image.php?static=" . rawurlencode($streamfile);
 
 			// http://www.mythtv.org/wiki/Video_Library#Metadata_Grabber_Troubleshooting
 			// http://www.mythtv.org/wiki/MythVideo_File_Parsing#Filenames
-//			if(!empty($show->screenshot)){
+	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?static=" . rawurlencode("images/oval_grey.png");
+			if(!empty($show->screenshot)){
 				$screenart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Screenshots')) );
-				$imgfile = !empty($screenart) && !empty($show->screenshot) ? $screenart->dirname . $show->screenshot : "images/oval_grey.png";
-//			}elseif(!empty($show->fanart)){
-//				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
-//				$imgfile = $fanart->dirname . $show->fanart;
-//			}else{
-//				$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
-//				$imgfile = $coverart->dirname . $show->coverfile;
-//			}
-			//TODO coverart and fanart are 5-10X sizeof screenshots.  videometadata doesn't contain screenshots for movies.  create screenshots and update db
-	    	$imgUrl = "$WebServer/$MythRokuDir/image.php?image=" . rawurlencode($imgfile);
-	    	
+				$imgfile = $screenart->dirname . $show->screenshot;
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?imagegen=" . rawurlencode($imgfile);
+			}elseif(!empty($show->fanart)){
+				$fanart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Fanart')) );
+				$imgfile = $fanart->dirname . $show->fanart;
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?imagegen=" . rawurlencode($imgfile);
+			}elseif(!empty($show->coverfile)){
+				$coverart = StorageGroup::first( array('conditions' => array('groupname = ?', 'Coverart')) );
+				$imgfile = $coverart->dirname . $show->coverfile;
+				$imgUrl = "$WebServer/$MythRokuDir/image.php?imagegen=" . rawurlencode($imgfile);
+			}
+	    		    	
 	    	//TODO lookup genres for item::genres.  can be an array?	 			
 	    	$category = VideoCategory::first( array('conditions' => array('intid = ?', $show->category)) );    	
 
