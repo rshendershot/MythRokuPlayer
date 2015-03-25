@@ -8,7 +8,7 @@ which are easily integrated using the class system.
 
 PREREQUISITS
 -functioning mythtv backend and mythweb
--handbrakecli (for converting recordings to H.264 format)
+-ffmpeg or alternates mythffmpeg,handbrakecli (for converting recordings to H.264 format)
 -Mythtv video are stored in H.264 format (mp4)
 -web user (eg. apache) permission to delete recordings
 -php-gd
@@ -98,7 +98,7 @@ To finish the install, adjust your installation to your environment as in the fo
 	This will automatically encode a recording to mp4 format which can then be
 	streamed by roku.  It will also update mythconverg.recorded.basename with MP4 extension
 	(the player ignores other filetypes).  Note that mythweb and mythtv frontend will thereafter
-	use the MP4 not the original! 
+	use the MP4 not the original.  
 	
 5) Testing 
     Using either a command line or your browser, load the testing file
