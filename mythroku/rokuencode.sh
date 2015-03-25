@@ -20,7 +20,8 @@ echo "$date: Roku Encode $MPGFILE to $newname" >> $LOGFILE
 
 date=`date`
 echo "$newbname:$date Encoding" >> $LOGFILE
-/usr/bin/HandBrakeCLI --preset='iPhone & iPod Touch' -i $MYTHDIR/$MPGFILE -o $newname 
+#/usr/bin/HandBrakeCLI --preset='iPhone & iPod Touch' -i $MYTHDIR/$MPGFILE -o $newname 
+mythffmpeg -y -i $MYTHDIR/$MPGFILE -strict experimental -c:a aac -c:v mpeg4 -q:v 10 -q:a 2 -ac 2 $newname >> $LOGFILE 2>&1
 
 date=`date`
 echo "$newbname:$date Database/remove" >> $LOGFILE
