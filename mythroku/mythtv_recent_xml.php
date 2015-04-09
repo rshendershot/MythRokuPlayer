@@ -89,8 +89,8 @@ if(isset($_GET['Recent'])) {
 	//	build category dynamic groupings: Recent, Older, All
 		
 	$recent = new category(
-		array(XmlEmitter::ATR.'title'=>'Recent'
-			, XmlEmitter::ATR.'description'=>'Select a time frame'
+		array(XmlEmitter::ATR.'title'=>'Date'
+			, XmlEmitter::ATR.'description'=>'See most recent'
 			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png"
 			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png"
 			, 'categoryLeaf'=>array()
