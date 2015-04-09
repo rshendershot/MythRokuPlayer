@@ -24,19 +24,21 @@ if (!function_exists('shows_date_compare')) {
 	}
 }
 
-if(isset($_GET['Date'])) {
-	$select = rawurldecode($_GET['Date']);
+if(isset($_GET['Recent'])) {
+	$select = rawurldecode($_GET['Recent']);
 
 	//build feed for this specific date set
-	error_log("selecting Date: $select", 0);
+	error_log("selecting Recent: $select", 0);
+	
+	//Recent, Older, All
 	
 	//build date range
 	$interval = '-1 HOUR';
-	switch ( $select ) {
-		case 'Today': $interval = '-1 DAY';break;
-		case 'Week': $interval = '-7 DAY';break;
-		case 'Month': $interval = '-1 MONTH';break;
-		case 'Year': $interval = '-1 YEAR';break;
+	switch ( $select ) {  //TODO use top in the select query
+		//case 'Today': $interval = '-1 DAY';break;
+		case 'Recent': $interval = '-15 DAY';break;
+		//case 'Month': $interval = '-1 MONTH';break;
+		case 'Older': $interval = '-1 YEAR';break;
 		case 'All': $interval = '-100 YEAR';break;
 		default:
 			break;
@@ -84,11 +86,11 @@ if(isset($_GET['Date'])) {
 	print $feed;
 
 }else{
-	//	build category static groupings: Week, Month, Year, All
+	//	build category dynamic groupings: Recent, Older, All
 		
-	$date = new category(
+	$recent = new category(
 		array(XmlEmitter::ATR.'title'=>'Date'
-			, XmlEmitter::ATR.'description'=>'Select a Date'
+			, XmlEmitter::ATR.'description'=>'See most recent'
 			, XmlEmitter::ATR.'sd_img'=>"$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png"
 			, XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/view-calendar-upcoming-days.png"
 			, 'categoryLeaf'=>array()
@@ -96,19 +98,19 @@ if(isset($_GET['Date'])) {
 	);
 
 	$menu = array();
-	$results = array('Today','Week','Month','Year','All');	
+	$results = array('Recent','Older','All');	
 
 	foreach ( $results as $value ) {
-		$parms = array('Date'=>rawurlencode($value));
+		$parms = array('Recent'=>rawurlencode($value));
     	$menu[] = new categoryLeaf( 
     		array(XmlEmitter::ATR.'title'=>$value
-    		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_date_xml.php?".http_build_query($parms))  
+    		, XmlEmitter::ATR.'feed'=>"$WebServer/$MythRokuDir/mythtv_recent_xml.php?".http_build_query($parms))  
     	);   
 	}
 
-	$date->categoryLeaf = $menu;
+	$recent->categoryLeaf = $menu;
 
-	return $date;	
+	return $recent;	
 }
 
 ?>

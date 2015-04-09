@@ -10,7 +10,10 @@ include 'mythtv_group_xml.php';
 include 'mythtv_genre_xml.php';
 
 //DATE  (videometadata insertdate or releasedate as starttime, recorded starttime  DESC)
-include 'mythtv_date_xml.php'; 
+//include 'mythtv_date_xml.php'; 
+
+//RECENT  (videometadata insertdate or releasedate as starttime, recorded starttime  DESC)
+include 'mythtv_recent_xml.php'; 
 
 //UPCOMING
 include 'mythtv_upcoming_xml.php';
@@ -54,7 +57,7 @@ $top = new categories(
 			,XmlEmitter::ATR.'hd_img'=>"$WebServer/$MythRokuDir/images/mythtv_logo_SD.png")
 		)
 		, 'category'=>array(
-			$date
+			$recent //$date
 			, $upcoming
 			, $conf  //-- This MUST be the third item.  The UI references it (2) by zero-based index. --//
 			//, $all
