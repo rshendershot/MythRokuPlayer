@@ -21,14 +21,10 @@ echo "$date: Roku Encode $MPGFILE to $newname" >> $LOGFILE
 date=`date`
 echo "$newbname:$date Encoding" >> $LOGFILE
 #/usr/bin/HandBrakeCLI --preset='iPhone & iPod Touch' -i $MYTHDIR/$MPGFILE -o $newname 
-mythffmpeg -y -i $MYTHDIR/$MPGFILE -strict experimental -c:a aac -c:v mpeg4 -q:v 10 -q:a 2 -ac 2 $newname >> $LOGFILE 2>&1
-
-date=`date`
-echo "$newbname:$date Database/remove" >> $LOGFILE
-# update the db to point to the mp4
-NEWFILESIZE=`du -b "$newname" | cut -f1`
-echo "UPDATE recorded SET basename='$newbname.mp4',filesize='$NEWFILESIZE' WHERE basename='$2';" > /tmp/update-database.sql
-mysql --user=$DATABASEUSER --password=$DATABASEPASSWORD mythconverg < /tmp/update-database.sql
+mythffmpeg -y -loglevel error -threads 4 -i $MYTHDIR/$MPGFILE -strict experimental -c:a aac -c:v mpeg4 -q:v 5 -q:a 2 -ac 2 -f mp4 $newname >> $LOGFILE 2>&1
+#mythffmpeg -y -loglevel error -threads 4 -i "$newname.t" -vcodec copy -acodec copy $newname >> $LOGFILE 2>&1
+rm -f "$newname.png" >> $LOGFILE 2>&1
+mythpreviewgen --loglevel err --infile $newname --seconds 1 >> $LOGFILE 2>&1
 
 # update the seek table
 date=`date`
@@ -40,6 +36,13 @@ mythcommflag --file $newname --rebuild
 #date=`date`
 #echo "$MYTHDIR/$MPGFILE:$date File/remove" >> $LOGFILE
 #rm $MYTHDIR/$MPGFILE
+
+date=`date`
+echo "$newbname:$date Database/remove" >> $LOGFILE
+# update the db to point to the mp4
+NEWFILESIZE=`du -b "$newname" | cut -f1`
+echo "UPDATE recorded SET basename='$newbname.mp4',filesize='$NEWFILESIZE' WHERE basename='$2';" > /tmp/update-database.sql
+mysql --user=$DATABASEUSER --password=$DATABASEPASSWORD mythconverg < /tmp/update-database.sql
 
 date=`date`
 echo "$date: Roku Encode $newbname Complete" >> $LOGFILE
