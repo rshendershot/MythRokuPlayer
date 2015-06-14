@@ -1,0 +1,95 @@
+#!/bin/sh   
+#authored by Richard S Hendershot c2015
+renice +15 --pid $$ >/dev/null
+
+declare _date=`date +%Y%m%d%H%M%S`
+declare -i _help=1
+declare -i _list=0
+declare _file=""
+declare -i _db=0
+declare _index=""
+declare _chan=""
+declare _time=""
+declare _user="mythtv"
+declare _frames=""
+declare _errlvl="emerg"
+declare -i _verbose=0
+declare -i _logged=0
+declare _conlog=""
+declare _filename=""
+declare _logname=""
+declare -i _quiet=0
+declare -i _recurs=0
+
+function show_usage()
+{
+  echo "usage: myth-pic-gen f | cs [i||n] [u] [l] [h]"
+  echo "      f - file spec, ignores c and s"
+  echo "      c - chanid, requires s"
+  echo "      s - starttimee, requires c"
+  echo "      n - number of frames index"
+  echo "      i - index (secsIn)"
+  echo "      u - user (default mythtv)"
+  echo "      l - List the resulting preview image"
+  echo "      L - loglevel: emerg, alert, crit, err, warning, notice, info, debug"
+  echo "      V - verbose filter to 'all'"
+  echo "      C - output console to default file"
+  echo "      F - specify the console log file, requires C"
+  echo "      S - suppress output of invocation command"
+  echo "      R - iterate all mp4 in current directory"
+  echo "      h - help. Authored by rshendershot c2015"  
+  echo ""
+  echo "example: myth-pic-gen -c "'$chanid'" -s "'$time'" -lCF log.txt"
+  echo ""
+
+  if [ -n "$1" ]; then echo; echo "***  $1  ***"; echo; fi
+  exit 1;
+}
+
+while getopts "f:c:s:i:u:n:L:CF:VlSRh" options; do
+  case $options in
+         f ) if [ -f "$OPTARG" ]; then _file=$OPTARG; fi ;;
+         c ) _chan=$OPTARG;;
+         s ) _time=$OPTARG;;
+         i ) _index=$OPTARG;;
+         u ) _user=$OPTARG;;
+         n ) _frames=$OPTARG;;  #TODO it seems frame value is irrelevent
+         l ) _list=1;;  #bug: the first call suceeds but late calls don't:  FC22
+         L ) _errlvl=$OPTARG;;
+         C ) _logged=1;;
+         F ) _logname=$OPTARG;;
+         V ) _verbose=1;;
+         S ) _quiet=1;;
+         R ) _recurs=1;;
+         h ) show_usage;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+if [ $_recurs -ne 0 ]; 
+then 
+	for i in $( ls *.mp4); do
+		$0 -f $i -i 123 >/dev/null;
+	done
+	exit 0;
+fi
+
+if [ -n "$_chan" ] && [ -n "$_time" ]; then _db=1; _help=0; _conlog="$_chan"'_'"$_time.$_date"'.log'; fi
+if [ -n "$_file" ]; then _help=0; _db=0; _conlog=`basename $_file .mp4`".$_date"'.log'; fi
+if [ $_help -ne 0 ]; then show_usage; fi
+
+declare cmd="sudo -H -u $_user bash -c 'mythpreviewgen "
+if [ -n "$_file" ]; then cmd+=" --infile $_file "; fi
+if [ $_db -ne 0 ]; then cmd+=" --chanid $_chan --starttime $_time "; fi
+if [ -n "$_index" ]; then cmd+=" --seconds $_index "; fi
+if [ -n "$_frames" ]; then cmd+=" --frame $_frames "; fi
+if [ $_verbose -ne 0 ]; then cmd+="-v all "; fi
+cmd+="--loglevel $_errlvl'"
+
+if [ -n "$_logname" ] && [ $_logged -ne 0 ]; then _conlog="$_logname"; fi
+if [ $_logged -ne 0 ]; then cmd+=" > $_conlog "; fi
+if [ $_list -ne 0 ]; then cmd+=" ;ls -lth *.png "; fi
+
+if [ $_quiet -eq 0 ]; then echo "$cmd"; fi
+
+eval $cmd

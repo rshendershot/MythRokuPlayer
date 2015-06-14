@@ -24,7 +24,7 @@ echo "$newbname:$date Encoding" >> $LOGFILE
 mythffmpeg -y -loglevel error -threads 4 -i $MYTHDIR/$MPGFILE -strict experimental -c:a aac -c:v mpeg4 -q:v 5 -q:a 2 -ac 2 -f mp4 $newname >> $LOGFILE 2>&1
 #mythffmpeg -y -loglevel error -threads 4 -i "$newname.t" -vcodec copy -acodec copy $newname >> $LOGFILE 2>&1
 rm -f "$newname.png" >> $LOGFILE 2>&1
-mythpreviewgen --loglevel err --infile $newname --seconds 1 >> $LOGFILE 2>&1
+mythpreviewgen --loglevel err --infile $newname --seconds 123 >> $LOGFILE 2>&1
 
 # update the seek table
 date=`date`
