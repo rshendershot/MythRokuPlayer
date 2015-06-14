@@ -1,5 +1,6 @@
-#!/bin/sh   
-#authored by Richard S Hendershot c2015
+#!/bin/bash
+
+#authored by rshendershot c2015
 renice +15 --pid $$ >/dev/null
 
 declare _date=`date +%Y%m%d%H%M%S`
