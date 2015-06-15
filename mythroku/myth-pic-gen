@@ -20,7 +20,7 @@ declare _conlog=""
 declare _filename=""
 declare _logname=""
 declare -i _quiet=0
-declare -i _recurs=0
+declare -i _iter=0
 
 function show_usage()
 {
@@ -61,15 +61,16 @@ while getopts "f:c:s:i:u:n:L:CF:VlSRh" options; do
          F ) _logname=$OPTARG;;
          V ) _verbose=1;;
          S ) _quiet=1;;
-         R ) _recurs=1;;
+         R ) _iter=1;;
          h ) show_usage;;
   esac
 done
 shift $(($OPTIND - 1))
 
-if [ $_recurs -ne 0 ]; 
+if [ $_iter -ne 0 ]; 
 then 
 	for i in $( ls *.mp4); do
+		rm -f "$i.png";
 		$0 -f $i -i 123 >/dev/null;
 	done
 	exit 0;
