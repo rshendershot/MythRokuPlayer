@@ -68,7 +68,7 @@ done
 shift $(($OPTIND - 1))
 
 if [ $_iter -ne 0 ]; 
-then 
+then
 	for i in $( ls *.mp4); do
 		rm -f "$i.png";
 		$0 -f $i -i 123 >/dev/null;
