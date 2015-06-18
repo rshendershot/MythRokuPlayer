@@ -8,7 +8,7 @@ declare -i _help=1
 declare -i _list=0
 declare _file=""
 declare -i _db=0
-declare _index=""
+declare _index="123"
 declare _chan=""
 declare _time=""
 declare _user="mythtv"
@@ -21,6 +21,7 @@ declare _filename=""
 declare _logname=""
 declare -i _quiet=0
 declare -i _iter=0
+declare -i _deletelog=0
 
 function show_usage()
 {
@@ -36,8 +37,9 @@ function show_usage()
   echo "      V - verbose filter to 'all'"
   echo "      C - output console to default file"
   echo "      F - specify the console log file, requires C"
-  echo "      S - suppress output of invocation command"
-  echo "      R - iterate all mp4 in current directory"
+  echo "      D - do not append to console log file, requires C and F"
+  echo "      Q - suppress output of invocation command"
+  echo "      R - iterate all mp4 in current directory (ignores c,s,f,n)"
   echo "      h - help. Authored by rshendershot c2015"  
   echo ""
   echo "example: myth-pic-gen -c "'$chanid'" -s "'$time'" -lCF log.txt"
@@ -47,7 +49,7 @@ function show_usage()
   exit 1;
 }
 
-while getopts "f:c:s:i:u:n:L:CF:VlSRh" options; do
+while getopts "f:c:s:i:u:n:L:CF:VlDQRh" options; do
   case $options in
          f ) if [ -f "$OPTARG" ]; then _file=$OPTARG; fi ;;
          c ) _chan=$OPTARG;;
@@ -59,8 +61,9 @@ while getopts "f:c:s:i:u:n:L:CF:VlSRh" options; do
          L ) _errlvl=$OPTARG;;
          C ) _logged=1;;
          F ) _logname=$OPTARG;;
+         D ) _deletelog=1;;
          V ) _verbose=1;;
-         S ) _quiet=1;;
+         Q ) _quiet=1;;
          R ) _iter=1;;
          h ) show_usage;;
   esac
@@ -71,8 +74,16 @@ if [ $_iter -ne 0 ];
 then
 	for i in $( ls *.mp4); do
 		rm -f "$i.png";
-		$0 -f $i -i 123 >/dev/null;
+		declare _cmd="$0 -f $i -u $_user -i $_index -L $_errlvl"
+		if [ $_logged -ne 0 ]; then _cmd+=" -C "; 
+			if [ $_deletelog -ne 0 ]; then _cmd+=" -D "; fi #bug only the last log is retained
+			if [ -n "$_logname" ]; then _cmd+=" -F $_logname "; fi 
+		fi
+		if [ $_verbose -ne 0 ]; then _cmd+=" -V "; fi
+		if [ $_quiet -ne 0 ]; then _cmd+=" -Q >/dev/null"; fi
+		eval $_cmd
 	done
+	if [ $_list -ne 0 ]; then ls -lth *.png; fi
 	exit 0;
 fi
 
@@ -88,8 +99,10 @@ if [ -n "$_frames" ]; then cmd+=" --frame $_frames "; fi
 if [ $_verbose -ne 0 ]; then cmd+="-v all "; fi
 cmd+="--loglevel $_errlvl'"
 
-if [ -n "$_logname" ] && [ $_logged -ne 0 ]; then _conlog="$_logname"; fi
-if [ $_logged -ne 0 ]; then cmd+=" > $_conlog "; fi
+if [ -n "$_logname" ] && [ $_logged -ne 0 ]; then _conlog="$_logname"; 
+	if [ $_deletelog -ne 0 ]; then rm -f $_conlog; fi
+fi
+if [ $_logged -ne 0 ]; then cmd+=" >> $_conlog 2>&1"; fi
 if [ $_list -ne 0 ]; then cmd+=" ;ls -lth *.png "; fi
 
 if [ $_quiet -eq 0 ]; then echo "$cmd"; fi
