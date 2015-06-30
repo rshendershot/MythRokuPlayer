@@ -1,5 +1,6 @@
 #!/bin/bash
 
+set -o errexit
 renice +15 --pid $$
 
 #convert mpeg file to mp4 using handbrakecli
