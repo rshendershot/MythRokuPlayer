@@ -1,0 +1,110 @@
+#!/bin/bash
+
+#authored by rshendershot c2015
+renice +15 --pid $$ >/dev/null
+
+declare _date=`date +%Y%m%d%H%M%S`
+declare -i _help=1
+declare -i _list=0
+declare _file=""
+declare -i _db=0
+declare _index="123"
+declare _chan=""
+declare _time=""
+declare _user="mythtv"
+declare _frames=""
+declare _errlvl="emerg"
+declare -i _verbose=0
+declare -i _logged=0
+declare _conlog=""
+declare _filename=""
+declare _logname=""
+declare -i _quiet=0
+declare -i _iter=0
+declare -i _deletelog=0
+
+function show_usage()
+{
+  echo "usage: myth-pic-gen f | cs [i||n] [u] [l] [h]"
+  echo "      f - file spec, ignores c and s"
+  echo "      c - chanid, requires s"
+  echo "      s - starttimee, requires c"
+  echo "      n - number of frames index"
+  echo "      i - index (secsIn)"
+  echo "      u - user (default mythtv)"
+  echo "      l - List the resulting preview image"
+  echo "      L - loglevel: emerg, alert, crit, err, warning, notice, info, debug"
+  echo "      V - verbose filter to 'all'"
+  echo "      C - output console to default file"
+  echo "      F - specify the console log file, requires C"
+  echo "      D - do not append to console log file, requires C and F"
+  echo "      Q - suppress output of invocation command"
+  echo "      R - iterate all mp4 in current directory (ignores c,s,f,n)"
+  echo "      h - help. Authored by rshendershot c2015"  
+  echo ""
+  echo "example: myth-pic-gen -c "'$chanid'" -s "'$time'" -lCF log.txt"
+  echo ""
+
+  if [ -n "$1" ]; then echo; echo "***  $1  ***"; echo; fi
+  exit 1;
+}
+
+while getopts "f:c:s:i:u:n:L:CF:VlDQRh" options; do
+  case $options in
+         f ) if [ -f "$OPTARG" ]; then _file=$OPTARG; fi ;;
+         c ) _chan=$OPTARG;;
+         s ) _time=$OPTARG;;
+         i ) _index=$OPTARG;;
+         u ) _user=$OPTARG;;
+         n ) _frames=$OPTARG;;  #TODO it seems frame value is irrelevent
+         l ) _list=1;;  #bug: the first call suceeds but late calls don't:  FC22
+         L ) _errlvl=$OPTARG;;
+         C ) _logged=1;;
+         F ) _logname=$OPTARG;;
+         D ) _deletelog=1;;
+         V ) _verbose=1;;
+         Q ) _quiet=1;;
+         R ) _iter=1;;
+         h ) show_usage;;
+  esac
+done
+shift $(($OPTIND - 1))
+
+if [ $_iter -ne 0 ]; 
+then
+	for i in $( ls *.mp4); do
+		rm -f "$i.png";
+		declare _cmd="$0 -f $i -u $_user -i $_index -L $_errlvl"
+		if [ $_logged -ne 0 ]; then _cmd+=" -C "; 
+			if [ $_deletelog -ne 0 ]; then _cmd+=" -D "; fi #bug only the last log is retained
+			if [ -n "$_logname" ]; then _cmd+=" -F $_logname "; fi 
+		fi
+		if [ $_verbose -ne 0 ]; then _cmd+=" -V "; fi
+		if [ $_quiet -ne 0 ]; then _cmd+=" -Q >/dev/null"; fi
+		eval $_cmd
+	done
+	if [ $_list -ne 0 ]; then ls -lth *.png; fi
+	exit 0;
+fi
+
+if [ -n "$_chan" ] && [ -n "$_time" ]; then _db=1; _help=0; _conlog="$_chan"'_'"$_time.$_date"'.log'; fi
+if [ -n "$_file" ]; then _help=0; _db=0; _conlog=`basename $_file .mp4`".$_date"'.log'; fi
+if [ $_help -ne 0 ]; then show_usage; fi
+
+declare cmd="sudo -H -u $_user bash -c 'mythpreviewgen "
+if [ -n "$_file" ]; then cmd+=" --infile $_file "; fi
+if [ $_db -ne 0 ]; then cmd+=" --chanid $_chan --starttime $_time "; fi
+if [ -n "$_index" ]; then cmd+=" --seconds $_index "; fi
+if [ -n "$_frames" ]; then cmd+=" --frame $_frames "; fi
+if [ $_verbose -ne 0 ]; then cmd+="-v all "; fi
+cmd+="--loglevel $_errlvl'"
+
+if [ -n "$_logname" ] && [ $_logged -ne 0 ]; then _conlog="$_logname"; 
+	if [ $_deletelog -ne 0 ]; then rm -f $_conlog; fi
+fi
+if [ $_logged -ne 0 ]; then cmd+=" >> $_conlog 2>&1"; fi
+if [ $_list -ne 0 ]; then cmd+=" ;ls -lth *.png "; fi
+
+if [ $_quiet -eq 0 ]; then echo "$cmd"; fi
+
+eval $cmd
