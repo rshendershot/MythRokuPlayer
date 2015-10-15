@@ -21,9 +21,15 @@ echo "$date: Roku Encode $MPGFILE to $newname" >> $LOGFILE
 
 date=`date`
 echo "$newbname:$date Encoding" >> $LOGFILE
-#/usr/bin/HandBrakeCLI --preset='iPhone & iPod Touch' -i $MYTHDIR/$MPGFILE -o $newname 
-mythffmpeg -y -loglevel error -threads 4 -i $MYTHDIR/$MPGFILE -strict experimental -c:a aac -c:v mpeg4 -q:v 5 -q:a 2 -ac 2 -f mp4 $newname >> $LOGFILE 2>&1
+
+#mythffmpeg -y -loglevel error -threads 4 -i $MYTHDIR/$MPGFILE -strict experimental -c:a aac -c:v mpeg4 -q:v 5 -q:a 2 -ac 2 -f mp4 $newname >> $LOGFILE 2>&1
 #mythffmpeg -y -loglevel error -threads 4 -i "$newname.t" -vcodec copy -acodec copy $newname >> $LOGFILE 2>&1
+mythffmpeg -y -loglevel error -i $MYTHDIR/$MPGFILE -strict experimental -c:a aac -c:v mpeg4 -q:v 5 -q:a 2 -ac 2 -f mp4 $newname >> $LOGFILE 2>&1 || {
+	date=`date`
+	echo "$newbname:$date Encoding with ffmpeg failed, failing over to HandBrakeCLI" >> $LOGFILE
+	/usr/bin/HandBrakeCLI --preset='iPhone & iPod Touch' -i $MYTHDIR/$MPGFILE -o $newname  
+}
+
 rm -f "$newname.png" >> $LOGFILE 2>&1
 mythpreviewgen --loglevel err --infile $newname --seconds 123 >> $LOGFILE 2>&1
 
