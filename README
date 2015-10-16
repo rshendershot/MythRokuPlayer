@@ -38,6 +38,7 @@ To finish the install, adjust your installation to your environment as in the fo
 	
 	you can set up your Roku box in developer mode to install the dev channel.
 	Use remote and enter Home 3x, Up 2x, Right, Left, Right, Left, Right
+	Note: permission denied failure may occur if SD microcard is present. Remove it.
 	
 	Make note of the IP and the password (firmware asof 5.2) that you set!
 	
