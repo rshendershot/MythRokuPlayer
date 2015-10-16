@@ -36,6 +36,7 @@ HTTPSTATUS = $(shell curl --silent --write-out "\n%{http_code}\n" $(ROKU_DEV_TAR
 
 $(APPNAME): 
 	@echo "*** Creating $(APPNAME).zip ***"
+	@echo "HTTP Status: *$(HTTPSTATUS)*"
 
 	@echo "  >> removing old application zip $(ZIPREL)/$(APPNAME).zip"
 	@if [ -e "$(ZIPREL)/$(APPNAME).zip" ]; \

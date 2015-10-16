@@ -28,8 +28,12 @@ if (isset ($_GET['image'])) { //send a file spec
 		$conditions = array('conditions' => array('chanid=? and starttime=? ', $chanid, $rawstarttime)); 
 		$record = Recorded::first( $conditions );		
 		$file = $record->storagegroups->dirname . $record->basename . '.png'; 
+		$t = "123";
+		$tfile = $record->storagegroups->dirname . $record->basename . ".$t.png"; 
     	if(!file_exists($file)) { //generate preview images since the user may not be invoking this from myth frontend
-    		file_get_contents($MythContentSvc . 'GetPreviewImage' . "?ChanId=$chanid&StartTime=$rawstarttime");
+    		//file_get_contents($MythContentSvc . 'GetPreviewImage' . "?ChanId=$chanid&StartTime=$rawstarttime");
+    		file_get_contents($MythContentSvc . 'GetPreviewImage' . "?ChanId=$chanid&StartTime=$rawstarttime&SecsIn=$t");
+    		rename( $tfile, $file );
 //     		error_log(
 //     			"*** " . implode( '|',
 // 			    	get_headers(
