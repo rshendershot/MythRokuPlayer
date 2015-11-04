@@ -51,7 +51,7 @@ function show_usage()
 
 while getopts "f:c:s:i:u:n:L:CF:VlDQRh" options; do
   case $options in
-         f ) if [ -f "$OPTARG" ]; then _file=$OPTARG; fi ;;
+        f ) if [ -f "$OPTARG" ]; then _file=$OPTARG; fi ;;
          c ) _chan=$OPTARG;;
          s ) _time=$OPTARG;;
          i ) _index=$OPTARG;;
@@ -88,11 +88,11 @@ then
 fi
 
 if [ -n "$_chan" ] && [ -n "$_time" ]; then _db=1; _help=0; _conlog="$_chan"'_'"$_time.$_date"'.log'; fi
-if [ -n "$_file" ]; then _help=0; _db=0; _conlog=`basename $_file .mp4`".$_date"'.log'; fi
+if [ -n "$_file" ]; then _help=0; _db=0; _conlog=`basename '$_file' .mp4`".$_date"'.log'; fi
 if [ $_help -ne 0 ]; then show_usage; fi
 
 declare cmd="sudo -H -u $_user bash -c 'mythpreviewgen "
-if [ -n "$_file" ]; then cmd+=" --infile $_file "; fi
+if [ -n "$_file" ]; then cmd+=" --infile \"$_file\" "; fi
 if [ $_db -ne 0 ]; then cmd+=" --chanid $_chan --starttime $_time "; fi
 if [ -n "$_index" ]; then cmd+=" --seconds $_index "; fi
 if [ -n "$_frames" ]; then cmd+=" --frame $_frames "; fi
