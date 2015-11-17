@@ -25,6 +25,7 @@ if(isset($_GET['New'])) {
 		default:
 			break;
 	}	
+	$conditions['conditions'].= " AND program.chanid in (select chanid from channel where visible=TRUE)";
 	$conditions['conditions'].= " ORDER BY program.starttime";
 	$conditions['conditions'].= " LIMIT $NewShowsQueryLimit";
 	
