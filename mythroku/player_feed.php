@@ -178,7 +178,7 @@ class item extends XmlEmitter {
 				$imgUrl = "$WebServer/$MythRokuDir/images/oval_purple.png";
 				$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 			} elseif($show->last && $show->first){
-				$imgUrl = "$WebServer/$MythRokuDir/images/oval_red.png";
+				$imgUrl = ($show->subtitle == 'Pilot' ? "$WebServer/$MythRokuDir/images/diamond_red.png" : "$WebServer/$MythRokuDir/images/oval_red.png");
 				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
 					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
@@ -186,7 +186,7 @@ class item extends XmlEmitter {
 					$show->category .= ' (ONLY CHANCE)';
 				}
 			} elseif($show->last) {
-				$imgUrl = "$WebServer/$MythRokuDir/images/oval_orange.png";
+				$imgUrl = ($show->subtitle == 'Pilot' ? "$WebServer/$MythRokuDir/images/diamond_oranges.png" : "$WebServer/$MythRokuDir/images/oval_orange.png");
 				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
 					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
@@ -198,7 +198,7 @@ class item extends XmlEmitter {
 					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 				} else {
-					$imgUrl = "$WebServer/$MythRokuDir/images/oval_green.png";
+					$imgUrl = ($show->subtitle == 'Pilot' ? "$WebServer/$MythRokuDir/images/diamond_green.png" : "$WebServer/$MythRokuDir/images/oval_green.png");
 				}
 			}
 			
