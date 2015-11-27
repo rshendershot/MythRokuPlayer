@@ -186,7 +186,7 @@ class item extends XmlEmitter {
 					$show->category .= ' (ONLY CHANCE)';
 				}
 			} elseif($show->last) {
-				$imgUrl = ($show->subtitle == 'Pilot' ? "$WebServer/$MythRokuDir/images/diamond_oranges.png" : "$WebServer/$MythRokuDir/images/oval_orange.png");
+				$imgUrl = ($show->subtitle == 'Pilot' ? "$WebServer/$MythRokuDir/images/diamond_orange.png" : "$WebServer/$MythRokuDir/images/oval_orange.png");
 				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
 					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
