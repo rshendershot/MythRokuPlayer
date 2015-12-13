@@ -171,34 +171,35 @@ class item extends XmlEmitter {
 			//handles Pilots/Premieres schema
 			
 			$ShowLength = convert_datetime($show->endtime) - convert_datetime($show->starttime);
+			$ImgType = ($show->subtitle == 'Pilot' ? "rectangle" : "oval");
 			if($show->recstatus == -1){
-				$imgUrl = "$WebServer/$MythRokuDir/images/oval_blue.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/". $ImgType . "_blue.png";
 				$show->category .= ' (WILL RECORD)';
 			} elseif($show->recstatus == 10 || $show->recstatus == 7){ //inactive or conflict
-				$imgUrl = "$WebServer/$MythRokuDir/images/oval_purple.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/". $ImgType . "_purple.png";
 				$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 			} elseif($show->last && $show->first){
-				$imgUrl = "$WebServer/$MythRokuDir/images/oval_red.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/". $ImgType . "_red.png";
 				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
-					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
+					$imgUrl = "$WebServer/$MythRokuDir/images/". $ImgType . "_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 				} else {
 					$show->category .= ' (ONLY CHANCE)';
 				}
 			} elseif($show->last) {
-				$imgUrl = "$WebServer/$MythRokuDir/images/oval_orange.png";
+				$imgUrl = "$WebServer/$MythRokuDir/images/". $ImgType . "_orange.png";
 				if(!empty($show->recstatus) && $show->recstatus != 10 && $show->recstatus != 7) { 
-					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
+					$imgUrl = "$WebServer/$MythRokuDir/images/". $ImgType . "_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 				} else {
 					$show->category .= ' (LAST CHANCE)';
 				}				
 			} else {
 				if(!empty($show->recstatus)) {
-					$imgUrl = "$WebServer/$MythRokuDir/images/oval_grey.png";
+					$imgUrl = "$WebServer/$MythRokuDir/images/". $ImgType . "_grey.png";
 					$show->category .= ' (' . $show->getStatusName( $show->recstatus ) . ')';
 				} else {
-					$imgUrl = "$WebServer/$MythRokuDir/images/oval_green.png";
+					$imgUrl = "$WebServer/$MythRokuDir/images/". $ImgType . "_green.png";
 				}
 			}
 			
