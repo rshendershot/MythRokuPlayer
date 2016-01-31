@@ -82,6 +82,7 @@ class item extends XmlEmitter {
 	public $subtitle;
 	public $runtime;
 	public $date;
+	public $originaldate;
 	public $tvormov;
 	public $delcommand;
 	public $starrating;
@@ -242,6 +243,7 @@ class item extends XmlEmitter {
 			$this->genres = new genres(array('content'=>normalizeHtml($show->category)));
 			$this->runtime = new runtime(array('content'=>$ShowLength));
 			$this->date = new date(array('content'=>date("F j, Y, g:i a", convert_datetime($show->starttime))));
+			$this->addToAttributes('originaldate', $show->airdate);
 			$this->tvormov = new tvormov(array('content'=>'tv'));
 			$this->delcommand = new delcommand(array('content'=>"$WebServer/mythroku/mythtv_tv_del.php?basename=$show->basename"));
 		}elseif(is_a($show,'VideoMetadata')){

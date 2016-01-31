@@ -30,12 +30,12 @@ if(isset($_GET['Recent'])) {
 	//build feed for this specific date set
 	error_log("selecting Recent: $select", 0);
 	
-	//Recent, Older, All
+	//New, Recent, Older, All
 	
 	//build date range
 	$interval = '-1 HOUR';
 	switch ( $select ) {  //TODO use top in the select query
-		//case 'Today': $interval = '-1 DAY';break;
+		case 'New': $interval = '-7 DAY';break;
 		case 'Recent': $interval = '-15 DAY';break;
 		//case 'Month': $interval = '-1 MONTH';break;
 		case 'Older': $interval = '-1 YEAR';break;
@@ -48,9 +48,20 @@ if(isset($_GET['Recent'])) {
 		$intervalQry = "starttime between adddate(utc_timestamp(), interval $interval) and utc_timestamp() ";
 	else
 		$intervalQry = "starttime between adddate(now(), interval $interval) and now() ";
-	
-	$conditions = array('conditions' => array("basename like ? AND $intervalQry", '%.mp4'));
-	$record = Recorded::all( $conditions );
+		
+	$conditions = array('conditions' => array("basename like ? AND $intervalQry", '%.mp4') );
+	if($select == 'New'){
+		$conditions['conditions'][0].= " HAVING datediff(recorded.starttime, airdate) < 7";
+	}
+	$rquery = array(
+		'select'=>'recorded.*
+			, ifnull( 
+				nullif(recorded.originalairdate,0)
+				, makedate( (select airdate from recordedprogram where recordedprogram.chanid=recorded.chanid and recordedprogram.starttime=recorded.starttime),1 )
+	    	) as airdate'			
+	);
+
+	$record = Recorded::all( array_merge($rquery, $conditions) );
 	error_log("COUNT of RECORDED: ".count($record), 0);
 	
 	$vselect = array('select' => '*, case releasedate when (releasedate is null) then insertdate else releasedate end as starttime');
@@ -98,7 +109,7 @@ if(isset($_GET['Recent'])) {
 	);
 
 	$menu = array();
-	$results = array('Recent','Older','All');	
+	$results = array('New', 'Recent','Older','All');	
 
 	foreach ( $results as $value ) {
 		$parms = array('Recent'=>rawurlencode($value));
