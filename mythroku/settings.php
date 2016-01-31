@@ -281,6 +281,10 @@ class Recorded extends ActiveRecord\Model
     function get_starttime() {
         return $this->read_attribute('starttime')->format('db');
     }
+    
+    function get_airdate(){
+    	return $this->read_attribute('airdate');
+    }    
            
 //    function get_title() {
 //    	return preg_replace('/^The /', '', $this->read_attribute('title'));
