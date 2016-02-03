@@ -286,6 +286,10 @@ class Recorded extends ActiveRecord\Model
     	return $this->read_attribute('airdate');
     }    
            
+    function set_airdate($newdate){
+    	$this->airdate = $newdate;
+    }    
+           
 //    function get_title() {
 //    	return preg_replace('/^The /', '', $this->read_attribute('title'));
 //    }  
