@@ -40,7 +40,8 @@ EOF;
 	foreach($shows as $item => $show ){
 		$items[] = new item($show);
 	}
-	usort($items, 'items_title_compare');
+	//usort($items, 'items_title_date_compare');
+	usort($items, 'items_title_episode_compare');
 	
 	if(count($items)){
 		$feed = new feed(
