@@ -83,6 +83,7 @@ class item extends XmlEmitter {
 	public $runtime;
 	public $date;
 	public $airdate;
+	public $programid;
 	public $tvormov;
 	public $delcommand;
 	public $starrating;
@@ -243,7 +244,7 @@ class item extends XmlEmitter {
 			$this->genres = new genres(array('content'=>normalizeHtml($show->category)));
 			$this->runtime = new runtime(array('content'=>$ShowLength));
 			$this->date = new date(array('content'=>date("F j, Y, g:i a", convert_datetime($show->starttime))));
-			//$this->addToAttributes('originaldate', $show->airdate);
+			$this->programid = new programid(array('content'=>$show->programid));
 			$this->airdate = new airdate(array('content'=>$show->airdate));
 			$this->tvormov = new tvormov(array('content'=>'tv'));
 			$this->delcommand = new delcommand(array('content'=>"$WebServer/mythroku/mythtv_tv_del.php?basename=$show->basename"));
@@ -289,6 +290,7 @@ class item extends XmlEmitter {
 			$this->genres = new genres(array('content'=>normalizeHtml(empty($category->category) ? '':$category->category)));
 			$this->runtime = new runtime(array('content'=>$show->length * 60));
 			$this->date = new date(array('content'=>date("Y-m-d", convert_datetime($show->starttime))));
+			$this->programid = new programid(array('content'=>$show->season.'.'.$show->episode));
 			$this->tvormov = new tvormov(array('content'=>'movie'));
 			$this->starrating = new starrating(array('content'=>$show->userrating * 10));
 		}else{
@@ -318,6 +320,7 @@ class subtitle extends XmlEmitter {}
 class runtime extends XmlEmitter {}
 class date extends XmlEmitter {}
 class airdate extends XmlEmitter {}
+class programid extends XmlEmitter {}
 class tvormov extends XmlEmitter {}
 class delcommand extends XmlEmitter {}
 class starrating extends XmlEmitter {}
