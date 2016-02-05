@@ -14,6 +14,8 @@ Sub Main()
     if screen=invalid then
         print "unexpected error in preShowHomeScreen"
         return
+    'else
+    '    showRegistrySection()
     end if
 
     'set to go, time to get started

@@ -173,32 +173,34 @@ Function ParseCategoryNode(xml As Object) As dynamic
     'get the list of child nodes and recursed
     'through everything under the current node
     for each e in xml.GetBody()
-        name = e.GetName()
-        if name = "category" then
-            print "category: " + e@title + " [" + e@description + "]"
-            kid = ParseCategoryNode(e)
-            kid.Title = e@title
-            kid.Description = e@Description
-            kid.ShortDescriptionLine1 = xml@Description
-            kid.SDPosterURL = xml@sd_img
-            kid.HDPosterURL = xml@hd_img
-            o.AddKid(kid)
-        else if name = "categoryLeaf" then
-            print "categoryLeaf: " + e@title + " [" + e@description + "]"
-            kid = ParseCategoryNode(e)
-            kid.Title = e@title
-            kid.Description = e@Description
-            kid.Feed = e@feed
-            o.AddKid(kid)
-        else if name = "specialCategory" then
-            print "specialCategory: " + e@title + " [" + e@description + "]"
-            kid = ParseCategoryNode(e)
-            kid.Title = e@title
-            kid.Description = e@Description
-            kid.sd_img = e@sd_img
-            kid.hd_img = e@hd_img
-            kid.Feed = e@feed
-            o.AddKid(kid)
+        if e <> invalid then 
+            name = e.GetName()
+            if name = "category" then
+                print "category: " + e@title + " [" + e@description + "]"
+                kid = ParseCategoryNode(e)
+                kid.Title = e@title
+                kid.Description = e@Description
+                kid.ShortDescriptionLine1 = xml@Description
+                kid.SDPosterURL = xml@sd_img
+                kid.HDPosterURL = xml@hd_img
+                o.AddKid(kid)
+            else if name = "categoryLeaf" then
+                print "categoryLeaf: " + e@title + " [" + e@description + "]"
+                kid = ParseCategoryNode(e)
+                kid.Title = e@title
+                kid.Description = e@Description
+                kid.Feed = e@feed
+                o.AddKid(kid)
+            else if name = "specialCategory" then
+                print "specialCategory: " + e@title + " [" + e@description + "]"
+                kid = ParseCategoryNode(e)
+                kid.Title = e@title
+                kid.Description = e@Description
+                kid.sd_img = e@sd_img
+                kid.hd_img = e@hd_img
+                kid.Feed = e@feed
+                o.AddKid(kid)
+            endif
         endif
     next
 

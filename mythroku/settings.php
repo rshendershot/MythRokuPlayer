@@ -230,7 +230,7 @@ function normalizeHtml($string){
 		return ''; 
 }
 
-function items_title_compare($a, $b){
+function items_title_date_compare($a, $b){
 	if(  is_a($a,'item') && is_a($b,'item')  ){
 		$aTitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title->Value()));
 		$bTitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title->Value()));
@@ -251,6 +251,32 @@ function items_date_compare($a, $b){
 		$bTime = strtotime($b->date->Value());	
 		
 		return $aTime < $bTime ? -1 : 1;
+	}else{
+		return 0;
+	}	
+}
+
+function items_title_episode_compare($a, $b){
+	if(  is_a($a,'item') && is_a($b,'item')  ){
+		$aTitle = ltrim(preg_replace('/^[Tt]he /', '', $a->title->Value()));
+		$bTitle = ltrim(preg_replace('/^[Tt]he /', '', $b->title->Value()));
+		
+		if($aTitle === $bTitle){  //int compared to $ is true always so use compare identical strict operator, even tho type is already checked. 
+			return items_episode_compare($a, $b);
+		}
+				
+		return $aTitle < $bTitle ? -1 : 1;
+	}else{
+		return 0;
+	}
+}
+
+function items_episode_compare($a, $b){
+	if(  is_a($a,'item') && is_a($b,'item')  ){
+		$aId = $a->programid->Value();
+		$bId = $b->programid->Value();	
+		
+		return $aId < $bId ? -1 : 1;
 	}else{
 		return 0;
 	}	
@@ -281,6 +307,14 @@ class Recorded extends ActiveRecord\Model
     function get_starttime() {
         return $this->read_attribute('starttime')->format('db');
     }
+    
+    function get_airdate(){
+    	return $this->read_attribute('airdate');
+    }    
+           
+    function set_airdate($newdate){
+    	$this->airdate = $newdate;
+    }    
            
 //    function get_title() {
 //    	return preg_replace('/^The /', '', $this->read_attribute('title'));

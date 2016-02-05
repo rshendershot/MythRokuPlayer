@@ -21,7 +21,15 @@ EOF;
 	error_log("selecting Group: $select", 0);
 
 	$conditions = array('conditions' => array('basename like ? AND playgroup like ?', '%.mp4', $select));
-	$record = Recorded::all( $conditions );
+	$rquery = array(
+			'select'=>'recorded.*
+			, ifnull(
+				nullif(recorded.originalairdate,0)
+				, makedate( (select airdate from recordedprogram where recordedprogram.chanid=recorded.chanid and recordedprogram.starttime=recorded.starttime),1 )
+	    	) as airdate'
+	);
+	
+	$record = Recorded::all( array_merge($rquery, $conditions) );	
 	error_log("COUNT of RECORDED: ".count($record), 0);
 	
 	$video = VideoMetadata::find_by_sql( $SQL );
@@ -32,7 +40,8 @@ EOF;
 	foreach($shows as $item => $show ){
 		$items[] = new item($show);
 	}
-	usort($items, 'items_title_compare');
+	//usort($items, 'items_title_date_compare');
+	usort($items, 'items_title_episode_compare');
 	
 	if(count($items)){
 		$feed = new feed(
