@@ -241,7 +241,7 @@ class item extends XmlEmitter {
 			$this->contentType = new contentType(array('content'=>'TV'));
 			$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required
 			$this->synopsis = new synopsis(array('content'=>normalizeHtml($show->description)));
-			$this->genres = new genres(array('content'=>normalizeHtml($show->category.' ('.$show->programid.')')));
+			$this->genres = new genres(array('content'=>normalizeHtml($show->category.' ('.$show->programid.' '.$show->airdate.')')));
 			$this->runtime = new runtime(array('content'=>$ShowLength));
 			$this->date = new date(array('content'=>date("F j, Y, g:i a", convert_datetime($show->starttime))));
 			$this->programid = new programid(array('content'=>$show->programid));
@@ -287,7 +287,7 @@ class item extends XmlEmitter {
 			$this->contentType = new contentType(array('content'=>'Movie'));
 			$this->media->streamUrl->setContent("$streamUrl "); //yes the space is required
 			$this->synopsis = new synopsis(array('content'=>normalizeHtml($show->plot)));
-			$season = '(S'.$show->season.'E'.$show->episode.')';
+			$season = '(S'.$show->season.'E'.$show->episode.' '.(new DateTime($show->starttime))->format('Y-m-d').')';
 			$this->genres = new genres(array('content'=>normalizeHtml(empty($category->category) ? '':$category->category).' '.$season));
 			$this->runtime = new runtime(array('content'=>$show->length * 60));
 			$this->date = new date(array('content'=>date("Y-m-d", convert_datetime($show->starttime))));
